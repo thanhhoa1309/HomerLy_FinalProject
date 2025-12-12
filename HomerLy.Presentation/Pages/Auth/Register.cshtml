@@ -1,0 +1,805 @@
+@page
+@model HomerLy.Presentation.Pages.Auth.RegisterModel
+@{
+    ViewData["Title"] = "Register - Homerly";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --accent-color: #f093fb;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --bg-light: #f7fafc;
+            --white: #ffffff;
+            --error: #f56565;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            max-width: 1100px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            z-index: 1;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .register-info::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 70%);
+        }
+
+        .register-info-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .register-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .register-info p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+
+        .info-features {
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .info-features li {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .info-features i {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .register-form-container {
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .register-form-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .register-form-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .register-form-container::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .logo-section h1 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .logo-section p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: var(--error);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px 14px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-control.error {
+            border-color: var(--error);
+        }
+
+        .form-control.success {
+            border-color: var(--success);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .success-message {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 5px;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: var(--primary-color);
+        }
+
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-bar-fill.weak {
+            width: 33%;
+            background: var(--error);
+        }
+
+        .strength-bar-fill.medium {
+            width: 66%;
+            background: var(--warning);
+        }
+
+        .strength-bar-fill.strong {
+            width: 100%;
+            background: var(--success);
+        }
+
+        .strength-text {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .password-requirements {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 8px;
+            padding-left: 20px;
+        }
+
+        .password-requirements li {
+            margin-bottom: 4px;
+        }
+
+        .requirement-met {
+            color: var(--success);
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        .terms-checkbox label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            cursor: pointer;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .terms-checkbox a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .terms-checkbox a:hover {
+            color: var(--secondary-color);
+        }
+
+        .btn-register {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 30px 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .login-link {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: var(--secondary-color);
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .back-home a:hover {
+            color: var(--primary-color);
+        }
+
+        @@media (max-width: 968px) {
+            .register-container {
+                grid-template-columns: 1fr;
+            }
+
+            .register-info {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .register-form-container {
+                padding: 40px 25px;
+            }
+
+            .logo-section h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Left Side - Information -->
+        <div class="register-info">
+            <div class="register-info-content">
+                <h2>?? Join Homerly Today!</h2>
+                <p>Create your account and start your real estate journey with us. Access exclusive auctions and find your dream property.</p>
+                <ul class="info-features">
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Free account registration</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Access to thousands of properties</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Participate in live auctions</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>List your own properties</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>Secure payment processing</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-check"></i>
+                        <span>24/7 customer support</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Side - Register Form -->
+        <div class="register-form-container">
+            <div class="logo-section">
+                <div class="logo">??</div>
+                <h1>Create Account</h1>
+                <p>Fill in your details to get started</p>
+            </div>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="error-message" style="background: #fef2f2; border: 1px solid #fecaca; padding: 12px 16px; border-radius: 12px; margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>@TempData["ErrorMessage"]</span>
+                </div>
+            }
+
+            <form method="post" id="registerForm">
+                <div class="form-group">
+                    <label for="fullname">Full Name <span class="required">*</span></label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input 
+                            type="text" 
+                            id="fullname" 
+                            name="RegisterRequest.FullName" 
+                            class="form-control" 
+                            placeholder="John Doe"
+                            required
+                            autocomplete="name"
+                        />
+                    </div>
+                    <span asp-validation-for="RegisterRequest.FullName" class="error-message"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="RegisterRequest.Email" 
+                                class="form-control" 
+                                placeholder="your.email@example.com"
+                                required
+                                autocomplete="email"
+                            />
+                        </div>
+                        <span asp-validation-for="RegisterRequest.Email" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone"></i>
+                            <input 
+                                type="tel" 
+                                id="phone" 
+                                name="RegisterRequest.Phone" 
+                                class="form-control" 
+                                placeholder="+84 123 456 789"
+                                required
+                                autocomplete="tel"
+                            />
+                        </div>
+                        <span asp-validation-for="RegisterRequest.Phone" class="error-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <div class="input-wrapper password-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="RegisterRequest.Password" 
+                            class="form-control" 
+                            placeholder="Create a strong password"
+                            required
+                            autocomplete="new-password"
+                        />
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', 'toggleIcon1')">
+                            <i class="fas fa-eye" id="toggleIcon1"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-bar-fill" id="strengthBar"></div>
+                        </div>
+                        <div class="strength-text" id="strengthText">Password strength</div>
+                    </div>
+                    <ul class="password-requirements">
+                        <li id="req-length">At least 8 characters</li>
+                        <li id="req-uppercase">One uppercase letter</li>
+                        <li id="req-lowercase">One lowercase letter</li>
+                        <li id="req-number">One number</li>
+                    </ul>
+                    <span asp-validation-for="RegisterRequest.Password" class="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                    <div class="input-wrapper password-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            name="ConfirmPassword" 
+                            class="form-control" 
+                            placeholder="Re-enter your password"
+                            required
+                            autocomplete="new-password"
+                        />
+                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
+                            <i class="fas fa-eye" id="toggleIcon2"></i>
+                        </button>
+                    </div>
+                    <span id="confirmPasswordError" class="error-message" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span>Passwords do not match</span>
+                    </span>
+                </div>
+
+                <div class="terms-checkbox">
+                    <input type="checkbox" id="terms" name="AcceptTerms" required />
+                    <label for="terms">
+                        I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-register" id="submitBtn">
+                    <i class="fas fa-user-plus"></i>
+                    Create Account
+                </button>
+
+                <div class="divider">
+                    <span>or</span>
+                </div>
+
+                <div class="login-link">
+                    Already have an account? <a href="/Auth/Login">Sign In</a>
+                </div>
+
+                <div class="back-home">
+                    <a href="/">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const toggleIcon = document.getElementById(iconId);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+
+        // Password strength checker
+        const passwordInput = document.getElementById('password');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            // Check requirements
+            const hasLength = password.length >= 8;
+            const hasUppercase = /[A-Z]/.test(password);
+            const hasLowercase = /[a-z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            
+            // Update requirement indicators
+            updateRequirement('req-length', hasLength);
+            updateRequirement('req-uppercase', hasUppercase);
+            updateRequirement('req-lowercase', hasLowercase);
+            updateRequirement('req-number', hasNumber);
+            
+            // Calculate strength
+            if (hasLength) strength++;
+            if (hasUppercase) strength++;
+            if (hasLowercase) strength++;
+            if (hasNumber) strength++;
+            
+            // Update strength bar
+            strengthBar.className = 'strength-bar-fill';
+            if (strength <= 1) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Weak password';
+                strengthText.style.color = 'var(--error)';
+            } else if (strength <= 3) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Medium password';
+                strengthText.style.color = 'var(--warning)';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Strong password';
+                strengthText.style.color = 'var(--success)';
+            }
+        });
+
+        function updateRequirement(id, met) {
+            const element = document.getElementById(id);
+            if (met) {
+                element.classList.add('requirement-met');
+                element.innerHTML = '<i class="fas fa-check"></i> ' + element.textContent.replace('? ', '');
+            } else {
+                element.classList.remove('requirement-met');
+                element.textContent = element.textContent.replace('? ', '');
+            }
+        }
+
+        // Confirm password validation
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const confirmPasswordError = document.getElementById('confirmPasswordError');
+
+        confirmPasswordInput.addEventListener('input', function() {
+            if (this.value && this.value !== passwordInput.value) {
+                confirmPasswordError.style.display = 'flex';
+                this.classList.add('error');
+            } else {
+                confirmPasswordError.style.display = 'none';
+                this.classList.remove('error');
+            }
+        });
+
+        // Form validation
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const terms = document.getElementById('terms').checked;
+
+            if (password !== confirmPassword) {
+                e.preventDefault();
+                confirmPasswordError.style.display = 'flex';
+                confirmPasswordInput.classList.add('error');
+                return false;
+            }
+
+            if (!terms) {
+                e.preventDefault();
+                alert('Please accept the Terms of Service and Privacy Policy');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+

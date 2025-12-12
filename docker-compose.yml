@@ -1,0 +1,41 @@
+services:
+  homerly.presentation:
+    build:
+      context: .
+      dockerfile: HomerLy.Presentation/Dockerfile
+    image: homerly-presentation:latest
+    depends_on:
+      homerly.database:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings__DefaultConnection=Host=homerly.database;Port=5432;Database=HomerlyDb;Username=postgres;Password=postgres;Pooling=true"
+      - "JWT__SecretKey=Homerly_SECRETKEY_SIEUCAPBAOMAT_VAYMACHUADU16KYTU"
+      - "JWT__Issuer=Homerly_Issuer"
+      - "JWT__Audience=Homerly_Audience"
+      - AppSettings__BaseUrl=http://localhost:5000
+      - ASPNETCORE_URLS=http://+:5000
+    ports:
+      - "5000:5000"
+
+  homerly.database:
+    image: postgres:15
+    container_name: homerly-postgres
+    environment:
+      - POSTGRES_DB=HomerlyDb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d HomerlyDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  postgres-data:
+    driver: local

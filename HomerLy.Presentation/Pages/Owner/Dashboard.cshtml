@@ -1,0 +1,390 @@
+@page
+@model HomerLy.Presentation.Pages.Owner.DashboardModel
+@{
+    ViewData["Title"] = "Owner Dashboard";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-0">Owner Dashboard</h2>
+            <p class="text-muted mb-0">Welcome back, @Model.CurrentUser?.FullName!</p>
+        </div>
+        <div class="text-muted">
+            <i class="bi bi-calendar-event me-2"></i>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Total Properties</h6>
+                            <h2 class="mb-0 fw-bold">@Model.TotalProperties</h2>
+                            <small class="text-white-50">All Properties</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-building"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Owner/Properties/Index" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Properties</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Occupied Properties</h6>
+                            <h2 class="mb-0 fw-bold">@Model.OccupiedProperties</h2>
+                            <small class="text-white-50">Currently Rented</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-house-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Owner/Properties/Index" asp-route-status="occupied" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Occupied</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Active Tenancies</h6>
+                            <h2 class="mb-0 fw-bold">@Model.ActiveTenancies</h2>
+                            <small class="text-white-50">Current Tenants</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-file-earmark-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Owner/Tenancies/Index" asp-route-status="active" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Tenancies</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Monthly Revenue</h6>
+                            <h2 class="mb-0 fw-bold">@Model.MonthlyRevenue.ToString("N0") VN?</h2>
+                            <small class="text-white-50">This Month</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-cash-stack"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Owner/Revenue" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Revenue</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-lightning-fill me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a asp-page="/Owner/Properties/Create" class="btn btn-outline-success w-100 py-3">
+                                <i class="bi bi-plus-circle d-block fs-2 mb-2"></i>
+                                Add New Property
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-page="/Owner/Tenancies/Create" class="btn btn-outline-primary w-100 py-3">
+                                <i class="bi bi-file-earmark-plus d-block fs-2 mb-2"></i>
+                                Create Tenancy
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-page="/Owner/Utilities/Create" class="btn btn-outline-info w-100 py-3">
+                                <i class="bi bi-lightning d-block fs-2 mb-2"></i>
+                                Add Utility Reading
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-page="/Owner/Tenants" class="btn btn-outline-warning w-100 py-3">
+                                <i class="bi bi-people d-block fs-2 mb-2"></i>
+                                View Tenants
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Properties -->
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-building me-2"></i>My Properties</h5>
+                    <a asp-page="/Owner/Properties/Index" class="btn btn-sm btn-success">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentProperties != null && Model.RecentProperties.Any())
+                    {
+                        <div class="row">
+                            @foreach (var property in Model.RecentProperties.Take(3))
+                            {
+                                <div class="col-md-4">
+                                    <div class="card property-card mb-3">
+                                        @if (!string.IsNullOrEmpty(property.ImageUrl))
+                                        {
+                                            <img src="@property.ImageUrl" alt="@property.Title" class="card-img-top">
+                                        }
+                                        else
+                                        {
+                                            <div style="height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-building text-white" style="font-size: 3rem;"></i>
+                                            </div>
+                                        }
+                                        <span class="badge property-status bg-@(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "success" : "primary")">
+                                            @property.Status
+                                        </span>
+                                        <div class="card-body">
+                                            <h6 class="card-title">@property.Title</h6>
+                                            <p class="card-text text-muted small mb-2">
+                                                <i class="bi bi-geo-alt"></i> @property.Address
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="text-success fw-bold">@property.MonthlyRent.ToString("N0") VN?/month</span>
+                                                <a asp-page="/Owner/Properties/Details" asp-route-id="@property.Id" class="btn btn-sm btn-outline-success">View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            <p>No properties yet. <a asp-page="/Owner/Properties/Create">Add your first property</a></p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Recent Tenancies -->
+            <div class="card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Recent Tenancies</h5>
+                    <a asp-page="/Owner/Tenancies/Index" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Tenant</th>
+                                    <th>Period</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.RecentTenancies != null && Model.RecentTenancies.Any())
+                                {
+                                    @foreach (var tenancy in Model.RecentTenancies.Take(5))
+                                    {
+                                        <tr>
+                                            <td>@tenancy.PropertyTitle</td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-circle bg-primary text-white me-2">
+                                                        @tenancy.TenantName?.Substring(0, 1).ToUpper()
+                                                    </div>
+                                                    @tenancy.TenantName
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <small>@tenancy.StartDate.ToString("dd/MM/yyyy") - @tenancy.EndDate.ToString("dd/MM/yyyy")</small>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-@(tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active ? "success" : tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation ? "warning" : "secondary")">
+                                                    @tenancy.Status
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a asp-page="/Owner/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center py-4 text-muted">
+                                            No tenancies yet
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Profile Card -->
+            <div class="card mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Owner Profile</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CurrentUser != null)
+                    {
+                        <div class="text-center mb-4">
+                            <div class="avatar-circle bg-success text-white mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                @Model.CurrentUser.FullName?.Substring(0, 1).ToUpper()
+                            </div>
+                            <h5 class="mb-1">@Model.CurrentUser.FullName</h5>
+                            <p class="text-muted mb-2">@Model.CurrentUser.Role</p>
+                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Verified Owner</span>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Email</small>
+                            <strong>@Model.CurrentUser.Email</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Phone Number</small>
+                            <strong>@Model.CurrentUser.Phone</strong>
+                        </div>
+                        <hr>
+                        <a asp-page="/Owner/Profile" class="btn btn-success w-100">
+                            <i class="bi bi-pencil me-2"></i>Edit Profile
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Pending Actions -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-bell me-2"></i>Pending Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <i class="bi bi-clock text-warning me-2"></i>
+                                <span>Pending Tenancies</span>
+                            </div>
+                            <span class="badge bg-warning rounded-pill">@Model.PendingTenancies</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <i class="bi bi-lightning text-info me-2"></i>
+                                <span>Uncharged Utilities</span>
+                            </div>
+                            <span class="badge bg-info rounded-pill">@Model.UnchargedUtilities</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                                <span>Open Reports</span>
+                            </div>
+                            <span class="badge bg-danger rounded-pill">@Model.OpenReports</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .property-card {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s;
+    }
+
+    .property-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .property-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .property-status {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+</style>

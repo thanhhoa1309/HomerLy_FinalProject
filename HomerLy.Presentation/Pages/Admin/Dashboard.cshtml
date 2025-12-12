@@ -1,0 +1,285 @@
+@page
+@model HomerLy.Presentation.Pages.Admin.DashboardModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-0">Dashboard Overview</h2>
+            <p class="text-muted mb-0">Welcome back, @Model.CurrentUser?.FullName!</p>
+        </div>
+        <div class="text-muted">
+            <i class="bi bi-calendar-event me-2"></i>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Total Users</h6>
+                            <h2 class="mb-0 fw-bold">@Model.TotalUsers</h2>
+                            <small class="text-white-50">Active Members</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Admin/Accounts/Index" asp-route-role="User" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Details</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Total Owners</h6>
+                            <h2 class="mb-0 fw-bold">@Model.TotalOwners</h2>
+                            <small class="text-white-50">Property Owners</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-building"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Admin/Accounts/Index" asp-route-role="Owner" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Details</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Total Admins</h6>
+                            <h2 class="mb-0 fw-bold">@Model.TotalAdmins</h2>
+                            <small class="text-white-50">System Admins</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Admin/Accounts/Index" asp-route-role="Admin" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Details</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 mb-2">Pending Approvals</h6>
+                            <h2 class="mb-0 fw-bold">@(Model.RecentAccounts?.Count(a => a.Role == Homerly.BusinessObject.Enums.RoleType.Owner) ?? 0)</h2>
+                            <small class="text-white-50">Requires Action</small>
+                        </div>
+                        <div class="fs-1 opacity-50">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white bg-opacity-10 border-0">
+                    <a asp-page="/Admin/Accounts/Index" asp-route-isOwnerApproved="false" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
+                        <span>View Pending</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-lightning-fill me-2"></i>Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a asp-page="/Admin/Accounts/Index" class="btn btn-outline-primary w-100 py-3">
+                                <i class="bi bi-people d-block fs-2 mb-2"></i>
+                                Manage Accounts
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-page="/Admin/Properties/Index" class="btn btn-outline-success w-100 py-3">
+                                <i class="bi bi-building d-block fs-2 mb-2"></i>
+                                Manage Properties
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-page="/Admin/Tenancies/Index" class="btn btn-outline-info w-100 py-3">
+                                <i class="bi bi-file-text d-block fs-2 mb-2"></i>
+                                Manage Tenancies
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-page="/Admin/Analytics" class="btn btn-outline-warning w-100 py-3">
+                                <i class="bi bi-graph-up d-block fs-2 mb-2"></i>
+                                View Analytics
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Accounts and Activity -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Accounts</h5>
+                    <a asp-page="/Admin/Accounts/Index" class="btn btn-sm btn-primary">View All</a>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.RecentAccounts != null && Model.RecentAccounts.Any())
+                                {
+                                    @foreach (var account in Model.RecentAccounts.Take(5))
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-circle bg-primary text-white me-2">
+                                                        @account.FullName?.Substring(0, 1).ToUpper()
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold">@account.FullName</div>
+                                                        <small class="text-muted">@account.Phone</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>@account.Email</td>
+                                            <td>
+                                                <span class="badge bg-@(account.Role == Homerly.BusinessObject.Enums.RoleType.Admin ? "danger" : account.Role == Homerly.BusinessObject.Enums.RoleType.Owner ? "success" : "info")">
+                                                    @account.Role
+                                                </span>
+                                            </td>
+                                            <td>@account.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            No recent accounts
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Admin Profile</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CurrentUser != null)
+                    {
+                        <div class="text-center mb-4">
+                            <div class="avatar-circle bg-primary text-white mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                                @Model.CurrentUser.FullName?.Substring(0, 1).ToUpper()
+                            </div>
+                            <h5 class="mb-1">@Model.CurrentUser.FullName</h5>
+                            <p class="text-muted mb-0">@Model.CurrentUser.Role</p>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Email</small>
+                            <strong>@Model.CurrentUser.Email</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Phone Number</small>
+                            <strong>@Model.CurrentUser.Phone</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">CCCD Number</small>
+                            <strong>@Model.CurrentUser.CccdNumber</strong>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Member Since</small>
+                            <strong>@Model.CurrentUser.CreatedAt.ToString("MMMM dd, yyyy")</strong>
+                        </div>
+                        <hr>
+                        <a asp-page="/Admin/Profile" class="btn btn-primary w-100">
+                            <i class="bi bi-pencil me-2"></i>Edit Profile
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+</style>

@@ -1,0 +1,215 @@
+@page
+@model HomerLy.Presentation.Pages.User.DashboardModel
+@{
+    ViewData["Title"] = "User Dashboard";
+    Layout = "_Layout";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+            <div class="position-sticky pt-3">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>User Menu</span>
+                </h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-home me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-building me-2"></i>Browse Properties
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-heart me-2"></i>Favorites
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-file-contract me-2"></i>My Tenancies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-credit-card me-2"></i>Payments
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-user-cog me-2"></i>Profile Settings
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="fas fa-tachometer-alt me-2"></i>User Dashboard
+                </h1>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>@Model.ErrorMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (Model.CurrentUser != null)
+            {
+                <!-- Welcome Card -->
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Welcome back, @Model.CurrentUser.FullName!</h5>
+                        <p class="card-text text-muted">
+                            <i class="fas fa-envelope me-2"></i>@Model.CurrentUser.Email
+                            <span class="ms-3"><i class="fas fa-phone me-2"></i>@Model.CurrentUser.Phone</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-primary text-white shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white mb-0">Active Tenancies</h6>
+                                        <h2 class="mt-2">0</h2>
+                                    </div>
+                                    <i class="fas fa-file-contract fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-success text-white shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white mb-0">Favorites</h6>
+                                        <h2 class="mt-2">0</h2>
+                                    </div>
+                                    <i class="fas fa-heart fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-warning text-white shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white mb-0">Pending Payments</h6>
+                                        <h2 class="mt-2">0</h2>
+                                    </div>
+                                    <i class="fas fa-credit-card fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card bg-info text-white shadow">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-white mb-0">Total Spent</h6>
+                                        <h2 class="mt-2">$0</h2>
+                                    </div>
+                                    <i class="fas fa-dollar-sign fa-3x opacity-50"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Activities</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>No recent activities</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Properties -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="fas fa-star me-2"></i>Featured Properties</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-building fa-3x mb-3"></i>
+                            <p>Browse available properties</p>
+                            <a href="#" class="btn btn-primary">View All Properties</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+}
+
+<style>
+    .sidebar {
+        position: fixed;
+        top: 56px;
+        bottom: 0;
+        left: 0;
+        z-index: 100;
+        padding: 0;
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    }
+
+    .sidebar .nav-link {
+        font-weight: 500;
+        color: #333;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar .nav-link:hover {
+        color: #007bff;
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    .sidebar .nav-link.active {
+        color: #007bff;
+        background-color: rgba(0, 123, 255, 0.1);
+        border-left: 3px solid #007bff;
+    }
+
+    main {
+        margin-left: 0;
+    }
+
+    @@media (min-width: 768px) {
+        main {
+            margin-left: 16.666667%;
+        }
+    }
+
+    @@media (min-width: 992px) {
+        main {
+            margin-left: 16.666667%;
+        }
+    }
+</style>
