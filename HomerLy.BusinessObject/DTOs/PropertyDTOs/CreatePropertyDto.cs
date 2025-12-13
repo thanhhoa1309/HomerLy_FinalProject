@@ -15,13 +15,9 @@ namespace Homerly.BusinessObject.DTOs.PropertyDTOs
         [StringLength(500, ErrorMessage = "Address cannot exceed 500 characters")]
         public string Address { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Monthly rent is required")]
-        [Range(0, double.MaxValue, ErrorMessage = "Monthly rent must be greater than or equal to 0")]
-        public decimal MonthlyRent { get; set; }
-
-        [Required(ErrorMessage = "Price is required")]
-        [Range(0, double.MaxValue, ErrorMessage = "Price must be greater than or equal to 0")]
-        public decimal Price { get; set; }
+        [Required(ErrorMessage = "Monthly price is required")]
+        [Range(0, double.MaxValue, ErrorMessage = "Monthly price must be greater than or equal to 0")]
+        public decimal MonthlyPrice { get; set; }
 
         [Required(ErrorMessage = "Area is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Area must be greater than 0")]

@@ -45,8 +45,7 @@ namespace HomerLy.DataAccess.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
-                    MonthlyRent = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    DepositAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    MonthlyPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
                     AreaSqm = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<string>(type: "text", nullable: false),
                     ImageUrl = table.Column<string>(type: "text", nullable: false),
@@ -83,8 +82,8 @@ namespace HomerLy.DataAccess.Migrations
                     Status = table.Column<string>(type: "text", nullable: false),
                     IsTenantConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     ElectricUnitPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    ElectricOldIndex = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    WaterUnitPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    WaterUnitPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    ElectricOldIndex = table.Column<int>(type: "integer", nullable: false),
                     WaterOldIndex = table.Column<int>(type: "integer", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -276,6 +275,75 @@ namespace HomerLy.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Invoices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PropertyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenancyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    TenantId = table.Column<Guid>(type: "uuid", nullable: false),
+                    OwnerId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UtilityReadingId = table.Column<Guid>(type: "uuid", nullable: false),
+                    BillingPeriodStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    BillingPeriodEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Status = table.Column<string>(type: "text", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    MonthlyRentPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    ElectricOldIndex = table.Column<int>(type: "integer", nullable: false),
+                    ElectricNewIndex = table.Column<int>(type: "integer", nullable: false),
+                    ElectricUnitPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    ElectricCost = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    WaterOldIndex = table.Column<int>(type: "integer", nullable: false),
+                    WaterNewIndex = table.Column<int>(type: "integer", nullable: false),
+                    WaterUnitPrice = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    WaterCost = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    OtherFees = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DeletedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invoices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Accounts_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Accounts_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Properties_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Properties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_Tenancies_TenancyId",
+                        column: x => x.TenancyId,
+                        principalTable: "Tenancies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Invoices_UtilityReadings_UtilityReadingId",
+                        column: x => x.UtilityReadingId,
+                        principalTable: "UtilityReadings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ChatMessages_SenderId",
                 table: "ChatMessages",
@@ -285,6 +353,31 @@ namespace HomerLy.DataAccess.Migrations
                 name: "IX_ChatMessages_TenancyId",
                 table: "ChatMessages",
                 column: "TenancyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_OwnerId",
+                table: "Invoices",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_PropertyId",
+                table: "Invoices",
+                column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_TenancyId",
+                table: "Invoices",
+                column: "TenancyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_TenantId",
+                table: "Invoices",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invoices_UtilityReadingId",
+                table: "Invoices",
+                column: "UtilityReadingId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_PayerId",
@@ -352,6 +445,9 @@ namespace HomerLy.DataAccess.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ChatMessages");
+
+            migrationBuilder.DropTable(
+                name: "Invoices");
 
             migrationBuilder.DropTable(
                 name: "Payments");

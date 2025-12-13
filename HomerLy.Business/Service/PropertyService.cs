@@ -55,8 +55,7 @@ namespace Homerly.Business.Services
                     Title = createPropertyDto.Title,
                     Description = createPropertyDto.Description,
                     Address = createPropertyDto.Address,
-                    MonthlyRent = createPropertyDto.MonthlyRent,
-                    Price = createPropertyDto.Price,
+                    MonthlyPrice = createPropertyDto.MonthlyPrice,
                     AreaSqm = createPropertyDto.AreaSqm,
                     ImageUrl = createPropertyDto.ImageUrl,
                     Status = PropertyStatus.available // New properties are always available
@@ -110,11 +109,9 @@ namespace Homerly.Business.Services
                 if (!string.IsNullOrWhiteSpace(updatePropertyDto.Address))
                     property.Address = updatePropertyDto.Address;
 
-                if (updatePropertyDto.MonthlyRent.HasValue)
-                    property.MonthlyRent = updatePropertyDto.MonthlyRent.Value;
+                if (updatePropertyDto.MonthlyPrice.HasValue)
+                    property.MonthlyPrice = updatePropertyDto.MonthlyPrice.Value;
 
-                if (updatePropertyDto.Price.HasValue)
-                    property.Price = updatePropertyDto.Price.Value;
 
                 if (updatePropertyDto.AreaSqm.HasValue)
                     property.AreaSqm = updatePropertyDto.AreaSqm.Value;
@@ -254,12 +251,12 @@ namespace Homerly.Business.Services
                 // Apply rent range filters
                 if (minRent.HasValue)
                 {
-                    query = query.Where(p => p.MonthlyRent >= minRent.Value);
+                    query = query.Where(p => p.MonthlyPrice >= minRent.Value);
                 }
 
                 if (maxRent.HasValue)
                 {
-                    query = query.Where(p => p.MonthlyRent <= maxRent.Value);
+                    query = query.Where(p => p.MonthlyPrice <= maxRent.Value);
                 }
 
                 // Apply area range filters
@@ -327,8 +324,8 @@ namespace Homerly.Business.Services
                 {
                     // Check for active tenancies
                     var activeTenancy = await _unitOfWork.Tenancy.FirstOrDefaultAsync(
-                        t => t.PropertyId == propertyId && 
-                             t.Status == TenancyStatus.active && 
+                        t => t.PropertyId == propertyId &&
+                             t.Status == TenancyStatus.active &&
                              !t.IsDeleted
                     );
 
@@ -407,8 +404,8 @@ namespace Homerly.Business.Services
 
                 // Check for active tenancies
                 var activeTenancy = await _unitOfWork.Tenancy.FirstOrDefaultAsync(
-                    t => t.PropertyId == propertyId && 
-                         t.Status == TenancyStatus.active && 
+                    t => t.PropertyId == propertyId &&
+                         t.Status == TenancyStatus.active &&
                          !t.IsDeleted
                 );
 
@@ -444,8 +441,7 @@ namespace Homerly.Business.Services
                 Title = property.Title,
                 Description = property.Description,
                 Address = property.Address,
-                MonthlyRent = property.MonthlyRent,
-                Price = property.Price,
+                MonthlyPrice = property.MonthlyPrice,
                 AreaSqm = property.AreaSqm,
                 Status = property.Status,
                 ImageUrl = property.ImageUrl,

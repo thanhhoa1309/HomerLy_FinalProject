@@ -1,5 +1,7 @@
 using Homerly.Business.Interfaces;
 using Homerly.Business.Services;
+using HomerLy.Business.Interfaces;
+using HomerLy.Business.Service;
 using HomerLy.DataAccess;
 using HomerLy.DataAccess.Commons;
 using HomerLy.DataAccess.Interfaces;
@@ -64,6 +66,8 @@ namespace Homerly.Presentation.Architecture
             services.AddScoped<IPropertyService, PropertyService>();
             services.AddScoped<IUtilityReadingService, UtilityReadingService>();
             services.AddScoped<ITenancyService, TenancyService>();
+            services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<IPropertyReportService, PropertyReportService>();
 
             return services;
         }

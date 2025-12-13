@@ -15,9 +15,7 @@ namespace Homerly.DataAccess.Entities
         [Required]
         public string Address { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal MonthlyRent { get; set; }
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal Price { get; set; }
+        public decimal MonthlyPrice { get; set; }
         public int AreaSqm { get; set; }
         public PropertyStatus Status { get; set; }
 

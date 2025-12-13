@@ -103,7 +103,7 @@ namespace HomerLy.Presentation.Pages.Owner
                     var property = await _propertyService.GetPropertyByIdAsync(tenancy.PropertyId);
                     if (property != null)
                     {
-                        MonthlyRevenue += property.MonthlyRent;
+                        MonthlyRevenue += property.MonthlyPrice;
                     }
                 }
 

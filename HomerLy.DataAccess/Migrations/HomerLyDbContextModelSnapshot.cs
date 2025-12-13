@@ -22,6 +22,112 @@ namespace HomerLy.DataAccess.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("HomerLy.DataAccess.Entities.Invoice", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("BillingPeriodEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("BillingPeriodStart")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("DeletedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("DueDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal>("ElectricCost")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("ElectricNewIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ElectricOldIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("ElectricUnitPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<decimal>("MonthlyRentPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("OtherFees")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<Guid>("OwnerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PropertyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("TenancyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UtilityReadingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("WaterCost")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("WaterNewIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WaterOldIndex")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("WaterUnitPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("PropertyId");
+
+                    b.HasIndex("TenancyId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UtilityReadingId");
+
+                    b.ToTable("Invoices");
+                });
+
             modelBuilder.Entity("Homerly.DataAccess.Entities.Account", b =>
                 {
                     b.Property<Guid>("Id")
@@ -219,9 +325,6 @@ namespace HomerLy.DataAccess.Migrations
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("DepositAmount")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -233,7 +336,7 @@ namespace HomerLy.DataAccess.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<decimal>("MonthlyRent")
+                    b.Property<decimal>("MonthlyPrice")
                         .HasColumnType("decimal(18, 2)");
 
                     b.Property<Guid>("OwnerId")
@@ -341,8 +444,8 @@ namespace HomerLy.DataAccess.Migrations
                     b.Property<Guid?>("DeletedBy")
                         .HasColumnType("uuid");
 
-                    b.Property<decimal>("ElectricOldIndex")
-                        .HasColumnType("decimal(18, 2)");
+                    b.Property<int>("ElectricOldIndex")
+                        .HasColumnType("integer");
 
                     b.Property<decimal>("ElectricUnitPrice")
                         .HasColumnType("decimal(18, 2)");
@@ -382,7 +485,7 @@ namespace HomerLy.DataAccess.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("WaterUnitPrice")
-                        .HasColumnType("numeric");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.HasKey("Id");
 
@@ -456,6 +559,39 @@ namespace HomerLy.DataAccess.Migrations
                     b.HasIndex("TenancyId");
 
                     b.ToTable("UtilityReadings");
+                });
+
+            modelBuilder.Entity("HomerLy.DataAccess.Entities.Invoice", b =>
+                {
+                    b.HasOne("Homerly.DataAccess.Entities.Account", null)
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Homerly.DataAccess.Entities.Property", null)
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Homerly.DataAccess.Entities.Tenancy", null)
+                        .WithMany()
+                        .HasForeignKey("TenancyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Homerly.DataAccess.Entities.Account", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Homerly.DataAccess.Entities.UtilityReading", null)
+                        .WithMany()
+                        .HasForeignKey("UtilityReadingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Homerly.DataAccess.Entities.ChatMessage", b =>

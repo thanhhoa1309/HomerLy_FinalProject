@@ -1,5 +1,6 @@
-﻿using Homerly.DataAccess.Entities;
+using Homerly.DataAccess.Entities;
 using HomerLy.DataAccess.Commons;
+using HomerLy.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomerLy.DataAccess
@@ -16,6 +17,7 @@ namespace HomerLy.DataAccess
         public DbSet<Property> Properties { get; set; }
         public DbSet<Tenancy> Tenancies { get; set; }
         public DbSet<UtilityReading> UtilityReadings { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<PropertyReport> PropertyReports { get; set; }
         public DbSet<ChatMessage> ChatMessages { get; set; }
@@ -113,6 +115,41 @@ namespace HomerLy.DataAccess
                 .HasForeignKey(pr => pr.RequestedById);
 
 
+            // Invoice -> Property (Many-to-One)
+            modelBuilder.Entity<Invoice>()
+                .HasOne<Property>()
+                .WithMany()
+                .HasForeignKey(i => i.PropertyId);
+
+
+            // Invoice -> Tenancy (Many-to-One)
+            modelBuilder.Entity<Invoice>()
+                .HasOne<Tenancy>()
+                .WithMany()
+                .HasForeignKey(i => i.TenancyId);
+
+
+            // Invoice -> Tenant (Many-to-One)
+            modelBuilder.Entity<Invoice>()
+                .HasOne<Account>()
+                .WithMany()
+                .HasForeignKey(i => i.TenantId);
+
+
+            // Invoice -> Owner (Many-to-One)
+            modelBuilder.Entity<Invoice>()
+                .HasOne<Account>()
+                .WithMany()
+                .HasForeignKey(i => i.OwnerId);
+
+
+            // Invoice -> UtilityReading (Many-to-One)
+            modelBuilder.Entity<Invoice>()
+                .HasOne<UtilityReading>()
+                .WithMany()
+                .HasForeignKey(i => i.UtilityReadingId);
+
+
             // ChatMessage -> Tenancy (Many-to-One)
             modelBuilder.Entity<ChatMessage>()
                 .HasOne<Tenancy>()
@@ -129,3 +166,4 @@ namespace HomerLy.DataAccess
         }
     }
 }
+

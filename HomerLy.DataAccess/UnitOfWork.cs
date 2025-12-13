@@ -1,5 +1,5 @@
-﻿using Homerly.DataAccess.Entities;
-using HomerLy.DataAccess;
+using Homerly.DataAccess.Entities;
+using HomerLy.DataAccess.Entities;
 using HomerLy.DataAccess.Interfaces;
 
 namespace HomerLy.DataAccess
@@ -13,6 +13,7 @@ namespace HomerLy.DataAccess
             IGenericRepository<Property> propertyRepository,
             IGenericRepository<Tenancy> tenancyRepository,
             IGenericRepository<UtilityReading> utilityReadingRepository,
+            IGenericRepository<Invoice> invoiceRepository,
             IGenericRepository<Payment> paymentRepository,
             IGenericRepository<PropertyReport> propertyReportRepository,
             IGenericRepository<ChatMessage> chatMessageRepository)
@@ -22,6 +23,7 @@ namespace HomerLy.DataAccess
             Property = propertyRepository;
             Tenancy = tenancyRepository;
             UtilityReading = utilityReadingRepository;
+            Invoice = invoiceRepository;
             Payment = paymentRepository;
             PropertyReport = propertyReportRepository;
             ChatMessage = chatMessageRepository;
@@ -31,6 +33,7 @@ namespace HomerLy.DataAccess
         public IGenericRepository<Property> Property { get; set; }
         public IGenericRepository<Tenancy> Tenancy { get; set; }
         public IGenericRepository<UtilityReading> UtilityReading { get; set; }
+        public IGenericRepository<Invoice> Invoice { get; set; }
         public IGenericRepository<Payment> Payment { get; set; }
         public IGenericRepository<PropertyReport> PropertyReport { get; set; }
         public IGenericRepository<ChatMessage> ChatMessage { get; set; }
@@ -46,3 +49,4 @@ namespace HomerLy.DataAccess
         }
     }
 }
+

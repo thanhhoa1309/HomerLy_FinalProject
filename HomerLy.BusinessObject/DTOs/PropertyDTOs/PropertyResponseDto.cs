@@ -9,8 +9,7 @@ namespace Homerly.BusinessObject.DTOs.PropertyDTOs
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public decimal MonthlyRent { get; set; }
-        public decimal Price { get; set; }
+        public decimal MonthlyPrice { get; set; }
         public int AreaSqm { get; set; }
         public PropertyStatus Status { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
