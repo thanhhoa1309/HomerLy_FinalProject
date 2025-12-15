@@ -110,6 +110,7 @@ namespace Homerly.Business.Services
                     FullName = accountRegistrationDto.FullName,
                     Email = accountRegistrationDto.Email,
                     PhoneNumber = accountRegistrationDto.Phone,
+                    CccdNumber = accountRegistrationDto.CccdNumber,
                     Role = RoleType.User,
                     PasswordHash = hashedPassword ?? throw ErrorHelper.Internal("Password hashing failed."),
                     IsOwnerApproved = false
