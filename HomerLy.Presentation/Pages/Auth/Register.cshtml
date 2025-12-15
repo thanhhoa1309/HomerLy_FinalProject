@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model HomerLy.Presentation.Pages.Auth.RegisterModel
 @{
     ViewData["Title"] = "Register - Homerly";
@@ -11,7 +11,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         * {
             margin: 0;
@@ -20,180 +23,121 @@
         }
 
         :root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --bg-light: #f7fafc;
+            --primary-black: #1a1a1a;
+            --secondary-black: #2d2d2d;
+            --light-gray: #f5f5f5;
+            --border-gray: #e5e5e5;
+            --text-gray: #666666;
             --white: #ffffff;
-            --error: #f56565;
+            --error: #dc3545;
             --success: #48bb78;
-            --warning: #ed8936;
-            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-gray);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 40px 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-        }
-
-        @@keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
         }
 
         .register-container {
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            max-width: 1100px;
+            background: var(--white);
+            border: 1px solid var(--border-gray);
+            border-radius: 8px;
+            max-width: 900px;
             width: 100%;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            position: relative;
-            z-index: 1;
-            animation: slideIn 0.6s ease-out;
-        }
-
-        @@keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            grid-template-columns: 400px 1fr;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
         }
 
         .register-info {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            background: var(--primary-black);
+            color: var(--white);
             padding: 60px 40px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
         }
 
-        .register-info::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 10%, transparent 70%);
-        }
+            .register-info h2 {
+                font-size: 2rem;
+                margin-bottom: 16px;
+                font-weight: 600;
+            }
 
-        .register-info-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .register-info h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .register-info p {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            opacity: 0.95;
-            margin-bottom: 30px;
-        }
+            .register-info p {
+                font-size: 0.9rem;
+                line-height: 1.6;
+                color: rgba(255, 255, 255, 0.8);
+                margin-bottom: 30px;
+            }
 
         .info-features {
             list-style: none;
-            margin-top: 30px;
         }
 
-        .info-features li {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            font-size: 1rem;
-        }
+            .info-features li {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+                font-size: 0.875rem;
+                color: rgba(255, 255, 255, 0.9);
+            }
 
-        .info-features i {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
+            .info-features i {
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+            }
 
         .register-form-container {
             padding: 60px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
             max-height: 90vh;
             overflow-y: auto;
         }
 
-        .register-form-container::-webkit-scrollbar {
-            width: 8px;
-        }
+            .register-form-container::-webkit-scrollbar {
+                width: 8px;
+            }
 
-        .register-form-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
+            .register-form-container::-webkit-scrollbar-track {
+                background: var(--light-gray);
+            }
 
-        .register-form-container::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
+            .register-form-container::-webkit-scrollbar-thumb {
+                background: var(--border-gray);
+                border-radius: 4px;
+            }
+
+                .register-form-container::-webkit-scrollbar-thumb:hover {
+                    background: var(--text-gray);
+                }
 
         .logo-section {
             text-align: center;
             margin-bottom: 40px;
         }
 
-        .logo {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
+            .logo-section h1 {
+                font-size: 1.5rem;
+                color: var(--primary-black);
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
 
-        .logo-section h1 {
-            font-size: 1.8rem;
-            color: var(--text-dark);
-            margin-bottom: 8px;
-            font-weight: 700;
-        }
-
-        .logo-section p {
-            color: var(--text-light);
-            font-size: 0.95rem;
-        }
+            .logo-section p {
+                color: var(--text-gray);
+                font-size: 0.875rem;
+            }
 
         .form-row {
             display: grid;
@@ -202,20 +146,20 @@
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
+            .form-group label {
+                display: block;
+                margin-bottom: 6px;
+                color: var(--primary-black);
+                font-weight: 500;
+                font-size: 0.875rem;
+            }
 
         .required {
             color: var(--error);
@@ -225,58 +169,55 @@
             position: relative;
         }
 
-        .input-wrapper i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-light);
-            font-size: 1.1rem;
-        }
+            .input-wrapper i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-gray);
+                font-size: 1rem;
+            }
 
         .form-control {
             width: 100%;
-            padding: 14px 16px 14px 45px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            padding: 10px 14px 10px 40px;
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: all 0.15s ease;
             font-family: inherit;
+            background: var(--white);
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-        }
+            .form-control:focus {
+                outline: none;
+                border-color: var(--primary-black);
+            }
 
-        .form-control.error {
-            border-color: var(--error);
-        }
-
-        .form-control.success {
-            border-color: var(--success);
-        }
+            .form-control.error {
+                border-color: var(--error);
+            }
 
         .error-message {
             color: var(--error);
-            font-size: 0.85rem;
+            font-size: 0.8125rem;
             margin-top: 6px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .success-message {
-            background: #f0fdf4;
-            border: 1px solid #86efac;
-            color: #166534;
+        .alert-error {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
             padding: 12px 16px;
-            border-radius: 12px;
+            border-radius: 6px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-size: 0.875rem;
         }
 
         .password-wrapper {
@@ -285,32 +226,32 @@
 
         .toggle-password {
             position: absolute;
-            right: 16px;
+            right: 30px;
             top: 50%;
             transform: translateY(-50%);
             background: none;
             border: none;
-            color: var(--text-light);
+            color: var(--text-gray);
             cursor: pointer;
             padding: 5px;
-            font-size: 1.1rem;
-            transition: color 0.3s ease;
+            font-size: 1rem;
+            transition: color 0.15s ease;
         }
 
-        .toggle-password:hover {
-            color: var(--primary-color);
-        }
+            .toggle-password:hover {
+                color: var(--primary-black);
+            }
 
         .password-strength {
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .strength-bar {
-            height: 4px;
-            background: #e2e8f0;
+            height: 3px;
+            background: var(--border-gray);
             border-radius: 2px;
             overflow: hidden;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .strength-bar-fill {
@@ -320,36 +261,36 @@
             border-radius: 2px;
         }
 
-        .strength-bar-fill.weak {
-            width: 33%;
-            background: var(--error);
-        }
+            .strength-bar-fill.weak {
+                width: 33%;
+                background: var(--error);
+            }
 
-        .strength-bar-fill.medium {
-            width: 66%;
-            background: var(--warning);
-        }
+            .strength-bar-fill.medium {
+                width: 66%;
+                background: #ed8936;
+            }
 
-        .strength-bar-fill.strong {
-            width: 100%;
-            background: var(--success);
-        }
+            .strength-bar-fill.strong {
+                width: 100%;
+                background: var(--success);
+            }
 
         .strength-text {
-            font-size: 0.85rem;
-            color: var(--text-light);
+            font-size: 0.8125rem;
+            color: var(--text-gray);
         }
 
         .password-requirements {
-            font-size: 0.85rem;
-            color: var(--text-light);
+            font-size: 0.8125rem;
+            color: var(--text-gray);
             margin-top: 8px;
             padding-left: 20px;
         }
 
-        .password-requirements li {
-            margin-bottom: 4px;
-        }
+            .password-requirements li {
+                margin-bottom: 4px;
+            }
 
         .requirement-met {
             color: var(--success);
@@ -359,119 +300,118 @@
             display: flex;
             align-items: flex-start;
             gap: 10px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        .terms-checkbox input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-top: 2px;
-            cursor: pointer;
-            accent-color: var(--primary-color);
-            flex-shrink: 0;
-        }
+            .terms-checkbox input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin-top: 2px;
+                cursor: pointer;
+                accent-color: var(--primary-black);
+                flex-shrink: 0;
+            }
 
-        .terms-checkbox label {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            cursor: pointer;
-            margin: 0;
-            line-height: 1.5;
-        }
+            .terms-checkbox label {
+                font-size: 0.875rem;
+                color: var(--text-gray);
+                cursor: pointer;
+                margin: 0;
+                line-height: 1.5;
+            }
 
-        .terms-checkbox a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-        }
+            .terms-checkbox a {
+                color: var(--primary-black);
+                text-decoration: none;
+                font-weight: 500;
+            }
 
-        .terms-checkbox a:hover {
-            color: var(--secondary-color);
-        }
+                .terms-checkbox a:hover {
+                    text-decoration: underline;
+                }
 
         .btn-register {
             width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
+            padding: 12px;
+            background: var(--primary-black);
+            color: var(--white);
             border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .btn-register:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-        }
+            .btn-register:hover:not(:disabled) {
+                background: var(--secondary-black);
+            }
 
-        .btn-register:active {
-            transform: translateY(0);
-        }
+            .btn-register:active {
+                transform: scale(0.98);
+            }
 
-        .btn-register:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+            .btn-register:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
 
         .divider {
             display: flex;
             align-items: center;
             gap: 15px;
-            margin: 30px 0;
-            color: var(--text-light);
-            font-size: 0.9rem;
+            margin: 24px 0;
+            color: var(--text-gray);
+            font-size: 0.875rem;
         }
 
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
-        }
+            .divider::before,
+            .divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: var(--border-gray);
+            }
 
         .login-link {
             text-align: center;
-            color: var(--text-light);
-            font-size: 0.95rem;
+            color: var(--text-gray);
+            font-size: 0.875rem;
         }
 
-        .login-link a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
+            .login-link a {
+                color: var(--primary-black);
+                text-decoration: none;
+                font-weight: 500;
+                transition: opacity 0.15s ease;
+            }
 
-        .login-link a:hover {
-            color: var(--secondary-color);
-        }
+                .login-link a:hover {
+                    opacity: 0.7;
+                }
 
         .back-home {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 16px;
         }
 
-        .back-home a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s ease;
-        }
+            .back-home a {
+                color: var(--text-gray);
+                text-decoration: none;
+                font-size: 0.875rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: color 0.15s ease;
+            }
 
-        .back-home a:hover {
-            color: var(--primary-color);
-        }
+                .back-home a:hover {
+                    color: var(--primary-black);
+                }
 
         @@media (max-width: 968px) {
             .register-container {
@@ -480,10 +420,6 @@
 
             .register-info {
                 display: none;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -496,8 +432,8 @@
                 padding: 40px 25px;
             }
 
-            .logo-section h1 {
-                font-size: 1.5rem;
+            .form-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -507,31 +443,31 @@
         <!-- Left Side - Information -->
         <div class="register-info">
             <div class="register-info-content">
-                <h2>?? Join Homerly Today!</h2>
+                <h2>Join Homerly Today</h2>
                 <p>Create your account and start your real estate journey with us. Access exclusive auctions and find your dream property.</p>
                 <ul class="info-features">
                     <li>
-                        <i class="fas fa-check"></i>
+                        <i class="bi bi-check-circle"></i>
                         <span>Free account registration</span>
                     </li>
                     <li>
-                        <i class="fas fa-check"></i>
+                        <i class="bi bi-check-circle"></i>
                         <span>Access to thousands of properties</span>
                     </li>
                     <li>
-                        <i class="fas fa-check"></i>
+                        <i class="bi bi-check-circle"></i>
                         <span>Participate in live auctions</span>
                     </li>
                     <li>
-                        <i class="fas fa-check"></i>
+                        <i class="bi bi-check-circle"></i>
                         <span>List your own properties</span>
                     </li>
                     <li>
-                        <i class="fas fa-check"></i>
+                        <i class="bi bi-check-circle"></i>
                         <span>Secure payment processing</span>
                     </li>
                     <li>
-                        <i class="fas fa-check"></i>
+                        <i class="bi bi-check-circle"></i>
                         <span>24/7 customer support</span>
                     </li>
                 </ul>
@@ -541,33 +477,30 @@
         <!-- Right Side - Register Form -->
         <div class="register-form-container">
             <div class="logo-section">
-                <div class="logo">??</div>
-                <h1>Create Account</h1>
-                <p>Fill in your details to get started</p>
+                <h1>HomerLy</h1>
+                <p>Create your account</p>
             </div>
 
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="error-message" style="background: #fef2f2; border: 1px solid #fecaca; padding: 12px 16px; border-radius: 12px; margin-bottom: 20px;">
-                    <i class="fas fa-exclamation-circle"></i>
+                <div class="alert-error">
+                    <i class="bi bi-exclamation-circle"></i>
                     <span>@TempData["ErrorMessage"]</span>
                 </div>
             }
 
             <form method="post" id="registerForm">
-                <div class="form-group">
+                <div class="form-group full-width">
                     <label for="fullname">Full Name <span class="required">*</span></label>
                     <div class="input-wrapper">
-                        <i class="fas fa-user"></i>
-                        <input 
-                            type="text" 
-                            id="fullname" 
-                            name="RegisterRequest.FullName" 
-                            class="form-control" 
-                            placeholder="John Doe"
-                            required
-                            autocomplete="name"
-                        />
+                        <i class="bi bi-person"></i>
+                        <input type="text"
+                               id="fullname"
+                               name="RegisterRequest.FullName"
+                               class="form-control"
+                               placeholder="John Doe"
+                               required
+                               autocomplete="name" />
                     </div>
                     <span asp-validation-for="RegisterRequest.FullName" class="error-message"></span>
                 </div>
@@ -576,16 +509,14 @@
                     <div class="form-group">
                         <label for="email">Email Address <span class="required">*</span></label>
                         <div class="input-wrapper">
-                            <i class="fas fa-envelope"></i>
-                            <input 
-                                type="email" 
-                                id="email" 
-                                name="RegisterRequest.Email" 
-                                class="form-control" 
-                                placeholder="your.email@example.com"
-                                required
-                                autocomplete="email"
-                            />
+                            <i class="bi bi-envelope"></i>
+                            <input type="email"
+                                   id="email"
+                                   name="RegisterRequest.Email"
+                                   class="form-control"
+                                   placeholder="your.email@example.com"
+                                   required
+                                   autocomplete="email" />
                         </div>
                         <span asp-validation-for="RegisterRequest.Email" class="error-message"></span>
                     </div>
@@ -593,36 +524,32 @@
                     <div class="form-group">
                         <label for="phone">Phone Number <span class="required">*</span></label>
                         <div class="input-wrapper">
-                            <i class="fas fa-phone"></i>
-                            <input 
-                                type="tel" 
-                                id="phone" 
-                                name="RegisterRequest.Phone" 
-                                class="form-control" 
-                                placeholder="+84 123 456 789"
-                                required
-                                autocomplete="tel"
-                            />
+                            <i class="bi bi-telephone"></i>
+                            <input type="tel"
+                                   id="phone"
+                                   name="RegisterRequest.Phone"
+                                   class="form-control"
+                                   placeholder="+84 123 456 789"
+                                   required
+                                   autocomplete="tel" />
                         </div>
                         <span asp-validation-for="RegisterRequest.Phone" class="error-message"></span>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group full-width">
                     <label for="password">Password <span class="required">*</span></label>
                     <div class="input-wrapper password-wrapper">
-                        <i class="fas fa-lock"></i>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="RegisterRequest.Password" 
-                            class="form-control" 
-                            placeholder="Create a strong password"
-                            required
-                            autocomplete="new-password"
-                        />
+                        <i class="bi bi-lock"></i>
+                        <input type="password"
+                               id="password"
+                               name="RegisterRequest.Password"
+                               class="form-control"
+                               placeholder="Create a strong password"
+                               required
+                               autocomplete="new-password" />
                         <button type="button" class="toggle-password" onclick="togglePassword('password', 'toggleIcon1')">
-                            <i class="fas fa-eye" id="toggleIcon1"></i>
+                            <i class="bi bi-eye" id="toggleIcon1"></i>
                         </button>
                     </div>
                     <div class="password-strength">
@@ -640,25 +567,23 @@
                     <span asp-validation-for="RegisterRequest.Password" class="error-message"></span>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group full-width">
                     <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
                     <div class="input-wrapper password-wrapper">
-                        <i class="fas fa-lock"></i>
-                        <input 
-                            type="password" 
-                            id="confirmPassword" 
-                            name="ConfirmPassword" 
-                            class="form-control" 
-                            placeholder="Re-enter your password"
-                            required
-                            autocomplete="new-password"
-                        />
+                        <i class="bi bi-lock"></i>
+                        <input type="password"
+                               id="confirmPassword"
+                               name="ConfirmPassword"
+                               class="form-control"
+                               placeholder="Re-enter your password"
+                               required
+                               autocomplete="new-password" />
                         <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword', 'toggleIcon2')">
-                            <i class="fas fa-eye" id="toggleIcon2"></i>
+                            <i class="bi bi-eye" id="toggleIcon2"></i>
                         </button>
                     </div>
                     <span id="confirmPasswordError" class="error-message" style="display: none;">
-                        <i class="fas fa-exclamation-circle"></i>
+                        <i class="bi bi-exclamation-circle"></i>
                         <span>Passwords do not match</span>
                     </span>
                 </div>
@@ -671,7 +596,7 @@
                 </div>
 
                 <button type="submit" class="btn-register" id="submitBtn">
-                    <i class="fas fa-user-plus"></i>
+                    <i class="bi bi-person-plus"></i>
                     Create Account
                 </button>
 
@@ -685,7 +610,7 @@
 
                 <div class="back-home">
                     <a href="/">
-                        <i class="fas fa-arrow-left"></i>
+                        <i class="bi bi-arrow-left"></i>
                         Back to Home
                     </a>
                 </div>
@@ -697,15 +622,15 @@
         function togglePassword(inputId, iconId) {
             const passwordInput = document.getElementById(inputId);
             const toggleIcon = document.getElementById(iconId);
-            
+
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
             } else {
                 passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
             }
         }
 
@@ -717,25 +642,25 @@
         passwordInput.addEventListener('input', function() {
             const password = this.value;
             let strength = 0;
-            
+
             // Check requirements
             const hasLength = password.length >= 8;
             const hasUppercase = /[A-Z]/.test(password);
             const hasLowercase = /[a-z]/.test(password);
             const hasNumber = /[0-9]/.test(password);
-            
+
             // Update requirement indicators
             updateRequirement('req-length', hasLength);
             updateRequirement('req-uppercase', hasUppercase);
             updateRequirement('req-lowercase', hasLowercase);
             updateRequirement('req-number', hasNumber);
-            
+
             // Calculate strength
             if (hasLength) strength++;
             if (hasUppercase) strength++;
             if (hasLowercase) strength++;
             if (hasNumber) strength++;
-            
+
             // Update strength bar
             strengthBar.className = 'strength-bar-fill';
             if (strength <= 1) {
@@ -745,7 +670,7 @@
             } else if (strength <= 3) {
                 strengthBar.classList.add('medium');
                 strengthText.textContent = 'Medium password';
-                strengthText.style.color = 'var(--warning)';
+                strengthText.style.color = '#ed8936';
             } else {
                 strengthBar.classList.add('strong');
                 strengthText.textContent = 'Strong password';
@@ -755,12 +680,13 @@
 
         function updateRequirement(id, met) {
             const element = document.getElementById(id);
+            const originalText = element.textContent.replace('✓ ', '');
             if (met) {
                 element.classList.add('requirement-met');
-                element.innerHTML = '<i class="fas fa-check"></i> ' + element.textContent.replace('? ', '');
+                element.innerHTML = '<i class="bi bi-check"></i> ' + originalText;
             } else {
                 element.classList.remove('requirement-met');
-                element.textContent = element.textContent.replace('? ', '');
+                element.textContent = originalText;
             }
         }
 
@@ -800,6 +726,3 @@
     </script>
 </body>
 </html>
-
-
-
