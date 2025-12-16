@@ -5,14 +5,317 @@
     Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
 }
 
+<style>
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .btn-group {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-lg {
+        padding: 14px 32px;
+        font-size: 1rem;
+    }
+
+    .btn-outline-dark {
+        background: transparent;
+        color: #1a1a1a;
+        border-color: #1a1a1a;
+    }
+
+        .btn-outline-dark:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+    .btn-outline-secondary {
+        background: transparent;
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #ffffff;
+        }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+    }
+
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        background: #ffffff;
+    }
+
+    .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 16px 20px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+    }
+
+        .card-header.bg-dark {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border: none;
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .p-0 {
+        padding: 0;
+    }
+
+    .form-group {
+        margin-bottom: 24px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #212529;
+        margin-bottom: 8px;
+    }
+
+    .form-control,
+    .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .form-control:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+    .form-control-lg {
+        padding: 14px 18px;
+        font-size: 1rem;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .input-group-text {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-right: none;
+        border-radius: 8px 0 0 8px;
+        color: #6c757d;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+    }
+
+    .input-group:focus-within .input-group-text {
+        border-color: #1a1a1a;
+    }
+
+    .input-group:focus-within .form-control {
+        border-color: #1a1a1a;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+
+    .text-danger {
+        color: #dc3545;
+    }
+
+    .small {
+        font-size: 0.875rem;
+    }
+
+    .fw-semibold {
+        font-weight: 600;
+    }
+
+    .mb-0 {
+        margin-bottom: 0;
+    }
+
+    .mb-1 {
+        margin-bottom: 4px;
+    }
+
+    .mb-3 {
+        margin-bottom: 12px;
+    }
+
+    .mb-4 {
+        margin-bottom: 24px;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    .pt-3 {
+        padding-top: 12px;
+    }
+
+    .border-top {
+        border-top: 1px solid #e9ecef;
+    }
+
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        border: 1px solid transparent;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+        color: #842029;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+        .badge.bg-success {
+            background: #198754;
+            color: #ffffff;
+        }
+
+        .badge.bg-primary {
+            background: #0d6efd;
+            color: #ffffff;
+        }
+
+        .badge.bg-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    @@media (max-width: 992px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .btn-group {
+            width: 100%;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+    }
+</style>
+
 <div class="container-fluid">
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="page-header">
         <div>
-            <h2 class="h3 mb-0">
+            <h2>
                 <i class="bi bi-pencil-square me-2"></i>Edit Property
             </h2>
-            <p class="text-muted mb-0">Update property information</p>
+            <p>Update property information</p>
         </div>
         <div class="btn-group">
             <a asp-page="/Owner/Properties/Details" asp-route-id="@Model.Property?.Id" class="btn btn-outline-dark">
@@ -26,114 +329,106 @@
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <div class="alert alert-danger" role="alert">
             <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-header bg-white border-bottom py-3">
+    <div class="content-grid">
+        <div>
+            <div class="card mb-4">
+                <div class="card-header">
                     <h5 class="mb-0"><i class="bi bi-building me-2"></i>Property Information</h5>
                 </div>
-                <div class="card-body p-4">
+                <div class="card-body">
                     <form method="post">
-                        <!-- Title -->
-                        <div class="mb-4">
-                            <label asp-for="PropertyUpdate.Title" class="form-label fw-semibold">
+                        <div class="form-group mb-4">
+                            <label asp-for="PropertyUpdate.Title" class="form-label">
                                 Property Title <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="PropertyUpdate.Title" 
-                                   class="form-control form-control-lg" 
+                            <input asp-for="PropertyUpdate.Title"
+                                   class="form-control form-control-lg"
                                    placeholder="Enter property title" />
                             <span asp-validation-for="PropertyUpdate.Title" class="text-danger small"></span>
                         </div>
 
-                        <!-- Address -->
-                        <div class="mb-4">
-                            <label asp-for="PropertyUpdate.Address" class="form-label fw-semibold">
+                        <div class="form-group mb-4">
+                            <label asp-for="PropertyUpdate.Address" class="form-label">
                                 Address <span class="text-danger">*</span>
                             </label>
-                            <input asp-for="PropertyUpdate.Address" 
-                                   class="form-control form-control-lg" 
+                            <input asp-for="PropertyUpdate.Address"
+                                   class="form-control form-control-lg"
                                    placeholder="Full address" />
                             <span asp-validation-for="PropertyUpdate.Address" class="text-danger small"></span>
                         </div>
 
-                        <!-- Description -->
-                        <div class="mb-4">
-                            <label asp-for="PropertyUpdate.Description" class="form-label fw-semibold">
+                        <div class="form-group mb-4">
+                            <label asp-for="PropertyUpdate.Description" class="form-label">
                                 Description
                             </label>
-                            <textarea asp-for="PropertyUpdate.Description" 
-                                      class="form-control" 
-                                      rows="5" 
+                            <textarea asp-for="PropertyUpdate.Description"
+                                      class="form-control"
+                                      rows="5"
                                       placeholder="Property description"></textarea>
                             <span asp-validation-for="PropertyUpdate.Description" class="text-danger small"></span>
                         </div>
 
-                        <div class="row">
-                            <!-- Monthly Price -->
-                            <div class="col-md-6 mb-4">
-                                <label asp-for="PropertyUpdate.MonthlyPrice" class="form-label fw-semibold">
+                        <div class="form-row">
+                            <div class="form-group mb-4">
+                                <label asp-for="PropertyUpdate.MonthlyPrice" class="form-label">
                                     Monthly Rent (VNĐ)
                                 </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text bg-white">
+                                <div class="input-group">
+                                    <span class="input-group-text">
                                         <i class="bi bi-cash-stack"></i>
                                     </span>
-                                    <input asp-for="PropertyUpdate.MonthlyPrice" 
-                                           type="number" 
-                                           class="form-control" 
+                                    <input asp-for="PropertyUpdate.MonthlyPrice"
+                                           type="number"
+                                           class="form-control form-control-lg"
                                            step="100000"
                                            min="0" />
                                 </div>
                                 <span asp-validation-for="PropertyUpdate.MonthlyPrice" class="text-danger small"></span>
                             </div>
 
-                            <!-- Area -->
-                            <div class="col-md-6 mb-4">
-                                <label asp-for="PropertyUpdate.AreaSqm" class="form-label fw-semibold">
+                            <div class="form-group mb-4">
+                                <label asp-for="PropertyUpdate.AreaSqm" class="form-label">
                                     Area (m²)
                                 </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text bg-white">
+                                <div class="input-group">
+                                    <span class="input-group-text">
                                         <i class="bi bi-rulers"></i>
                                     </span>
-                                    <input asp-for="PropertyUpdate.AreaSqm" 
-                                           type="number" 
-                                           class="form-control" 
+                                    <input asp-for="PropertyUpdate.AreaSqm"
+                                           type="number"
+                                           class="form-control form-control-lg"
                                            min="1" />
                                 </div>
                                 <span asp-validation-for="PropertyUpdate.AreaSqm" class="text-danger small"></span>
                             </div>
                         </div>
 
-                        <!-- Image URL -->
-                        <div class="mb-4">
-                            <label asp-for="PropertyUpdate.ImageUrl" class="form-label fw-semibold">
+                        <div class="form-group mb-4">
+                            <label asp-for="PropertyUpdate.ImageUrl" class="form-label">
                                 Image URL
                             </label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bg-white">
+                            <div class="input-group">
+                                <span class="input-group-text">
                                     <i class="bi bi-image"></i>
                                 </span>
-                                <input asp-for="PropertyUpdate.ImageUrl" 
-                                       type="url" 
-                                       class="form-control" 
+                                <input asp-for="PropertyUpdate.ImageUrl"
+                                       type="url"
+                                       class="form-control form-control-lg"
                                        placeholder="https://..." />
                             </div>
                             <span asp-validation-for="PropertyUpdate.ImageUrl" class="text-danger small"></span>
                         </div>
 
-                        <!-- Form Actions -->
-                        <div class="d-flex gap-2 pt-3 border-top">
-                            <button type="submit" class="btn btn-dark btn-lg px-5">
+                        <div class="form-actions pt-3 border-top">
+                            <button type="submit" class="btn btn-dark btn-lg">
                                 <i class="bi bi-save me-2"></i>Save Changes
                             </button>
-                            <a asp-page="/Owner/Properties/Index" class="btn btn-outline-secondary btn-lg px-4">
+                            <a asp-page="/Owner/Properties/Index" class="btn btn-outline-secondary btn-lg">
                                 <i class="bi bi-x-circle me-2"></i>Cancel
                             </a>
                         </div>
@@ -142,12 +437,11 @@
             </div>
         </div>
 
-        <!-- Property Info Sidebar -->
-        <div class="col-lg-4">
+        <div>
             @if (Model.Property != null)
             {
-                <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-dark text-white py-3">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark">
                         <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Current Information</h6>
                     </div>
                     <div class="card-body">
@@ -157,8 +451,7 @@
                         </div>
                         <div class="mb-3">
                             <small class="text-muted d-block mb-1">Status</small>
-                            <span class="badge bg-@(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "success" : 
-                                                     Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ? "primary" : "warning")">
+                            <span class="badge @(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "bg-success" : Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ? "bg-primary" : "bg-warning")">
                                 @Model.Property.Status
                             </span>
                         </div>
@@ -173,18 +466,16 @@
                     </div>
                 </div>
 
-                <!-- Image Preview -->
                 @if (!string.IsNullOrEmpty(Model.Property.ImageUrl))
                 {
-                    <div class="card border-0 shadow-sm">
-                        <div class="card-header bg-white border-bottom py-3">
+                    <div class="card">
+                        <div class="card-header">
                             <h6 class="mb-0"><i class="bi bi-image me-2"></i>Current Image</h6>
                         </div>
                         <div class="card-body p-0">
-                            <img src="@Model.Property.ImageUrl" 
-                                 alt="@Model.Property.Title" 
-                                 class="img-fluid w-100"
-                                 style="max-height: 300px; object-fit: cover;" />
+                            <img src="@Model.Property.ImageUrl"
+                                 alt="@Model.Property.Title"
+                                 style="width: 100%; max-height: 300px; object-fit: cover;" />
                         </div>
                     </div>
                 }
@@ -196,28 +487,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-
-<style>
-    .form-control:focus,
-    .form-select:focus {
-        border-color: #212529;
-        box-shadow: 0 0 0 0.2rem rgba(33, 37, 41, 0.25);
-    }
-
-    .input-group-text {
-        border-right: 0;
-    }
-
-    .input-group .form-control {
-        border-left: 0;
-    }
-
-    .input-group:focus-within .input-group-text {
-        border-color: #212529;
-    }
-
-    .btn-dark:hover {
-        background-color: #000;
-        border-color: #000;
-    }
-</style>

@@ -1,210 +1,692 @@
-@page
+﻿@page
 @model HomerLy.Presentation.Pages.Owner.DashboardModel
 @{
     ViewData["Title"] = "Owner Dashboard";
     Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
 }
 
+<style>
+    /* Dashboard-specific styles matching Admin theme */
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .page-header p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+    /* Stat Cards Wrapper - 4 columns */
+    .stat-card-wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+        .stat-card-wrapper a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        gap: 16px;
+        height: 100%;
+        min-width: 0;
+        transition: all 0.2s ease;
+    }
+
+        .stat-card:hover {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    .stat-card-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 1.25rem;
+    }
+
+    .stat-card:hover .stat-card-icon {
+        color: #ffffff;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-card:hover .stat-card-content p {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .quick-action-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        text-align: center;
+        height: 100%;
+        min-width: 0;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        color: #1a1a1a;
+    }
+
+        .quick-action-card:hover {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-action-card i {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+        }
+
+        .quick-action-card span {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+    .mt-4 {
+        margin-top: 24px;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+        margin-top: 24px;
+    }
+
+    /* Card Styles */
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        background: #ffffff;
+    }
+
+    .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 16px 20px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 0.9375rem;
+            font-weight: 600;
+        }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .p-0 {
+        padding: 0;
+    }
+
+    /* Properties Grid */
+    .properties-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .property-card {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #fff;
+    }
+
+        .property-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .property-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+    .property-status {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        z-index: 10;
+    }
+
+    .property-card .card-body {
+        padding: 16px;
+    }
+
+    .property-card .card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 8px 0;
+    }
+
+    .property-card .card-text {
+        margin: 0 0 8px 0;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    /* Table Styles */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .table {
+        width: 100%;
+        margin-bottom: 0;
+        border-collapse: collapse;
+    }
+
+        .table thead th {
+            border-bottom: 1px solid #e9ecef;
+            font-weight: 600;
+            text-transform: capitalize;
+            font-size: 0.875rem;
+            color: #6c757d;
+            padding: 12px 16px;
+            text-align: left;
+        }
+
+        .table tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f8f9fa;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+        .table .fw-medium {
+            font-weight: 500;
+        }
+
+    .user-cell {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    /* Avatar Circle */
+    .avatar-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1rem;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        border: 1px solid #e5e5e5;
+    }
+
+    .avatar-lg {
+        width: 72px;
+        height: 72px;
+        font-size: 1.5rem;
+    }
+
+    .avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 0.875rem;
+    }
+
+    .mx-auto {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Badges */
+    .badge {
+        padding: 6px 12px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .badge-available {
+        background: #ffffff;
+        color: #1a1a1a;
+        border: 1px solid #e5e5e5;
+    }
+
+    .badge-occupied {
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .badge-active {
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .badge-pending {
+        background: #f5f5f5;
+        color: #1a1a1a;
+        border: 1px solid #e5e5e5;
+    }
+
+    .badge-inactive {
+        background: #ffffff;
+        color: #666666;
+        border: 1px solid #e5e5e5;
+    }
+
+    /* Buttons */
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    /* Profile Styles */
+    .profile-center {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .profile-divider {
+        margin: 18px 0;
+        border: 0;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .profile-field {
+        margin-bottom: 18px;
+    }
+
+    .profile-label {
+        display: block;
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    .profile-value {
+        font-weight: 500;
+        color: #1a1a1a;
+    }
+
+    /* List Groups */
+    .list-group-flush {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .list-group-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #e9ecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+    .px-0 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        border: 1px solid transparent;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+        color: #842029;
+    }
+
+    .alert-success {
+        background-color: #d1e7dd;
+        border-color: #badbcc;
+        color: #0f5132;
+    }
+
+    /* Utility Classes */
+    .text-secondary {
+        color: #6c757d;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .fw-semibold {
+        font-weight: 600;
+    }
+
+    .mb-0 {
+        margin-bottom: 0;
+    }
+
+    .mb-1 {
+        margin-bottom: 4px;
+    }
+
+    .mb-2 {
+        margin-bottom: 8px;
+    }
+
+    .mb-3 {
+        margin-bottom: 12px;
+    }
+
+    .mb-4 {
+        margin-bottom: 24px;
+    }
+
+    .me-1 {
+        margin-right: 4px;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    .py-4 {
+        padding-top: 24px;
+        padding-bottom: 24px;
+    }
+
+    .fs-1 {
+        font-size: 2.5rem;
+    }
+
+    .d-block {
+        display: block;
+    }
+
+    .d-flex {
+        display: flex;
+    }
+
+    .justify-content-between {
+        justify-content: space-between;
+    }
+
+    .align-items-center {
+        align-items: center;
+    }
+
+    .text-white {
+        color: #ffffff;
+    }
+
+    .small {
+        font-size: 0.875rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .stat-card-wrapper {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 1024px) {
+        .properties-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .stat-card-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .properties-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
 <div class="container-fluid">
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="page-header">
         <div>
-            <h2 class="h3 mb-0">Owner Dashboard</h2>
-            <p class="text-muted mb-0">Welcome back, @Model.CurrentUser?.FullName!</p>
-        </div>
-        <div class="text-muted">
-            <i class="bi bi-calendar-event me-2"></i>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")
+            <h2 class="mb-1 fw-semibold">Owner Dashboard</h2>
+            <p class="text-secondary mb-0">Welcome back, @Model.CurrentUser?.FullName!</p>
         </div>
     </div>
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
         </div>
     }
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success" role="alert">
             <i class="bi bi-check-circle me-2"></i>@TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     <!-- Statistics Cards -->
-    <div class="row mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-success text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 mb-2">Total Properties</h6>
-                            <h2 class="mb-0 fw-bold">@Model.TotalProperties</h2>
-                            <small class="text-white-50">All Properties</small>
-                        </div>
-                        <div class="fs-1 opacity-50">
-                            <i class="bi bi-building"></i>
-                        </div>
-                    </div>
+    <div class="stat-card-wrapper">
+        <a asp-page="/Owner/Properties/Index">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-building"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/Owner/Properties/Index" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
-                        <span>View Properties</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>@Model.TotalProperties</h3>
+                    <p>Total Properties</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-primary text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 mb-2">Occupied Properties</h6>
-                            <h2 class="mb-0 fw-bold">@Model.OccupiedProperties</h2>
-                            <small class="text-white-50">Currently Rented</small>
-                        </div>
-                        <div class="fs-1 opacity-50">
-                            <i class="bi bi-house-check"></i>
-                        </div>
-                    </div>
+        <a asp-page="/Owner/Properties/Index" asp-route-status="occupied">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-house-check"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/Owner/Properties/Index" asp-route-status="occupied" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
-                        <span>View Occupied</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>@Model.OccupiedProperties</h3>
+                    <p>Occupied Properties</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-info text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 mb-2">Active Tenancies</h6>
-                            <h2 class="mb-0 fw-bold">@Model.ActiveTenancies</h2>
-                            <small class="text-white-50">Current Tenants</small>
-                        </div>
-                        <div class="fs-1 opacity-50">
-                            <i class="bi bi-file-earmark-check"></i>
-                        </div>
-                    </div>
+        <a asp-page="/Owner/Tenancies/Index" asp-route-status="active">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-file-earmark-check"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/Owner/Tenancies/Index" asp-route-status="active" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
-                        <span>View Tenancies</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>@Model.ActiveTenancies</h3>
+                    <p>Active Tenancies</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card bg-warning text-white mb-4">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 mb-2">Monthly Revenue</h6>
-                            <h2 class="mb-0 fw-bold">@Model.MonthlyRevenue.ToString("N0") VN?</h2>
-                            <small class="text-white-50">This Month</small>
-                        </div>
-                        <div class="fs-1 opacity-50">
-                            <i class="bi bi-cash-stack"></i>
-                        </div>
-                    </div>
+        <a asp-page="/Owner/Revenue">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-cash-stack"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/Owner/Revenue" class="text-white text-decoration-none d-flex align-items-center justify-content-between">
-                        <span>View Revenue</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>@Model.MonthlyRevenue.ToString("N0")</h3>
+                    <p>Monthly Revenue (VNĐ)</p>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Quick Actions -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-lightning-fill me-2"></i>Quick Actions</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-md-3">
-                            <a asp-page="/Owner/Properties/Create" class="btn btn-outline-success w-100 py-3">
-                                <i class="bi bi-plus-circle d-block fs-2 mb-2"></i>
-                                Add New Property
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a asp-page="/Owner/Tenancies/Create" class="btn btn-outline-primary w-100 py-3">
-                                <i class="bi bi-file-earmark-plus d-block fs-2 mb-2"></i>
-                                Create Tenancy
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a asp-page="/Owner/Utilities/Create" class="btn btn-outline-info w-100 py-3">
-                                <i class="bi bi-lightning d-block fs-2 mb-2"></i>
-                                Add Utility Reading
-                            </a>
-                        </div>
-                        <div class="col-md-3">
-                            <a asp-page="/Owner/Tenants" class="btn btn-outline-warning w-100 py-3">
-                                <i class="bi bi-people d-block fs-2 mb-2"></i>
-                                View Tenants
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="stat-card-wrapper mt-4">
+        <a asp-page="/Owner/Properties/Create" class="quick-action-card">
+            <i class="bi bi-plus-circle"></i>
+            <span>Add New Property</span>
+        </a>
+
+        <a asp-page="/Owner/Tenancies/Create" class="quick-action-card">
+            <i class="bi bi-file-earmark-plus"></i>
+            <span>Create Tenancy</span>
+        </a>
+
+        <a asp-page="/Owner/Utilities/Create" class="quick-action-card">
+            <i class="bi bi-lightning"></i>
+            <span>Add Utility Reading</span>
+        </a>
+
+        <a asp-page="/Owner/Tenants" class="quick-action-card">
+            <i class="bi bi-people"></i>
+            <span>View Tenants</span>
+        </a>
     </div>
 
-    <div class="row">
-        <!-- Recent Properties -->
-        <div class="col-lg-8">
+    <!-- Recent Properties and Profile -->
+    <div class="dashboard-grid">
+        <div>
+            <!-- My Properties -->
             <div class="card mb-4">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-building me-2"></i>My Properties</h5>
-                    <a asp-page="/Owner/Properties/Index" class="btn btn-sm btn-success">View All</a>
+                <div class="card-header">
+                    <h3><i class="bi bi-building me-2"></i>My Properties</h3>
+                    <a asp-page="/Owner/Properties/Index" class="btn btn-sm btn-dark">View All</a>
                 </div>
                 <div class="card-body">
                     @if (Model.RecentProperties != null && Model.RecentProperties.Any())
                     {
-                        <div class="row">
+                        <div class="properties-grid">
                             @foreach (var property in Model.RecentProperties.Take(3))
                             {
-                                <div class="col-md-4">
-                                    <div class="card property-card mb-3">
-                                        @if (!string.IsNullOrEmpty(property.ImageUrl))
-                                        {
-                                            <img src="@property.ImageUrl" alt="@property.Title" class="card-img-top">
-                                        }
-                                        else
-                                        {
-                                            <div style="height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-                                                <i class="bi bi-building text-white" style="font-size: 3rem;"></i>
-                                            </div>
-                                        }
-                                        <span class="badge property-status bg-@(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "success" : "primary")">
-                                            @property.Status
-                                        </span>
-                                        <div class="card-body">
-                                            <h6 class="card-title">@property.Title</h6>
-                                            <p class="card-text text-muted small mb-2">
-                                                <i class="bi bi-geo-alt"></i> @property.Address
-                                            </p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="text-success fw-bold">@property.MonthlyPrice.ToString("N0") VN?/month</span>
-                                                <a asp-page="/Owner/Properties/Details" asp-route-id="@property.Id" class="btn btn-sm btn-outline-success">View</a>
-                                            </div>
+                                <div class="property-card">
+                                    @if (!string.IsNullOrEmpty(property.ImageUrl))
+                                    {
+                                        <img src="@property.ImageUrl" alt="@property.Title">
+                                    }
+                                    else
+                                    {
+                                        <div style="height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-building text-white" style="font-size: 2.5rem;"></i>
+                                        </div>
+                                    }
+                                    <span class="badge property-status @(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "badge-available" : "badge-occupied")">
+                                        @property.Status
+                                    </span>
+                                    <div class="card-body">
+                                        <h6 class="card-title fw-semibold mb-2">@property.Title</h6>
+                                        <p class="card-text text-secondary small mb-2">
+                                            <i class="bi bi-geo-alt me-1"></i>@property.Address
+                                        </p>
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span class="fw-semibold">@property.MonthlyPrice.ToString("N0") VNĐ<small class="text-secondary">/mo</small></span>
+                                            <a asp-page="/Owner/Properties/Details" asp-route-id="@property.Id" class="btn btn-sm btn-dark">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -213,7 +695,7 @@
                     }
                     else
                     {
-                        <div class="text-center py-4 text-muted">
+                        <div class="text-center py-4 text-secondary">
                             <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                             <p>No properties yet. <a asp-page="/Owner/Properties/Create">Add your first property</a></p>
                         </div>
@@ -223,14 +705,14 @@
 
             <!-- Recent Tenancies -->
             <div class="card">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-file-earmark-text me-2"></i>Recent Tenancies</h5>
-                    <a asp-page="/Owner/Tenancies/Index" class="btn btn-sm btn-primary">View All</a>
+                <div class="card-header">
+                    <h3><i class="bi bi-file-earmark-text me-2"></i>Recent Tenancies</h3>
+                    <a asp-page="/Owner/Tenancies/Index" class="btn btn-sm btn-dark">View All</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
+                        <table class="table">
+                            <thead>
                                 <tr>
                                     <th>Property</th>
                                     <th>Tenant</th>
@@ -245,25 +727,25 @@
                                     @foreach (var tenancy in Model.RecentTenancies.Take(5))
                                     {
                                         <tr>
-                                            <td>@tenancy.PropertyTitle</td>
+                                            <td class="fw-medium">@tenancy.PropertyTitle</td>
                                             <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-circle bg-primary text-white me-2">
+                                                <div class="user-cell">
+                                                    <div class="avatar-circle avatar-sm">
                                                         @tenancy.TenantName?.Substring(0, 1).ToUpper()
                                                     </div>
                                                     @tenancy.TenantName
                                                 </div>
                                             </td>
                                             <td>
-                                                <small>@tenancy.StartDate.ToString("dd/MM/yyyy") - @tenancy.EndDate.ToString("dd/MM/yyyy")</small>
+                                                <small class="text-secondary">@tenancy.StartDate.ToString("dd/MM/yyyy") - @tenancy.EndDate.ToString("dd/MM/yyyy")</small>
                                             </td>
                                             <td>
-                                                <span class="badge bg-@(tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active ? "success" : tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation ? "warning" : "secondary")">
+                                                <span class="badge @(tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active ? "badge-active" : tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation ? "badge-pending" : "badge-inactive")">
                                                     @tenancy.Status
                                                 </span>
                                             </td>
                                             <td>
-                                                <a asp-page="/Owner/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-outline-primary">
+                                                <a asp-page="/Owner/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-dark">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                             </td>
@@ -273,7 +755,7 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="5" class="text-center py-4 text-muted">
+                                        <td colspan="5" class="text-center py-4 text-secondary">
                                             No tenancies yet
                                         </td>
                                     </tr>
@@ -285,35 +767,33 @@
             </div>
         </div>
 
-        <!-- Sidebar -->
-        <div class="col-lg-4">
-            <!-- Profile Card -->
+        <div>
+            <!-- Owner Profile -->
             <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Owner Profile</h5>
+                <div class="card-header">
+                    <h3><i class="bi bi-person-circle me-2"></i>Owner Profile</h3>
                 </div>
                 <div class="card-body">
                     @if (Model.CurrentUser != null)
                     {
-                        <div class="text-center mb-4">
-                            <div class="avatar-circle bg-success text-white mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                        <div class="profile-center">
+                            <div class="avatar-circle avatar-lg mx-auto mb-3">
                                 @Model.CurrentUser.FullName?.Substring(0, 1).ToUpper()
                             </div>
-                            <h5 class="mb-1">@Model.CurrentUser.FullName</h5>
-                            <p class="text-muted mb-2">@Model.CurrentUser.Role</p>
-                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Verified Owner</span>
+                            <h3 class="mb-1 fw-semibold">@Model.CurrentUser.FullName</h3>
+                            <span class="badge badge-occupied">@Model.CurrentUser.Role</span>
                         </div>
-                        <hr>
-                        <div class="mb-3">
-                            <small class="text-muted d-block mb-1">Email</small>
-                            <strong>@Model.CurrentUser.Email</strong>
+                        <hr class="profile-divider">
+                        <div class="profile-field">
+                            <small class="profile-label">Email</small>
+                            <span class="profile-value">@Model.CurrentUser.Email</span>
                         </div>
-                        <div class="mb-3">
-                            <small class="text-muted d-block mb-1">Phone Number</small>
-                            <strong>@Model.CurrentUser.Phone</strong>
+                        <div class="profile-field">
+                            <small class="profile-label">Phone Number</small>
+                            <span class="profile-value">@Model.CurrentUser.Phone</span>
                         </div>
-                        <hr>
-                        <a asp-page="/Owner/Profile" class="btn btn-success w-100">
+                        <hr class="profile-divider">
+                        <a asp-page="/Owner/Profile" class="btn btn-dark w-100">
                             <i class="bi bi-pencil me-2"></i>Edit Profile
                         </a>
                     }
@@ -322,31 +802,31 @@
 
             <!-- Pending Actions -->
             <div class="card">
-                <div class="card-header bg-light">
-                    <h5 class="mb-0"><i class="bi bi-bell me-2"></i>Pending Actions</h5>
+                <div class="card-header">
+                    <h3><i class="bi bi-bell me-2"></i>Pending Actions</h3>
                 </div>
                 <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    <div class="list-group-flush">
+                        <div class="list-group-item px-0">
                             <div>
-                                <i class="bi bi-clock text-warning me-2"></i>
+                                <i class="bi bi-clock text-secondary me-2"></i>
                                 <span>Pending Tenancies</span>
                             </div>
-                            <span class="badge bg-warning rounded-pill">@Model.PendingTenancies</span>
+                            <span class="badge badge-pending">@Model.PendingTenancies</span>
                         </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <div class="list-group-item px-0">
                             <div>
-                                <i class="bi bi-lightning text-info me-2"></i>
+                                <i class="bi bi-lightning text-secondary me-2"></i>
                                 <span>Uncharged Utilities</span>
                             </div>
-                            <span class="badge bg-info rounded-pill">@Model.UnchargedUtilities</span>
+                            <span class="badge badge-pending">@Model.UnchargedUtilities</span>
                         </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <div class="list-group-item px-0">
                             <div>
-                                <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                                <i class="bi bi-exclamation-triangle text-secondary me-2"></i>
                                 <span>Open Reports</span>
                             </div>
-                            <span class="badge bg-danger rounded-pill">@Model.OpenReports</span>
+                            <span class="badge badge-occupied">@Model.OpenReports</span>
                         </div>
                     </div>
                 </div>
@@ -354,37 +834,3 @@
         </div>
     </div>
 </div>
-
-<style>
-    .property-card {
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.3s;
-    }
-
-    .property-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .property-card img {
-        width: 100%;
-        height: 150px;
-        object-fit: cover;
-    }
-
-    .property-status {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
-
-    .avatar-circle {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-    }
-</style>

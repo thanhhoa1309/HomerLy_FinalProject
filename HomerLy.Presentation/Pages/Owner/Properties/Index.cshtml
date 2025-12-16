@@ -5,47 +5,661 @@
     Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
 }
 
-<div class="container-fluid px-4 py-4">
+<style>
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    /* Page Header */
+    .page-header {
+        margin-bottom: 40px;
+        padding-bottom: 24px;
+        border-bottom: 2px solid #212529;
+    }
+
+    .page-header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .page-header h1 {
+        color: #212529;
+        font-weight: 700;
+        font-size: 2rem;
+        margin: 0 0 8px 0;
+    }
+
+    .page-header p {
+        color: #6c757d;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    /* Buttons */
+    .btn {
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-lg {
+        padding: 14px 24px;
+        font-size: 1rem;
+    }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+    }
+
+    .alert-success {
+        background-color: #d1e7dd;
+        border-color: #badbcc;
+        color: #0f5132;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c2c7;
+        color: #842029;
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .filter-body {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .filter-group {
+        display: flex;
+    }
+
+    .filter-label {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: #212529;
+        font-size: 0.875rem;
+        margin-bottom: 8px;
+    }
+
+    .form-select,
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .form-select:focus,
+        .form-control:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+    .form-select-lg,
+    .form-control-lg {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    /* Statistics Cards */
+    .stat-card-wrapper {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-bottom: 40px;
+    }
+
+    .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        flex-shrink: 0;
+        color: #ffffff;
+    }
+
+    .stat-card-dark .stat-icon {
+        background: #212529;
+    }
+
+    .stat-card-success .stat-icon {
+        background: #198754;
+    }
+
+    .stat-card-primary .stat-icon {
+        background: #0d6efd;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        margin: 0 0 4px 0;
+        color: #6c757d;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+        margin: 0;
+        color: #212529;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .stat-desc {
+        margin: 4px 0 0 0;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    /* Properties Grid */
+    .properties-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 24px;
+        margin-bottom: 32px;
+    }
+
+    .property-card-modern {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .property-card-modern:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+            border-color: #212529;
+        }
+
+    .property-image-container {
+        position: relative;
+        width: 100%;
+        height: 240px;
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+
+    .property-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .property-card-modern:hover .property-img {
+        transform: scale(1.1);
+    }
+
+    .property-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .property-card-modern:hover .property-overlay {
+        opacity: 1;
+    }
+
+    .property-placeholder {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 4rem;
+    }
+
+    .property-badge {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 2;
+    }
+
+    .property-badge-success {
+        background: #198754;
+        color: #ffffff;
+    }
+
+    .property-badge-dark {
+        background: #212529;
+        color: #ffffff;
+    }
+
+    .property-badge-warning {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .property-content {
+        padding: 24px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .property-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #212529;
+        margin: 0 0 12px 0;
+        line-height: 1.3;
+    }
+
+    .property-address {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin: 0 0 16px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .property-address i {
+            color: #212529;
+        }
+
+    .property-description {
+        color: #495057;
+        font-size: 0.9rem;
+        margin: 0 0 20px 0;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex: 1;
+    }
+
+    .property-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        padding: 16px 0;
+        border-top: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 16px;
+    }
+
+    .property-detail-item {
+        text-align: center;
+    }
+
+    .property-detail-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .property-detail-value {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #212529;
+    }
+
+    .property-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        padding: 0 24px 24px;
+    }
+
+    .property-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        background: transparent;
+        cursor: pointer;
+    }
+
+        .property-btn span {
+            display: none;
+        }
+
+        .property-btn i {
+            font-size: 1rem;
+        }
+
+    .property-btn-view {
+        color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+        .property-btn-view:hover {
+            background: #0d6efd;
+            color: #ffffff;
+        }
+
+    .property-btn-edit {
+        color: #212529;
+        border-color: #212529;
+    }
+
+        .property-btn-edit:hover {
+            background: #212529;
+            color: #ffffff;
+        }
+
+    .property-btn-delete {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+        .property-btn-delete:hover {
+            background: #dc3545;
+            color: #ffffff;
+        }
+
+    /* Pagination */
+    .pagination {
+        display: flex;
+        gap: 8px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        justify-content: center;
+    }
+
+    .page-item {
+        display: inline-block;
+    }
+
+    .page-link {
+        padding: 8px 16px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        color: #1a1a1a;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .page-link:hover {
+            background-color: #f8f9fa;
+            border-color: #1a1a1a;
+        }
+
+    .page-item.active .page-link {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .page-item.disabled .page-link {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 64px 32px;
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+    }
+
+    .empty-state-icon {
+        font-size: 5rem;
+        color: #dee2e6;
+        margin-bottom: 24px;
+    }
+
+    .empty-state-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 12px;
+    }
+
+    .empty-state-text {
+        color: #6c757d;
+        font-size: 1rem;
+        margin-bottom: 0;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Utility Classes */
+    .text-white {
+        color: #ffffff;
+    }
+
+    .me-1 {
+        margin-right: 4px;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    .me-3 {
+        margin-right: 12px;
+    }
+
+    .mb-2 {
+        margin-bottom: 8px;
+    }
+
+    .mb-5 {
+        margin-bottom: 48px;
+    }
+
+    .fs-2 {
+        font-size: 2rem;
+    }
+
+    .fs-5 {
+        font-size: 1.25rem;
+    }
+
+    .fw-bold {
+        font-weight: 700;
+    }
+
+    .d-block {
+        display: block;
+    }
+
+    .small {
+        font-size: 0.875rem;
+    }
+
+    /* Responsive Design */
+    @@media (max-width: 1200px) {
+        .stat-card-wrapper {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .filter-body {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .properties-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header-content {
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .filter-body {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-card-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .property-btn span {
+            display: inline;
+        }
+
+        .property-actions {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container-fluid">
     <!-- Header -->
-    <div class="page-header mb-5">
-        <div class="d-flex justify-content-between align-items-start">
+    <div class="page-header">
+        <div class="page-header-content">
             <div>
-                <h1 class="display-6 fw-bold mb-2">
+                <h1>
                     <i class="bi bi-building-fill me-3"></i>My Properties
                 </h1>
-                <p class="text-muted fs-5 mb-0">Manage and monitor your property portfolio</p>
+                <p>Manage and monitor your property portfolio</p>
             </div>
-            <a asp-page="/Owner/Properties/Create" class="btn btn-dark btn-lg px-4 shadow">
+            <a asp-page="/Owner/Properties/Create" class="btn btn-dark btn-lg">
                 <i class="bi bi-plus-lg me-2"></i>Add Property
             </a>
         </div>
     </div>
 
-@if (!string.IsNullOrEmpty(Model.SuccessMessage))
-{
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success" role="alert">
             <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-}
+    }
 
-@if (!string.IsNullOrEmpty(Model.ErrorMessage))
-{
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
             <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-}
+    }
 
     <!-- Filter Section -->
-    <div class="filter-card mb-5">
+    <div class="filter-card">
         <div class="filter-header">
             <i class="bi bi-sliders me-2"></i>
             <span>Search & Filter</span>
         </div>
         <div class="filter-body">
-            <form method="get" class="row g-4">
-                <div class="col-lg-3 col-md-6">
+            <form method="get" style="display: contents;">
+                <div class="filter-group">
                     <label class="filter-label">
                         <i class="bi bi-funnel me-2"></i>Status
                     </label>
@@ -62,22 +676,22 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="filter-group">
                     <label class="filter-label">
                         <i class="bi bi-cash me-2"></i>Min Price
                     </label>
                     <input type="number" name="minPrice" class="form-control form-control-lg" placeholder="From"
-                        value="@Model.MinPrice" step="500000" />
+                           value="@Model.MinPrice" step="500000" />
                 </div>
-                <div class="col-lg-3 col-md-6">
+                <div class="filter-group">
                     <label class="filter-label">
                         <i class="bi bi-cash-stack me-2"></i>Max Price
                     </label>
                     <input type="number" name="maxPrice" class="form-control form-control-lg" placeholder="To"
-                        value="@Model.MaxPrice" step="500000" />
+                           value="@Model.MaxPrice" step="500000" />
                 </div>
-                <div class="col-lg-3 col-md-6 d-flex align-items-end">
-                    <button type="submit" class="btn btn-dark btn-lg w-100 shadow-sm">
+                <div class="filter-group" style="display: flex; align-items: flex-end;">
+                    <button type="submit" class="btn btn-dark btn-lg" style="width: 100%;">
                         <i class="bi bi-search me-2"></i>Apply
                     </button>
                 </div>
@@ -86,676 +700,148 @@
     </div>
 
     <!-- Statistics Cards -->
-    <div class="row g-4 mb-5">
-        <div class="col-lg-4 col-md-6">
-            <div class="stat-card stat-card-dark">
-                <div class="stat-icon">
-                    <i class="bi bi-buildings-fill"></i>
-                </div>
-                <div class="stat-content">
-                    <p class="stat-label">Total Portfolio</p>
-                    <h2 class="stat-value">@Model.Properties?.TotalCount</h2>
-                    <p class="stat-desc">Properties owned</p>
-                </div>
+    <div class="stat-card-wrapper">
+        <div class="stat-card stat-card-dark">
+            <div class="stat-icon">
+                <i class="bi bi-buildings-fill"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Total Portfolio</p>
+                <h2 class="stat-value">@Model.Properties?.TotalCount</h2>
+                <p class="stat-desc">Properties owned</p>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="stat-card stat-card-success">
-                <div class="stat-icon">
-                    <i class="bi bi-house-check-fill"></i>
-                </div>
-                <div class="stat-content">
-                    <p class="stat-label">Available</p>
-                    <h2 class="stat-value">@Model.AvailableCount</h2>
-                    <p class="stat-desc">Ready to rent</p>
-                </div>
+        <div class="stat-card stat-card-success">
+            <div class="stat-icon">
+                <i class="bi bi-house-check-fill"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Available</p>
+                <h2 class="stat-value">@Model.AvailableCount</h2>
+                <p class="stat-desc">Ready to rent</p>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="stat-card stat-card-primary">
-                <div class="stat-icon">
-                    <i class="bi bi-door-closed-fill"></i>
-                </div>
-                <div class="stat-content">
-                    <p class="stat-label">Occupied</p>
-                    <h2 class="stat-value">@Model.OccupiedCount</h2>
-                    <p class="stat-desc">Currently rented</p>
-                </div>
+        <div class="stat-card stat-card-primary">
+            <div class="stat-icon">
+                <i class="bi bi-door-closed-fill"></i>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">Occupied</p>
+                <h2 class="stat-value">@Model.OccupiedCount</h2>
+                <p class="stat-desc">Currently rented</p>
             </div>
         </div>
     </div>
 
     <!-- Properties Grid -->
-                        @if (Model.Properties != null && Model.Properties.Any())
+    @if (Model.Properties != null && Model.Properties.Any())
+    {
+        <div class="properties-grid">
+            @foreach (var property in Model.Properties)
+            {
+                <div class="property-card-modern">
+                    <div class="property-image-container">
+                        @if (!string.IsNullOrEmpty(property.ImageUrl))
                         {
-                            <div class="properties-grid">
-                                @foreach (var property in Model.Properties)
-                                {
-                                    <div class="property-card-modern">
-                                        <div class="property-image-container">
-                                            @if (!string.IsNullOrEmpty(property.ImageUrl))
-                                            {
-                                                <img src="@property.ImageUrl" class="property-img" alt="@property.Title">
-                                                <div class="property-overlay"></div>
-                                            }
-                                            else
-                                            {
-                                                <div class="property-placeholder">
-                                                    <i class="bi bi-building-fill"></i>
-                                                </div>
-                                            }
-                                            <div
-                                                class="property-badge property-badge-@(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "success" : property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ? "dark" : "warning")">
-                                                @(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ?
-                                                                                        "Available" :
-                                                                                        property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ?
-                                                                                        "Occupied" : "Maintenance")
-                                            </div>
-                                        </div>
-
-                                        <div class="property-content">
-                                            <h3 class="property-title">@property.Title</h3>
-                                            <p class="property-address">
-                                                <i class="bi bi-geo-alt-fill"></i>
-                                                @property.Address
-                                            </p>
-                                            <p class="property-description">
-                                                @(string.IsNullOrEmpty(property.Description) ? "No description available" :
-                                                                                        property.Description)
-                                            </p>
-
-                                            <div class="property-details">
-                                                <div class="property-detail-item">
-                                                    <div class="property-detail-label">Monthly Rent</div>
-                                                    <div class="property-detail-value">@property.MonthlyPrice.ToString("N0") đ
-                                                    </div>
-                                                </div>
-                                                <div class="property-detail-item">
-                                                    <div class="property-detail-label">Area</div>
-                                                    <div class="property-detail-value">@property.AreaSqm m²</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="property-actions">
-                                            <a asp-page="/Owner/Properties/Details" asp-route-id="@property.Id"
-                                                class="property-btn property-btn-view">
-                                                <i class="bi bi-eye-fill"></i>
-                                                <span>View</span>
-                                            </a>
-                                            <a asp-page="/Owner/Properties/Edit" asp-route-id="@property.Id"
-                                                class="property-btn property-btn-edit">
-                                                <i class="bi bi-pencil-fill"></i>
-                                                <span>Edit</span>
-                                            </a>
-                                            <button type="button" class="property-btn property-btn-delete"
-                                                onclick="deleteProperty('@property.Id')">
-                                                <i class="bi bi-trash-fill"></i>
-                                                <span>Delete</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                }
+                            <img src="@property.ImageUrl" class="property-img" alt="@property.Title">
+                            <div class="property-overlay"></div>
+                        }
+                        else
+                        {
+                            <div class="property-placeholder">
+                                <i class="bi bi-building-fill"></i>
                             </div>
-
-                            <!-- Pagination -->
-                            @if (Model.Properties.TotalPages > 1)
-                            {
-                                <nav>
-                                    <ul class="pagination justify-content-center">
-                                        <li class="page-item @(Model.Properties.CurrentPage == 1 ? "disabled" : "")">
-                                            <a class="page-link" asp-route-pageNumber="@(Model.Properties.CurrentPage - 1)"
-                                                asp-route-status="@Model.StatusFilter" asp-route-minPrice="@Model.MinPrice"
-                                                asp-route-maxPrice="@Model.MaxPrice">Previous</a>
-                                        </li>
-                                        @for (int i = 1; i <= Model.Properties.TotalPages; i++)
-                                        {
-                                            <li class="page-item @(i == Model.Properties.CurrentPage ? "active" : "")">
-                                                <a class="page-link" asp-route-pageNumber="@i"
-                                                    asp-route-status="@Model.StatusFilter" asp-route-minPrice="@Model.MinPrice"
-                                                    asp-route-maxPrice="@Model.MaxPrice">@i</a>
-                                            </li>
-                                        }
-                                        <li
-                                            class="page-item @(Model.Properties.CurrentPage == Model.Properties.TotalPages ? "disabled" : "")">
-                                    <a class="page-link" asp-route-pageNumber="@(Model.Properties.CurrentPage + 1)"
-                                        asp-route-status="@Model.StatusFilter" asp-route-minPrice="@Model.MinPrice"
-                                        asp-route-maxPrice="@Model.MaxPrice">Next</a>
-                                </li>
-                            </ul>
-                        </nav>
-                    }
-                }
-                else
-                {
-                    <div class="empty-state">
-                        <div class="empty-state-icon">
-                            <i class="bi bi-inbox"></i>
+                        }
+                        <div class="property-badge property-badge-@(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "success" : property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ? "dark" : "warning")">
+                            @(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "Available" : property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ? "Occupied" : "Maintenance")
                         </div>
-                        <h3 class="empty-state-title">No Properties Found</h3>
-                        <p class="empty-state-text">Start building your property portfolio by adding your first property.</p>
-                        <a asp-page="/Owner/Properties/Create" class="btn-modern btn-modern-dark">
-                            <i class="bi bi-plus-circle me-2"></i>
-                            Add First Property
-                        </a>
                     </div>
-                }
+
+                    <div class="property-content">
+                        <h3 class="property-title">@property.Title</h3>
+                        <p class="property-address">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            @property.Address
+                        </p>
+                        <p class="property-description">
+                            @(string.IsNullOrEmpty(property.Description) ? "No description available" : property.Description)
+                        </p>
+
+                        <div class="property-details">
+                            <div class="property-detail-item">
+                                <div class="property-detail-label">Monthly Rent</div>
+                                <div class="property-detail-value">@property.MonthlyPrice.ToString("N0") đ</div>
+                            </div>
+                            <div class="property-detail-item">
+                                <div class="property-detail-label">Area</div>
+                                <div class="property-detail-value">@property.AreaSqm m²</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="property-actions">
+                        <a asp-page="/Owner/Properties/Details" asp-route-id="@property.Id"
+                           class="property-btn property-btn-view">
+                            <i class="bi bi-eye-fill"></i>
+                            <span>View</span>
+                        </a>
+                        <a asp-page="/Owner/Properties/Edit" asp-route-id="@property.Id"
+                           class="property-btn property-btn-edit">
+                            <i class="bi bi-pencil-fill"></i>
+                            <span>Edit</span>
+                        </a>
+                        <button type="button" class="property-btn property-btn-delete"
+                                onclick="deleteProperty('@property.Id')">
+                            <i class="bi bi-trash-fill"></i>
+                            <span>Delete</span>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.Properties.TotalPages > 1)
+        {
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item @(Model.Properties.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-route-pageNumber="@(Model.Properties.CurrentPage - 1)"
+                           asp-route-status="@Model.StatusFilter" asp-route-minPrice="@Model.MinPrice"
+                           asp-route-maxPrice="@Model.MaxPrice">Previous</a>
+                    </li>
+                    @for (int i = 1; i <= Model.Properties.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Properties.CurrentPage ? "active" : "")">
+                            <a class="page-link" asp-route-pageNumber="@i"
+                               asp-route-status="@Model.StatusFilter" asp-route-minPrice="@Model.MinPrice"
+                               asp-route-maxPrice="@Model.MaxPrice">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.Properties.CurrentPage == Model.Properties.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-route-pageNumber="@(Model.Properties.CurrentPage + 1)"
+                           asp-route-status="@Model.StatusFilter" asp-route-minPrice="@Model.MinPrice"
+                           asp-route-maxPrice="@Model.MaxPrice">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-inbox"></i>
             </div>
-
-            <style>
-                        /* Page Header */
-                        .page-header {
-                            margin-bottom: 2rem;
-                            padding-bottom: 1.5rem;
-                            border-bottom: 2px solid #212529;
-                        }
-
-                        .page-header .display-6 {
-                            color: #212529;
-                            font-weight: 700;
-                            margin-bottom: 0.5rem;
-                        }
-
-                        .page-header p {
-                            color: #6c757d;
-                            font-size: 1rem;
-                            margin: 0;
-                        }
-
-                        /* Filter Card */
-                        .filter-card {
-                            background: #ffffff;
-                            border: 1px solid #e9ecef;
-                            border-radius: 12px;
-                            padding: 1.5rem;
-                            margin-bottom: 2rem;
-                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                        }
-
-                        .filter-header {
-                            display: flex;
-                            align-items: center;
-                            gap: 0.75rem;
-                            margin-bottom: 1.25rem;
-                            padding-bottom: 1rem;
-                            border-bottom: 1px solid #e9ecef;
-                        }
-
-                        .filter-header i {
-                            font-size: 1.25rem;
-                            color: #212529;
-                        }
-
-                        .filter-header h3 {
-                            margin: 0;
-                            font-size: 1.125rem;
-                            font-weight: 600;
-                            color: #212529;
-                        }
-
-                        .filter-body .form-label {
-                            font-weight: 500;
-                            color: #212529;
-                            font-size: 0.875rem;
-                            margin-bottom: 0.5rem;
-                        }
-
-                        .filter-body .form-select-lg,
-                        .filter-body .form-control-lg {
-                            border: 1px solid #dee2e6;
-                            border-radius: 8px;
-                            padding: 0.75rem 1rem;
-                            font-size: 0.95rem;
-                            transition: all 0.2s ease;
-                        }
-
-                        .filter-body .form-select-lg:focus,
-                        .filter-body .form-control-lg:focus {
-                            border-color: #212529;
-                            box-shadow: 0 0 0 0.15rem rgba(33, 37, 41, 0.1);
-                        }
-
-                        /* Statistics Cards */
-                        .stat-card {
-                            background: #ffffff;
-                            border-radius: 12px;
-                            padding: 1.5rem;
-                            display: flex;
-                            align-items: center;
-                            gap: 1.25rem;
-                            border: 1px solid #e9ecef;
-                            transition: all 0.3s ease;
-                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                        }
-
-                        .stat-card:hover {
-                            transform: translateY(-4px);
-                            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-                        }
-
-                        .stat-icon {
-                            width: 60px;
-                            height: 60px;
-                            border-radius: 12px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            font-size: 1.75rem;
-                            flex-shrink: 0;
-                        }
-
-                        .stat-card-dark .stat-icon {
-                            background: #212529;
-                            color: #ffffff;
-                        }
-
-                        .stat-card-success .stat-icon {
-                            background: #198754;
-                            color: #ffffff;
-                        }
-
-                        .stat-card-primary .stat-icon {
-                            background: #0d6efd;
-                            color: #ffffff;
-                        }
-
-                        .stat-content {
-                            flex: 1;
-                        }
-
-                        .stat-label {
-                            margin: 0 0 0.25rem 0;
-                            color: #6c757d;
-                            font-size: 0.875rem;
-                            font-weight: 500;
-                            text-transform: uppercase;
-                            letter-spacing: 0.5px;
-                        }
-
-                        .stat-value {
-                            margin: 0;
-                            color: #212529;
-                            font-size: 2rem;
-                            font-weight: 700;
-                            line-height: 1;
-                        }
-
-                        /* Properties Grid */
-                        .properties-grid {
-                            display: grid;
-                            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-                            gap: 1.5rem;
-                            margin-bottom: 2rem;
-                        }
-
-                        .property-card-modern {
-                            background: #ffffff;
-                            border: 1px solid #e9ecef;
-                            border-radius: 12px;
-                            overflow: hidden;
-                            transition: all 0.3s ease;
-                            display: flex;
-                            flex-direction: column;
-                        }
-
-                        .property-card-modern:hover {
-                            transform: translateY(-6px);
-                            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
-                            border-color: #212529;
-                        }
-
-                        .property-image-container {
-                            position: relative;
-                            width: 100%;
-                            height: 240px;
-                            overflow: hidden;
-                            background: #f8f9fa;
-                        }
-
-                        .property-img {
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                            transition: transform 0.4s ease;
-                        }
-
-                        .property-card-modern:hover .property-img {
-                            transform: scale(1.1);
-                        }
-
-                        .property-overlay {
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            right: 0;
-                            bottom: 0;
-                            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
-                            opacity: 0;
-                            transition: opacity 0.3s ease;
-                        }
-
-                        .property-card-modern:hover .property-overlay {
-                            opacity: 1;
-                        }
-
-                        .property-placeholder {
-                            width: 100%;
-                            height: 100%;
-                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            color: #ffffff;
-                            font-size: 4rem;
-                        }
-
-                        .property-badge {
-                            position: absolute;
-                            top: 1rem;
-                            right: 1rem;
-                            padding: 0.5rem 1rem;
-                            border-radius: 6px;
-                            font-size: 0.75rem;
-                            font-weight: 600;
-                            text-transform: uppercase;
-                            letter-spacing: 0.5px;
-                            z-index: 2;
-                        }
-
-                        .property-badge-success {
-                            background: #198754;
-                            color: #ffffff;
-                        }
-
-                        .property-badge-dark {
-                            background: #212529;
-                            color: #ffffff;
-                        }
-
-                        .property-badge-warning {
-                            background: #ffc107;
-                            color: #212529;
-                        }
-
-                        .property-content {
-                            padding: 1.5rem;
-                            flex: 1;
-                            display: flex;
-                            flex-direction: column;
-                        }
-
-                        .property-title {
-                            font-size: 1.25rem;
-                            font-weight: 700;
-                            color: #212529;
-                            margin: 0 0 0.75rem 0;
-                            line-height: 1.3;
-                        }
-
-                        .property-address {
-                            color: #6c757d;
-                            font-size: 0.875rem;
-                            margin: 0 0 1rem 0;
-                            display: flex;
-                            align-items: center;
-                            gap: 0.5rem;
-                        }
-
-                        .property-address i {
-                            color: #212529;
-                        }
-
-                        .property-description {
-                            color: #495057;
-                            font-size: 0.9rem;
-                            margin: 0 0 1.25rem 0;
-                            line-height: 1.6;
-                            display: -webkit-box;
-                            -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical;
-                            overflow: hidden;
-                            flex: 1;
-                        }
-
-                        .property-details {
-                            display: grid;
-                            grid-template-columns: 1fr 1fr;
-                            gap: 1rem;
-                            padding: 1rem 0;
-                            border-top: 1px solid #e9ecef;
-                            border-bottom: 1px solid #e9ecef;
-                            margin-bottom: 1rem;
-                        }
-
-                        .property-detail-item {
-                            text-align: center;
-                        }
-
-                        .property-detail-label {
-                            font-size: 0.75rem;
-                            color: #6c757d;
-                            text-transform: uppercase;
-                            letter-spacing: 0.5px;
-                            margin-bottom: 0.25rem;
-                            font-weight: 500;
-                        }
-
-                        .property-detail-value {
-                            font-size: 1.125rem;
-                            font-weight: 700;
-                            color: #212529;
-                        }
-
-                        .property-actions {
-                            display: grid;
-                            grid-template-columns: 1fr 1fr 1fr;
-                            gap: 0.5rem;
-                            padding: 1rem 1.5rem 1.5rem;
-                        }
-
-                        .property-btn {
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 0.5rem;
-                            padding: 0.625rem 0.75rem;
-                            border: 1px solid #dee2e6;
-                            border-radius: 6px;
-                            font-size: 0.875rem;
-                            font-weight: 500;
-                            text-decoration: none;
-                            transition: all 0.2s ease;
-                            background: transparent;
-                            cursor: pointer;
-                        }
-
-                        .property-btn span {
-                            display: none;
-                        }
-
-                        .property-btn i {
-                            font-size: 1rem;
-                        }
-
-                        .property-btn-view {
-                            color: #0d6efd;
-                            border-color: #0d6efd;
-                        }
-
-                        .property-btn-view:hover {
-                            background: #0d6efd;
-                            color: #ffffff;
-                        }
-
-                        .property-btn-edit {
-                            color: #212529;
-                            border-color: #212529;
-                        }
-
-                        .property-btn-edit:hover {
-                            background: #212529;
-                            color: #ffffff;
-                        }
-
-                        .property-btn-delete {
-                            color: #dc3545;
-                            border-color: #dc3545;
-                        }
-
-                        .property-btn-delete:hover {
-                            background: #dc3545;
-                            color: #ffffff;
-                        }
-
-                        /* Pagination */
-                        .pagination-modern {
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 0.5rem;
-                            list-style: none;
-                            padding: 0;
-                            margin: 0;
-                        }
-
-                        .pagination-item {
-                            display: inline-block;
-                        }
-
-                        .pagination-item.disabled .pagination-link {
-                            pointer-events: none;
-                            opacity: 0.4;
-                        }
-
-                        .pagination-link {
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            gap: 0.5rem;
-                            min-width: 40px;
-                            height: 40px;
-                            padding: 0 1rem;
-                            border: 1px solid #dee2e6;
-                            border-radius: 6px;
-                            color: #212529;
-                            text-decoration: none;
-                            font-weight: 500;
-                            font-size: 0.875rem;
-                            transition: all 0.2s ease;
-                            background: #ffffff;
-                        }
-
-                        .pagination-link:hover {
-                            background: #212529;
-                            color: #ffffff;
-                            border-color: #212529;
-                        }
-
-                        .pagination-item.active .pagination-link {
-                            background: #212529;
-                            color: #ffffff;
-                            border-color: #212529;
-                        }
-
-                        /* Empty State */
-                        .empty-state {
-                            text-align: center;
-                            padding: 4rem 2rem;
-                            background: #ffffff;
-                            border: 1px solid #e9ecef;
-                            border-radius: 12px;
-                        }
-
-                        .empty-state-icon {
-                            font-size: 5rem;
-                            color: #dee2e6;
-                            margin-bottom: 1.5rem;
-                        }
-
-                        .empty-state-title {
-                            font-size: 1.5rem;
-                            font-weight: 700;
-                            color: #212529;
-                            margin-bottom: 0.75rem;
-                        }
-
-                        .empty-state-text {
-                            color: #6c757d;
-                            font-size: 1rem;
-                            margin-bottom: 2rem;
-                            max-width: 500px;
-                            margin-left: auto;
-                            margin-right: auto;
-                        }
-
-                        /* Modern Button */
-                        .btn-modern {
-                            display: inline-flex;
-                            align-items: center;
-                            justify-content: center;
-                            padding: 0.75rem 1.5rem;
-                            border-radius: 8px;
-                            font-weight: 600;
-                            font-size: 0.95rem;
-                            text-decoration: none;
-                            transition: all 0.3s ease;
-                            border: none;
-                        }
-
-                        .btn-modern-dark {
-                            background: #212529;
-                            color: #ffffff;
-                        }
-
-                        .btn-modern-dark:hover {
-                            background: #000000;
-                            color: #ffffff;
-                            transform: translateY(-2px);
-                            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-                        }
-
-                        /* Responsive */
-                        @@media (max-width: 768px) {
-                            .properties-grid {
-                                grid-template-columns: 1fr;
-                            }
-
-                            .property-btn span {
-                                display: inline;
-                            }
-
-                            .property-actions {
-                                grid-template-columns: 1fr;
-                            }
-                        }
-
-                        .form-control:focus,
-                        .form-select:focus {
-                            border-color: #212529;
-                            box-shadow: 0 0 0 0.2rem rgba(33, 37, 41, 0.25);
-                        }
-
-                        .btn-dark:hover {
-                            background-color: #000;
-                            border-color: #000;
-                        }
-
-                        .pagination .page-link {
-                            color: #212529;
-                            border-color: #dee2e6;
-                        }
-
-                        .pagination .page-item.active .page-link {
-                            background-color: #212529;
-                            border-color: #212529;
-                        }
-
-                        .pagination .page-link:hover {
-                            background-color: #f8f9fa;
-                            border-color: #212529;
-                            color: #212529;
-                        }
-</style>
+            <h3 class="empty-state-title">No Properties Found</h3>
+            <p class="empty-state-text">Start building your property portfolio by adding your first property.</p>
+            <a asp-page="/Owner/Properties/Create" class="btn btn-dark btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>
+                Add First Property
+            </a>
+        </div>
+    }
+</div>
 
 <script>
     function deleteProperty(propertyId) {
