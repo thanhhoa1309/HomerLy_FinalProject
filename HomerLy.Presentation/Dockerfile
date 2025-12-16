@@ -29,4 +29,4 @@ RUN dotnet publish "./HomerLy.Presentation.csproj" -c $BUILD_CONFIGURATION -o /a
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "HomerLy.Presentation.dll"]ENTRYPOINT ["dotnet", "HomerLy.Presentation.dll"]
+ENTRYPOINT ["dotnet", "HomerLy.Presentation.dll"]

@@ -1,0 +1,12 @@
+# Client-side libraries
+**/wwwroot/lib/
+
+# Build results
+[Bb]in/
+[Oo]bj/
+
+# IDE User specifics
+.idea/
+.vscode/
+*.user
+*.suo
