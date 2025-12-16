@@ -42,7 +42,7 @@ namespace Homerly.Presentation.Architecture
             // Get the connection string from "DefaultConnection"
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-            // ??ng ký DbContext v?i Npgsql - Postgres
+            // ??ng kï¿½ DbContext v?i Npgsql - Postgres
             services.AddDbContext<HomerLyDbContext>(options =>
                 options.UseNpgsql(connectionString,
                     sql => sql.MigrationsAssembly(typeof(HomerLyDbContext).Assembly.FullName)
@@ -54,7 +54,7 @@ namespace Homerly.Presentation.Architecture
 
         public static IServiceCollection SetupBusinessServicesLayer(this IServiceCollection services)
         {
-            // Inject service vào DI container
+            // Inject service vï¿½o DI container
             services.AddScoped<ICurrentTime, CurrentTime>();
             services.AddScoped<IClaimsService, ClaimsService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

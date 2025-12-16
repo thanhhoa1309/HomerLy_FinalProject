@@ -103,6 +103,19 @@ namespace Homerly.Business.Services
                     throw ErrorHelper.Conflict($"Email {accountRegistrationDto.Email} is already registered.");
                 }
 
+                // Validate CCCD number format (9 or 12 digits)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(accountRegistrationDto.CccdNumber, @"^(\d{9}|\d{12})$"))
+                {
+                    throw ErrorHelper.BadRequest("CCCD number must be exactly 9 or 12 digits.");
+                }
+
+                // Check if CCCD number already exists
+                if (await CccdExistsAsync(accountRegistrationDto.CccdNumber))
+                {
+                    _logger.LogWarning($"Registration failed: CCCD {accountRegistrationDto.CccdNumber} already in use.");
+                    throw ErrorHelper.Conflict($"CCCD number {accountRegistrationDto.CccdNumber} is already registered.");
+                }
+
                 var hashedPassword = new PasswordHasher().HashPassword(accountRegistrationDto.Password);
 
                 var account = new Account
@@ -146,7 +159,13 @@ namespace Homerly.Business.Services
         private async Task<bool> AccountExistsAsync(string email)
         {
             var accounts = await _unitOfWork.Account.GetAllAsync();
-            return accounts.Any(a => a.Email == email && !a.IsDeleted);
+            return accounts.Any(a => a.Email.Equals(email, StringComparison.OrdinalIgnoreCase) && !a.IsDeleted);
+        }
+
+        private async Task<bool> CccdExistsAsync(string cccdNumber)
+        {
+            var accounts = await _unitOfWork.Account.GetAllAsync();
+            return accounts.Any(a => a.CccdNumber == cccdNumber && !a.IsDeleted);
         }
     }
 }

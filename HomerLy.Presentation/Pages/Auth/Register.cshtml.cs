@@ -65,6 +65,10 @@ namespace HomerLy.Presentation.Pages.Auth
                 {
                     ErrorMessage = "This phone number is already registered. Please use a different number.";
                 }
+                else if (ex.Message.Contains("CCCD") || ex.Message.Contains("cccd"))
+                {
+                    ErrorMessage = "This CCCD number is already registered. Please verify your CCCD number.";
+                }
                 else
                 {
                     ErrorMessage = "Registration failed. " + ex.Message;
