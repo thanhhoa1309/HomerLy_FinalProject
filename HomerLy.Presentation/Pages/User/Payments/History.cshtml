@@ -1,0 +1,28 @@
+@page
+@model HomerLy.Presentation.Pages.User.Payments.HistoryModel
+@{
+    ViewData["Title"] = "Payment History";
+    Layout = "~/Pages/Shared/_UserLayout.cshtml";
+}
+
+<div class="container-fluid animate-fade-in-up">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <div>
+            <h2 class="h3 mb-1 fw-bold">Payment History</h2>
+            <p class="text-muted mb-0">View your past transactions.</p>
+        </div>
+    </div>
+
+    <!-- Empty State for now -->
+    <div class="card glass-card text-center py-5">
+        <div class="mb-3">
+            <div class="d-inline-block bg-info bg-opacity-10 p-4 rounded-circle text-info">
+                <i class="bi bi-clock-history fs-1"></i>
+            </div>
+        </div>
+        <h5 class="text-muted fw-bold">No Payment History</h5>
+        <p class="text-muted mb-4">You haven't made any payments yet.</p>
+        <a asp-page="/User/Dashboard" class="btn btn-outline-primary rounded-pill">Back to Dashboard</a>
+    </div>
+</div>

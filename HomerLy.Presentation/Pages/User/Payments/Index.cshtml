@@ -1,0 +1,36 @@
+@page
+@model HomerLy.Presentation.Pages.User.Payments.IndexModel
+@{
+    ViewData["Title"] = "Payments";
+    Layout = "~/Pages/Shared/_UserLayout.cshtml";
+}
+
+<div class="container-fluid animate-fade-in-up">
+    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+        <div>
+            <h2 class="h3 mb-1 fw-bold">Payments</h2>
+            <p class="text-muted mb-0">Track your rent and utility payments</p>
+        </div>
+        <a asp-page="/User/Dashboard" class="btn btn-outline-secondary rounded-pill btn-sm">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <!-- Empty State -->
+    <div class="card glass-card border-0">
+        <div class="card-body py-5">
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <div class="d-inline-block p-5 rounded-circle bg-warning bg-opacity-10 text-warning">
+                        <i class="bi bi-credit-card fs-1"></i>
+                    </div>
+                </div>
+                <h4 class="text-muted fw-bold">No pending payments</h4>
+                <p class="text-muted mb-4">You're all caught up! No payment history found.</p>
+                <a asp-page="/User/Dashboard" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
