@@ -5,51 +5,374 @@
     Layout = "~/Pages/Shared/_UserLayout.cshtml";
 }
 
-<div class="container-fluid animate-fade-in-up">
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+<style>
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-outline-secondary {
+        background: transparent;
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #ffffff;
+        }
+
+    .btn-light {
+        background: #f8f9fa;
+        color: #6c757d;
+        border-color: #e9ecef;
+    }
+
+        .btn-light:hover {
+            background: #e9ecef;
+            color: #212529;
+        }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        background: #ffffff;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+    .filter-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 12px;
+    }
+
+    .properties-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .property-card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .property-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .property-image {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #dee2e6;
+    }
+
+        .property-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .property-badge {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        background: #ffffff;
+        color: #1a1a1a;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .favorite-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .favorite-btn:hover {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: #ffffff;
+        }
+
+    .property-content {
+        padding: 16px;
+    }
+
+    .property-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 8px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .property-address {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin: 0 0 12px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .property-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .property-price {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+        .property-price small {
+            font-size: 0.75rem;
+            color: #6c757d;
+            font-weight: 400;
+        }
+
+    .property-area {
+        background: #f8f9fa;
+        color: #1a1a1a;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    .property-actions {
+        padding: 0 16px 16px;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 8px;
+        list-style: none;
+        padding: 0;
+        margin: 32px 0;
+        justify-content: center;
+    }
+
+    .page-item {
+        display: inline-block;
+    }
+
+    .page-link {
+        padding: 8px 16px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        color: #1a1a1a;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .page-link:hover {
+            background-color: #f8f9fa;
+            border-color: #1a1a1a;
+        }
+
+    .page-item.active .page-link {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .page-item.disabled .page-link {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 64px 32px;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        color: #6c757d;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h4 {
+        color: #212529;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    .me-1 {
+        margin-right: 4px;
+    }
+
+    @@media (max-width: 768px) {
+        .filter-row {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
         <div>
-            <h2 class="h3 mb-1 fw-bold">Browse Properties</h2>
-            <p class="text-muted mb-0">Find your next perfect home</p>
+            <h2>Browse Properties</h2>
+            <p>Find your next perfect home</p>
         </div>
-        <a asp-page="/User/Dashboard" class="btn btn-outline-secondary rounded-pill btn-sm">
+        <a asp-page="/User/Dashboard" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
         </a>
     </div>
 
     <!-- Search & Filter -->
-    <div class="card glass-card mb-5 border-0">
-        <div class="card-body p-4">
-            <form method="get" class="row g-3">
-                <div class="col-md-5">
-                    <div class="form-floating">
-                        <input type="text" class="form-control border-0 bg-light" id="search" placeholder="Search..."
-                            name="search" value="@Model.SearchTerm">
-                        <label for="search"><i class="bi bi-search me-2 text-muted"></i>Location, Property
-                            Name...</label>
+    <div class="card">
+        <div class="card-body">
+            <form method="get">
+                <div class="filter-row">
+                    <div>
+                        <input type="text" class="form-control" placeholder="Location, Property Name..." name="search" value="@Model.SearchTerm">
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="form-floating">
-                        <select class="form-select border-0 bg-light" id="priceRange" name="priceRange">
+                    <div>
+                        <select class="form-select" name="priceRange">
                             <option value="">Any Price</option>
                             <option value="0-5000000" selected="@(Model.PriceRange == "0-5000000")">Under 5M</option>
-                            <option value="5000000-10000000" selected="@(Model.PriceRange == "5000000-10000000")">5M -
-                                10M</option>
+                            <option value="5000000-10000000" selected="@(Model.PriceRange == "5000000-10000000")">5M - 10M</option>
                             <option value="10000000+" selected="@(Model.PriceRange == "10000000+")">Above 10M</option>
                         </select>
-                        <label for="priceRange">Price Range</label>
                     </div>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100 h-100 rounded-3 fw-bold shadow-sm">
-                        Apply Filter
-                    </button>
-                </div>
-                <div class="col-md-2">
-                    <a asp-page="/User/Properties/Index"
-                        class="btn btn-light w-100 h-100 rounded-3 border text-muted d-flex align-items-center justify-content-center">
-                        Clear
-                    </a>
+                    <div>
+                        <button type="submit" class="btn btn-dark w-100">
+                            Apply Filter
+                        </button>
+                    </div>
+                    <div>
+                        <a asp-page="/User/Properties/Index" class="btn btn-light w-100">
+                            Clear
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -58,67 +381,52 @@
     <!-- Properties Grid -->
     @if (Model.AvailableProperties != null && Model.AvailableProperties.Any())
     {
-        <div class="row g-4 mb-5">
+        <div class="properties-grid">
             @foreach (var property in Model.AvailableProperties)
             {
-                <div class="col-xl-3 col-lg-4 col-md-6">
-                    <div class="card property-card h-100 shadow-sm hover-lift">
-                        <div class="img-wrapper bg-light position-relative">
-                            @if (!string.IsNullOrEmpty(property.ImageUrl))
-                            {
-                                <img src="@property.ImageUrl" alt="@property.Title">
-                            }
-                            else
-                            {
-                                <div class="d-flex align-items-center justify-content-center h-100 text-muted">
-                                    <i class="bi bi-house-image fs-1 opacity-25"></i>
-                                </div>
-                            }
+                <div class="property-card">
+                    <div class="property-image">
+                        @if (!string.IsNullOrEmpty(property.ImageUrl))
+                        {
+                            <img src="@property.ImageUrl" alt="@property.Title">
+                        }
+                        else
+                        {
+                            <i class="bi bi-house-image" style="font-size: 3rem;"></i>
+                        }
+                        <span class="property-badge">
+                            <i class="bi bi-circle-fill text-success me-1" style="font-size: 0.5rem;"></i> @property.Status
+                        </span>
+                        <form method="post" asp-page-handler="Favorite" class="favorite-btn">
+                            <input type="hidden" name="propertyId" value="@property.Id" />
+                            <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer; color: inherit;">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </form>
+                    </div>
 
-                            <!-- Badges -->
-                            <div
-                                class="position-absolute top-0 start-0 w-100 p-3 d-flex justify-content-between align-items-start">
-                                <span class="badge bg-white text-dark shadow-sm rounded-pill px-3 py-2 fw-normal">
-                                    <i class="bi bi-circle-fill text-success fs-xs me-1 small"></i> @property.Status
+                    <div class="property-content">
+                        <h5 class="property-title">@property.Title</h5>
+                        <p class="property-address">
+                            <i class="bi bi-geo-alt me-1"></i>@property.Address
+                        </p>
+
+                        <div class="property-footer">
+                            <div>
+                                <div class="property-price">@property.MonthlyPrice.ToString("N0") ₫</div>
+                                <small style="color: #6c757d; font-size: 0.75rem;">/ month</small>
+                            </div>
+                            <div>
+                                <span class="property-area">
+                                    <i class="bi bi-arrows-fullscreen me-1"></i>@property.AreaSqm m²
                                 </span>
-
-                                <form method="post" asp-page-handler="Favorite">
-                                    <input type="hidden" name="propertyId" value="@property.Id" />
-                                    <button type="submit"
-                                        class="btn btn-light rounded-circle shadow-sm p-2 d-flex align-items-center justify-content-center"
-                                        style="width: 35px; height: 35px;" title="Add to Favorites">
-                                        <i class="bi bi-heart text-danger"></i>
-                                    </button>
-                                </form>
                             </div>
                         </div>
-
-                        <div class="card-body p-3">
-                            <h5 class="card-title text-truncate fw-bold mb-1">@property.Title</h5>
-                            <p class="card-text text-muted small mb-3 text-truncate">
-                                <i class="bi bi-geo-alt me-1 text-primary"></i>@property.Address
-                            </p>
-
-                            <hr class="my-2 border-light">
-
-                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                <div>
-                                    <h5 class="mb-0 text-primary fw-bold price tag">@property.MonthlyPrice.ToString("N0") ₫</h5>
-                                    <small class="text-muted" style="font-size: 0.75rem;">/ month</small>
-                                </div>
-                                <div class="text-end">
-                                    <span class="badge bg-light text-dark border">
-                                        <i class="bi bi-arrows-fullscreen me-1"></i>@property.AreaSqm m²
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer bg-white border-top-0 p-3 pt-0">
-                            <a asp-page="/User/Properties/Details" asp-route-id="@property.Id"
-                                class="btn btn-outline-primary w-100 rounded-pill btn-sm fw-bold">
-                                View Details
-                            </a>
-                        </div>
+                    </div>
+                    <div class="property-actions">
+                        <a asp-page="/User/Properties/Details" asp-route-id="@property.Id" class="btn btn-dark w-100 btn-sm">
+                            View Details
+                        </a>
                     </div>
                 </div>
             }
@@ -127,27 +435,21 @@
         <!-- Pagination -->
         @if (Model.TotalPages > 1)
         {
-            <nav aria-label="Page navigation" class="mt-5 mb-5">
-                <ul class="pagination justify-content-center pagination-lg">
+            <nav>
+                <ul class="pagination">
                     <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
-                        <a class="page-link border-0 rounded-circle w-40px h-40px d-flex align-items-center justify-content-center shadow-sm mx-1"
-                            asp-route-pageNumber="@(Model.CurrentPage - 1)" asp-route-search="@Model.SearchTerm"
-                            asp-route-priceRange="@Model.PriceRange">
+                        <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage - 1)" asp-route-search="@Model.SearchTerm" asp-route-priceRange="@Model.PriceRange">
                             <i class="bi bi-chevron-left"></i>
                         </a>
                     </li>
                     @for (int i = 1; i <= Model.TotalPages; i++)
                     {
                         <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                            <a class="page-link border-0 rounded-circle w-40px h-40px d-flex align-items-center justify-content-center shadow-sm mx-1"
-                                asp-route-pageNumber="@i" asp-route-search="@Model.SearchTerm"
-                                asp-route-priceRange="@Model.PriceRange">@i</a>
+                            <a class="page-link" asp-route-pageNumber="@i" asp-route-search="@Model.SearchTerm" asp-route-priceRange="@Model.PriceRange">@i</a>
                         </li>
                     }
                     <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
-                        <a class="page-link border-0 rounded-circle w-40px h-40px d-flex align-items-center justify-content-center shadow-sm mx-1"
-                            asp-route-pageNumber="@(Model.CurrentPage + 1)" asp-route-search="@Model.SearchTerm"
-                            asp-route-priceRange="@Model.PriceRange">
+                        <a class="page-link" asp-route-pageNumber="@(Model.CurrentPage + 1)" asp-route-search="@Model.SearchTerm" asp-route-priceRange="@Model.PriceRange">
                             <i class="bi bi-chevron-right"></i>
                         </a>
                     </li>
@@ -157,15 +459,13 @@
     }
     else
     {
-        <div class="text-center py-5">
-            <div class="mb-4">
-                <div class="d-inline-block bg-secondary bg-opacity-10 p-5 rounded-circle text-secondary">
-                    <i class="bi bi-search fs-1"></i>
-                </div>
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-search"></i>
             </div>
-            <h4 class="text-muted fw-bold">No properties found</h4>
-            <p class="text-muted mb-4">We couldn't find any properties matching your criteria.</p>
-            <a asp-page="/User/Properties/Index" class="btn btn-primary px-4 rounded-pill shadow-sm">Clear Filters</a>
+            <h4>No properties found</h4>
+            <p>We couldn't find any properties matching your criteria.</p>
+            <a asp-page="/User/Properties/Index" class="btn btn-dark">Clear Filters</a>
         </div>
     }
 </div>

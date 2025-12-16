@@ -1,0 +1,517 @@
+﻿@page
+@model HomerLy.Presentation.Pages.Admin.Accounts.UpdateModel
+@{
+    ViewData["Title"] = "Update Account";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-outline-secondary {
+        background: transparent;
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #ffffff;
+        }
+
+    .btn-light {
+        background: #f8f9fa;
+        color: #6c757d;
+        border-color: #e9ecef;
+    }
+
+        .btn-light:hover {
+            background: #e9ecef;
+            color: #212529;
+        }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+    }
+
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        background: #ffffff;
+    }
+
+    .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 16px 20px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #212529;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+        .form-control:read-only {
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+        margin-top: 20px;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        border: 1px solid transparent;
+    }
+
+    .alert-success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .info-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .info-value {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .badge-admin {
+        background: #1a1a1a;
+        color: #ffffff;
+    }
+
+    .badge-owner {
+        background: #f1f3f5;
+        color: #1a1a1a;
+        border: 1px solid #e9ecef;
+    }
+
+    .badge-user {
+        background: #ffffff;
+        color: #6c757d;
+        border: 1px solid #e9ecef;
+    }
+
+    .badge-success {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .badge-warning {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+
+    .form-check-label {
+        cursor: pointer;
+        font-weight: 500;
+        color: #212529;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    .me-1 {
+        margin-right: 4px;
+    }
+
+    .mb-0 {
+        margin-bottom: 0;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    @@media (max-width: 992px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div>
+            <h2>Update Account</h2>
+            <p>Edit account information and permissions</p>
+        </div>
+        <a asp-page="/Admin/Accounts/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Back to Accounts
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Account != null)
+    {
+        <div class="content-grid">
+            <!-- Main Form -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-person-lines-fill me-2"></i>Account Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                    <input asp-for="Input.FullName" class="form-control" placeholder="Enter full name">
+                                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input asp-for="Input.Email" class="form-control" placeholder="Enter email" readonly>
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                    <input asp-for="Input.Phone" class="form-control" placeholder="Enter phone number">
+                                    <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">CCCD Number</label>
+                                    <input asp-for="Input.CccdNumber" class="form-control" placeholder="CCCD Number" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Role <span class="text-danger">*</span></label>
+                                <select asp-for="Input.Role" class="form-select" asp-items="Model.RoleOptions">
+                                    <option value="">Select Role</option>
+                                </select>
+                                <span asp-validation-for="Input.Role" class="text-danger"></span>
+                            </div>
+
+                            @if (Model.Input.Role == "Owner")
+                            {
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input asp-for="Input.IsOwnerApproved" class="form-check-input" type="checkbox">
+                                        <label asp-for="Input.IsOwnerApproved" class="form-check-label">
+                                            Owner Approved
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-dark">
+                                    <i class="bi bi-save me-2"></i>Save Changes
+                                </button>
+                                <a asp-page="/Admin/Accounts/Index" class="btn btn-light">
+                                    Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Details Sidebar -->
+            <div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Account Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <div class="info-label">Account ID</div>
+                            <div class="info-value">
+                                <code style="font-size: 0.75rem; background: #f8f9fa; padding: 4px 8px; border-radius: 4px;">@Model.Account.Id</code>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">Current Role</div>
+                            <div class="info-value">
+                                @if (Model.Account.Role == Homerly.BusinessObject.Enums.RoleType.Admin)
+                                {
+                                    <span class="badge badge-admin">
+                                        <i class="bi bi-shield-fill me-1"></i>Admin
+                                    </span>
+                                }
+                                else if (Model.Account.Role == Homerly.BusinessObject.Enums.RoleType.Owner)
+                                {
+                                    <span class="badge badge-owner">
+                                        <i class="bi bi-building me-1"></i>Owner
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-user">
+                                        <i class="bi bi-person me-1"></i>User
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        @if (Model.Account.Role == Homerly.BusinessObject.Enums.RoleType.Owner)
+                        {
+                            <div class="info-item">
+                                <div class="info-label">Approval Status</div>
+                                <div class="info-value">
+                                    @if (Model.Input.IsOwnerApproved)
+                                    {
+                                        <span class="badge badge-success">
+                                            <i class="bi bi-check-circle me-1"></i>Approved
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning">
+                                            <i class="bi bi-clock me-1"></i>Pending Approval
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <div class="info-item">
+                            <div class="info-label">Created Date</div>
+                            <div class="info-value">@Model.Account.CreatedAt.ToString("MMM dd, yyyy HH:mm")</div>
+                        </div>
+
+                        @if (Model.Account.UpdatedAt.HasValue)
+                        {
+                            <div class="info-item">
+                                <div class="info-label">Last Updated</div>
+                                <div class="info-value">@Model.Account.UpdatedAt.Value.ToString("MMM dd, yyyy HH:mm")</div>
+                            </div>
+                        }
+
+                        <div class="info-item">
+                            <div class="info-label">Account Status</div>
+                            <div class="info-value">
+                                @if (Model.Account.IsDeleted)
+                                {
+                                    <span class="badge" style="background: #fee2e2; color: #991b1b;">
+                                        <i class="bi bi-trash me-1"></i>Deleted
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-success">
+                                        <i class="bi bi-check-circle me-1"></i>Active
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Account.Role == Homerly.BusinessObject.Enums.RoleType.Owner && !Model.Input.IsOwnerApproved)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="bi bi-shield-check me-2"></i>Quick Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <p style="font-size: 0.875rem; color: #6c757d; margin-bottom: 12px;">
+                                This owner account is pending approval.
+                            </p>
+                            <form method="post" asp-page-handler="ApproveOwner" asp-route-id="@Model.Account.Id">
+                                <button type="submit" class="btn btn-dark w-100">
+                                    <i class="bi bi-check-circle me-2"></i>Approve Owner
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

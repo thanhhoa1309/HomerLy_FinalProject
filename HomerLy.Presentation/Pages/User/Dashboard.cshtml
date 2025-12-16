@@ -5,230 +5,525 @@
     Layout = "~/Pages/Shared/_UserLayout.cshtml";
 }
 
-<div class="container-fluid animate-fade-in-up">
+<style>
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    /* Stat Cards */
+    .stat-card-wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        gap: 16px;
+        min-width: 0;
+        transition: all 0.2s ease;
+    }
+
+        .stat-card:hover {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    .stat-card-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        font-size: 1.25rem;
+    }
+
+    .stat-card:hover .stat-card-icon {
+        color: #ffffff;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-card:hover .stat-card-content p {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Cards */
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        background: #ffffff;
+    }
+
+    .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 16px 20px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    /* Dashboard Grid */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+    }
+
+    /* Profile Avatar */
+    .profile-avatar-section {
+        text-align: center;
+        padding: 32px 20px;
+    }
+
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 16px;
+        position: relative;
+    }
+
+    .status-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #198754;
+        border: 3px solid #ffffff;
+    }
+
+    .profile-name {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #212529;
+        margin: 0 0 4px 0;
+    }
+
+    .profile-email {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin: 0 0 12px 0;
+    }
+
+    .badge {
+        padding: 6px 12px;
+        font-weight: 500;
+        font-size: 0.75rem;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .badge-verified {
+        background: #f1f3f5;
+        color: #1a1a1a;
+        border: 1px solid #e9ecef;
+    }
+
+    /* Buttons */
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-outline-dark {
+        background: transparent;
+        color: #1a1a1a;
+        border-color: #1a1a1a;
+    }
+
+        .btn-outline-dark:hover {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+    .btn-sm {
+        padding: 6px 12px;
+        font-size: 0.875rem;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+
+    /* Forms */
+    .form-control, .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 48px 20px;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        color: #6c757d;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h5 {
+        color: #212529;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+
+    /* Profile Info Grid */
+    .profile-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        padding-top: 16px;
+        margin-top: 16px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .profile-info-item {
+        text-align: center;
+    }
+
+    .profile-info-label {
+        display: block;
+        font-size: 0.7rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .profile-info-value {
+        font-weight: 600;
+        color: #212529;
+    }
+
+    /* Utility */
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    .mb-0 {
+        margin-bottom: 0;
+    }
+
+    .text-secondary {
+        color: #6c757d;
+    }
+
+    @@media (max-width: 1200px) {
+        .stat-card-wrapper {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .stat-card-wrapper {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container-fluid">
     <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-5 mt-3">
+    <div class="page-header">
         <div>
-            <h2 class="h3 mb-1 fw-bold">User Dashboard</h2>
-            <p class="text-muted mb-0">Welcome back, <span
-                    class="text-primary fw-bold">@Model.CurrentUser?.FullName</span>!</p>
+            <h2>User Dashboard</h2>
+            <p>Welcome back, <span style="color: #212529; font-weight: 600;">@Model.CurrentUser?.FullName</span>!</p>
         </div>
-        <div class="text-muted bg-white px-4 py-2 rounded-pill shadow-sm border">
-            <i class="bi bi-calendar-event me-2 text-primary"></i>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")
+        <div class="text-secondary" style="font-size: 0.875rem;">
+            <i class="bi bi-calendar-event me-2"></i>@DateTime.Now.ToString("dddd, MMMM dd, yyyy")
         </div>
     </div>
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
+        <div class="alert alert-danger" style="padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; background-color: #fee2e2; color: #991b1b; border: none;">
             <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
 
     <!-- Statistics Cards -->
-    <div class="row mb-5 g-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card stats-card bg-success h-100">
-                <i class="bi bi-house-check icon-bg"></i>
-                <div class="card-body">
-                    <h6 class="text-white-50 mb-3 text-uppercase small ls-1">Active Tenancies</h6>
-                    <h2 class="mb-0 fw-bold display-5">0</h2> <!-- Placeholder for Model.ActiveTenanciesCount -->
-                    <small class="text-white-50 mt-2 d-block">Current Homes</small>
+    <div class="stat-card-wrapper">
+        <a asp-page="/User/Tenancies/Index" style="text-decoration: none; color: inherit;">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-house-check"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/User/Tenancies/Index"
-                        class="text-white text-decoration-none d-flex align-items-center justify-content-between stretched-link">
-                        <span>View Details</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>0</h3>
+                    <p>Active Tenancies</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card stats-card bg-primary h-100">
-                <i class="bi bi-heart icon-bg"></i>
-                <div class="card-body">
-                    <h6 class="text-white-50 mb-3 text-uppercase small ls-1">Favorites</h6>
-                    <h2 class="mb-0 fw-bold display-5">0</h2> <!-- Placeholder -->
-                    <small class="text-white-50 mt-2 d-block">Saved Properties</small>
+        <a asp-page="/User/Favorites/Index" style="text-decoration: none; color: inherit;">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-heart"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/User/Favorites/Index"
-                        class="text-white text-decoration-none d-flex align-items-center justify-content-between stretched-link">
-                        <span>View Favorites</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>0</h3>
+                    <p>Favorites</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card stats-card bg-warning h-100">
-                <i class="bi bi-credit-card icon-bg"></i>
-                <div class="card-body">
-                    <h6 class="text-white-50 mb-3 text-uppercase small ls-1">Pending Payments</h6>
-                    <h2 class="mb-0 fw-bold display-5">0</h2> <!-- Placeholder -->
-                    <small class="text-white-50 mt-2 d-block">Due Soon</small>
+        <a asp-page="/User/Payments/Index" style="text-decoration: none; color: inherit;">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-credit-card"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/User/Payments/Index"
-                        class="text-white text-decoration-none d-flex align-items-center justify-content-between stretched-link">
-                        <span>View Payments</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>0</h3>
+                    <p>Pending Payments</p>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card stats-card bg-info h-100">
-                <i class="bi bi-cash-stack icon-bg"></i>
-                <div class="card-body">
-                    <h6 class="text-white-50 mb-3 text-uppercase small ls-1">Total Spent</h6>
-                    <h2 class="mb-0 fw-bold display-5">0 ₫</h2> <!-- Placeholder -->
-                    <small class="text-white-50 mt-2 d-block">Lifetime Rent</small>
+        <a asp-page="/User/Payments/History" style="text-decoration: none; color: inherit;">
+            <div class="stat-card">
+                <div class="stat-card-icon">
+                    <i class="bi bi-cash-stack"></i>
                 </div>
-                <div class="card-footer bg-white bg-opacity-10 border-0">
-                    <a asp-page="/User/Payments/History"
-                        class="text-white text-decoration-none d-flex align-items-center justify-content-between stretched-link">
-                        <span>View History</span>
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
+                <div class="stat-card-content">
+                    <h3>0 ₫</h3>
+                    <p>Total Spent</p>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
-    <div class="row g-4">
+    <div class="dashboard-grid">
         <!-- Main Content Column -->
-        <div class="col-lg-8">
+        <div>
             <!-- Quick Search -->
-            <div class="card glass-card mb-5">
-                <div class="card-header border-0 bg-transparent">
-                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-lightning-fill me-2"></i>Quick Search</h5>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-lightning-fill me-2"></i>Quick Search</h5>
                 </div>
                 <div class="card-body">
-                    <form asp-page="/User/Properties/Index" method="get" class="row g-3">
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <input type="text" class="form-control" id="search" placeholder="Search..."
-                                    name="search">
-                                <label for="search">Location or Name</label>
+                    <form asp-page="/User/Properties/Index" method="get">
+                        <div class="form-row">
+                            <div>
+                                <input type="text" class="form-control" placeholder="Location or Name" name="search">
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <select class="form-select" id="type" name="type">
-                                    <option value="">Any</option>
+                            <div>
+                                <select class="form-select" name="type">
+                                    <option value="">Any Type</option>
                                     <option value="Apartment">Apartment</option>
                                     <option value="House">House</option>
                                     <option value="Studio">Studio</option>
                                 </select>
-                                <label for="type">Type</label>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-floating">
-                                <select class="form-select" id="price" name="priceRange">
-                                    <option value="">Any</option>
+                            <div>
+                                <select class="form-select" name="priceRange">
+                                    <option value="">Any Price</option>
                                     <option value="0-5000000">Under 5M</option>
                                     <option value="5000000-10000000">5M - 10M</option>
                                     <option value="10000000+">Above 10M</option>
                                 </select>
-                                <label for="price">Price</label>
                             </div>
-                        </div>
-                        <div class="col-md-2 d-flex align-items-center">
-                            <button type="submit"
-                                class="btn btn-primary w-100 h-100 d-flex align-items-center justify-content-center">
-                                <i class="bi bi-search me-2"></i>Search
-                            </button>
+                            <div>
+                                <button type="submit" class="btn btn-dark w-100">
+                                    <i class="bi bi-search me-2"></i>Search
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Featured Properties -->
-            <div class="card glass-card mb-4">
-                <div class="card-header border-0 bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-star-fill me-2"></i>Featured Properties</h5>
-                    <a asp-page="/User/Properties/Index" class="btn btn-sm btn-outline-primary rounded-pill px-3">Browse
-                        All</a>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-star-fill me-2"></i>Featured Properties</h5>
+                    <a asp-page="/User/Properties/Index" class="btn btn-sm btn-dark">Browse All</a>
                 </div>
                 <div class="card-body">
-                    <!-- Example Empty State with improved visuals -->
-                    <div class="text-center py-5">
-                        <div class="mb-3">
-                            <div class="d-inline-block bg-primary bg-opacity-10 p-4 rounded-circle text-primary">
-                                <i class="bi bi-building fs-1"></i>
-                            </div>
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="bi bi-building"></i>
                         </div>
-                        <h5 class="text-muted fw-bold">Fresh Properties Coming Soon</h5>
-                        <p class="text-muted mb-4">We are curating the best homes for you.</p>
-                        <a asp-page="/User/Properties/Index" class="btn btn-primary px-4 rounded-pill shadow-sm">Start
-                            Your Search</a>
+                        <h5>Fresh Properties Coming Soon</h5>
+                        <p>We are curating the best homes for you.</p>
+                        <a asp-page="/User/Properties/Index" class="btn btn-dark">Start Your Search</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Sidebar / Profile Summary -->
-        <div class="col-lg-4">
+        <!-- Sidebar -->
+        <div>
             <!-- Profile Card -->
-            <div class="card glass-card mb-4 text-center">
-                <div class="card-body p-5">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>My Profile</h5>
+                </div>
+                <div class="card-body profile-avatar-section">
                     @if (Model.CurrentUser != null)
                     {
-                        <div class="position-relative d-inline-block mb-3">
-                            <div class="avatar-circle bg-gradient text-white mx-auto shadow-sm"
-                                style="width: 100px; height: 100px; font-size: 2.5rem; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display:flex; align-items:center; justify-content:center; border-radius:50%;">
-                                @Model.CurrentUser.FullName?.Substring(0, 1).ToUpper()
-                            </div>
-                            <span
-                                class="position-absolute bottom-0 end-0 p-2 bg-success border border-white rounded-circle"></span>
+                        <div class="avatar-circle">
+                            @Model.CurrentUser.FullName?.Substring(0, 1).ToUpper()
+                            <span class="status-indicator"></span>
                         </div>
-                        <h4 class="mb-1 fw-bold">@Model.CurrentUser.FullName</h4>
-                        <p class="text-muted mb-3">@Model.CurrentUser.Email</p>
-                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-4">Verified
-                            Tenant</span>
+                        <h4 class="profile-name">@Model.CurrentUser.FullName</h4>
+                        <p class="profile-email">@Model.CurrentUser.Email</p>
+                        <span class="badge badge-verified">
+                            <i class="bi bi-check-circle me-1"></i>Verified Tenant
+                        </span>
 
-                        <div class="d-grid gap-2">
-                            <a asp-page="/User/Profile" class="btn btn-outline-primary rounded-pill">
+                        <div style="margin-top: 20px;">
+                            <a asp-page="/User/Profile" class="btn btn-outline-dark w-100">
                                 <i class="bi bi-pencil me-2"></i>Edit Profile
                             </a>
                         </div>
 
-                        <div class="row mt-4 pt-3 border-top">
-                            <div class="col-6 border-end">
-                                <small class="text-muted d-block text-uppercase"
-                                    style="font-size:0.7rem; letter-spacing:1px;">Phone</small>
-                                <span class="fw-bold text-dark">@Model.CurrentUser.Phone</span>
+                        <div class="profile-info-grid">
+                            <div class="profile-info-item" style="border-right: 1px solid #e9ecef;">
+                                <span class="profile-info-label">Phone</span>
+                                <span class="profile-info-value">@Model.CurrentUser.Phone</span>
                             </div>
-                            <div class="col-6">
-                                <small class="text-muted d-block text-uppercase"
-                                    style="font-size:0.7rem; letter-spacing:1px;">Member Since</small>
-                                <span class="fw-bold text-dark">@DateTime.Now.Year</span>
+                            <div class="profile-info-item">
+                                <span class="profile-info-label">Member Since</span>
+                                <span class="profile-info-value">@DateTime.Now.Year</span>
                             </div>
                         </div>
                     }
                 </div>
             </div>
 
-            <!-- Support / Help -->
-            <div class="card glass-card">
-                <div class="card-header border-0 bg-transparent">
-                    <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-life-preserver me-2"></i>Help Center</h5>
+            <!-- Help Center -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-life-preserver me-2"></i>Help Center</h5>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted small mb-4">Questions about your lease or payments? We're here to help you
-                        24/7.</p>
-                    <div class="d-grid gap-2">
-                        <a href="#" class="btn btn-info text-white rounded-pill shadow-sm">
+                    <p class="text-secondary" style="font-size: 0.875rem; margin-bottom: 16px;">Questions about your lease or payments? We're here to help you 24/7.</p>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <a href="#" class="btn btn-dark w-100">
                             <i class="bi bi-headset me-2"></i>Contact Support
                         </a>
-                        <a href="#" class="btn btn-light text-muted border rounded-pill">
+                        <a href="#" class="btn btn-outline-dark w-100">
                             <i class="bi bi-journal-text me-2"></i>View User Guide
                         </a>
                     </div>
@@ -237,4 +532,3 @@
         </div>
     </div>
 </div>
-

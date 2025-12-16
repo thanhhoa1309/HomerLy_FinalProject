@@ -5,29 +5,141 @@
     Layout = "~/Pages/Shared/_UserLayout.cshtml";
 }
 
-<div class="container-fluid animate-fade-in-up">
-    <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+<style>
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-outline-secondary {
+        background: transparent;
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #ffffff;
+        }
+
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        background: #ffffff;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 64px 32px;
+    }
+
+    .empty-state-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #fef3c7;
+        color: #ffc107;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 16px;
+    }
+
+    .empty-state h4 {
+        color: #212529;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        color: #6c757d;
+        margin-bottom: 20px;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    @@media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
         <div>
-            <h2 class="h3 mb-1 fw-bold">Payments</h2>
-            <p class="text-muted mb-0">Track your rent and utility payments</p>
+            <h2>Payments</h2>
+            <p>Track your rent and utility payments</p>
         </div>
-        <a asp-page="/User/Dashboard" class="btn btn-outline-secondary rounded-pill btn-sm">
+        <a asp-page="/User/Dashboard" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
         </a>
     </div>
 
-    <!-- Empty State -->
-    <div class="card glass-card border-0">
-        <div class="card-body py-5">
-            <div class="text-center py-5">
-                <div class="mb-4">
-                    <div class="d-inline-block p-5 rounded-circle bg-warning bg-opacity-10 text-warning">
-                        <i class="bi bi-credit-card fs-1"></i>
-                    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-credit-card"></i>
                 </div>
-                <h4 class="text-muted fw-bold">No pending payments</h4>
-                <p class="text-muted mb-4">You're all caught up! No payment history found.</p>
-                <a asp-page="/User/Dashboard" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                <h4>No pending payments</h4>
+                <p>You're all caught up! No payment history found.</p>
+                <a asp-page="/User/Dashboard" class="btn btn-dark">
                     Back to Dashboard
                 </a>
             </div>

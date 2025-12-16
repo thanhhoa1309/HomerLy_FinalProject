@@ -131,7 +131,7 @@ namespace Homerly.Presentation.Architecture
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("UserPolicy", policy =>
-                    policy.RequireRole("Member"));
+                    policy.RequireRole("User"));
 
                 options.AddPolicy("OwnerPolicy", policy =>
                     policy.RequireRole("Owner"));
