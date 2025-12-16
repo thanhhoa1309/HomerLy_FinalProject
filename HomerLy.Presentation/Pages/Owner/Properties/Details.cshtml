@@ -1,0 +1,282 @@
+@page
+@model HomerLy.Presentation.Pages.Owner.Properties.DetailsModel
+@{
+    ViewData["Title"] = "Property Details";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 mb-0">
+                <i class="bi bi-building me-2"></i>Property Details
+            </h2>
+            <p class="text-muted mb-0">@Model.Property?.Title</p>
+        </div>
+        <div class="btn-group">
+            <a asp-page="/Owner/Properties/Edit" asp-route-id="@Model.Property?.Id" class="btn btn-dark">
+                <i class="bi bi-pencil me-2"></i>Edit
+            </a>
+            <a asp-page="/Owner/Properties/Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Property != null)
+    {
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Property Image -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="property-image-container">
+                        @if (!string.IsNullOrEmpty(Model.Property.ImageUrl))
+                        {
+                            <img src="@Model.Property.ImageUrl" alt="@Model.Property.Title" class="img-fluid w-100"
+                                style="max-height: 400px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="placeholder-image-large">
+                                <i class="bi bi-building display-1 text-muted"></i>
+                                <p class="text-muted mt-3">No image available</p>
+                            </div>
+                        }
+                        <div class="property-status-badge">
+                            <span
+                                class="badge bg-@(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "success" : 
+                                                                                     Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ? "primary" : "warning") fs-6 px-4 py-2">
+                                @Model.Property.Status.ToString().ToUpper()
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property Information -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Property Information</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6 class="text-muted mb-2">Title</h6>
+                                <h4 class="mb-0">@Model.Property.Title</h4>
+                            </div>
+                            <div class="col-md-6 text-md-end">
+                                <h6 class="text-muted mb-2">Monthly Rent</h6>
+                                <h3 class="mb-0 text-success">@Model.Property.MonthlyPrice.ToString("N0") VNĐ</h3>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-geo-alt fs-4 me-3 text-muted"></i>
+                                    <div>
+                                        <h6 class="text-muted mb-1">Address</h6>
+                                        <p class="mb-0">@Model.Property.Address</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-rulers fs-4 me-3 text-muted"></i>
+                                    <div>
+                                        <h6 class="text-muted mb-1">Area</h6>
+                                        <p class="mb-0 fw-semibold">@Model.Property.AreaSqm m²</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-calendar-plus fs-4 me-3 text-muted"></i>
+                                    <div>
+                                        <h6 class="text-muted mb-1">Created Date</h6>
+                                        <p class="mb-0">@Model.Property.CreatedAt.ToString("MMMM dd, yyyy")</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-clock-history fs-4 me-3 text-muted"></i>
+                                    <div>
+                                        <h6 class="text-muted mb-1">Last Updated</h6>
+                                        <p class="mb-0">@Model.Property.UpdatedAt?.ToString("MMMM dd, yyyy HH:mm")</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <div>
+                            <h6 class="text-muted mb-2"><i class="bi bi-file-text me-2"></i>Description</h6>
+                            <p class="mb-0">@(string.IsNullOrEmpty(Model.Property.Description) ? "No description provided." : Model.Property.Description)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Management -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h5 class="mb-0"><i class="bi bi-toggle-on me-2"></i>Status Management</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-muted mb-3">Change property availability status</p>
+                        <form method="post" asp-page-handler="ChangeStatus">
+                            <input type="hidden" name="id" value="@Model.Property.Id" />
+                            <div class="btn-group" role="group">
+                                <button type="submit" name="newStatus"
+                                    value="@Homerly.BusinessObject.Enums.PropertyStatus.available"
+                                    class="btn @(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "btn-success" : "btn-outline-success")"
+                                    @(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ?
+                                                                    "disabled" : "")>
+                                    <i class="bi bi-check-circle me-2"></i>Available
+                                </button>
+                                <button type="submit" name="newStatus"
+                                    value="@Homerly.BusinessObject.Enums.PropertyStatus.occupied"
+                                    class="btn @(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ? "btn-primary" : "btn-outline-primary")"
+                                    @(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.occupied ?
+                                                                    "disabled" : "")>
+                                    <i class="bi bi-house-check me-2"></i>Occupied
+                                </button>
+                                <button type="submit" name="newStatus"
+                                    value="@Homerly.BusinessObject.Enums.PropertyStatus.under_maintenance"
+                                    class="btn @(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.under_maintenance ? "btn-warning" : "btn-outline-warning")"
+                                    @(Model.Property.Status == Homerly.BusinessObject.Enums.PropertyStatus.under_maintenance
+                                                                    ? "disabled" : "")>
+                                    <i class="bi bi-tools me-2"></i>Under Maintenance
+                                </button>
+                            </div>
+                        </form>
+                        <small class="text-muted d-block mt-3">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Note: Cannot mark as Available if there's an active tenancy.
+                        </small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Quick Stats -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h6 class="mb-0"><i class="bi bi-graph-up me-2"></i>Statistics</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3 pb-3 border-bottom">
+                            <small class="text-muted d-block mb-1">Total Tenancies</small>
+                            <h4 class="mb-0">@Model.TotalTenancies</h4>
+                        </div>
+                        <div class="mb-3 pb-3 border-bottom">
+                            <small class="text-muted d-block mb-1">Active Tenancies</small>
+                            <h4 class="mb-0 text-primary">@Model.ActiveTenancies</h4>
+                        </div>
+                        <div>
+                            <small class="text-muted d-block mb-1">Total Revenue</small>
+                            <h4 class="mb-0 text-success">@Model.TotalRevenue.ToString("N0") VNĐ</h4>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h6 class="mb-0"><i class="bi bi-lightning me-2"></i>Quick Actions</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a asp-page="/Owner/Tenancies/Create" asp-route-propertyId="@Model.Property.Id"
+                                class="btn btn-outline-dark">
+                                <i class="bi bi-plus-circle me-2"></i>Create Tenancy
+                            </a>
+                            <a asp-page="/Owner/Utilities/Create" asp-route-propertyId="@Model.Property.Id"
+                                class="btn btn-outline-dark">
+                                <i class="bi bi-lightning-charge me-2"></i>Add Utility Reading
+                            </a>
+                            <a asp-page="/Owner/Reports/Index" asp-route-propertyId="@Model.Property.Id"
+                                class="btn btn-outline-dark">
+                                <i class="bi bi-exclamation-triangle me-2"></i>View Reports
+                            </a>
+                            <hr />
+                            <a asp-page="/Owner/Properties/Edit" asp-route-id="@Model.Property.Id" class="btn btn-dark">
+                                <i class="bi bi-pencil me-2"></i>Edit Property
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Property ID -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <small class="text-muted d-block mb-2">Property ID</small>
+                        <code class="small user-select-all">@Model.Property.Id</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .property-image-container {
+        position: relative;
+        background: #f8f9fa;
+    }
+
+    .property-status-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    .placeholder-image-large {
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+    }
+
+    .btn-group .btn {
+        font-weight: 500;
+    }
+
+    .user-select-all {
+        cursor: pointer;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        display: block;
+    }
+
+    .card {
+        transition: transform 0.2s;
+    }
+</style>

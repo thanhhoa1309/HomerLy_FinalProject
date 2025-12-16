@@ -1,0 +1,693 @@
+@page
+@model HomerLy.Presentation.Pages.Owner.Tenancies.IndexModel
+@{
+    ViewData["Title"] = "My Tenancies";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="page-header mb-5">
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h1 class="display-6 fw-bold mb-2">
+                    <i class="bi bi-people-fill me-3"></i>My Tenancies
+                </h1>
+                <p class="text-muted fs-5 mb-0">Manage tenant agreements and rental contracts</p>
+            </div>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Section -->
+    <div class="filter-card mb-5">
+        <div class="filter-header">
+            <i class="bi bi-sliders me-2"></i>
+            <span>Search & Filter</span>
+        </div>
+        <div class="filter-body">
+            <form method="get" class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <label class="filter-label">
+                        <i class="bi bi-funnel me-2"></i>Status
+                    </label>
+                    <select name="status" class="form-select form-select-lg" onchange="this.form.submit()">
+                        <option value="">All Tenancies</option>
+                        <option value="active" selected="@(Model.StatusFilter == "active")">
+                            ✓ Active
+                        </option>
+                        <option value="pending_confirmation" selected="@(Model.StatusFilter == "pending_confirmation")">
+                            ⏳ Pending
+                        </option>
+                        <option value="expired" selected="@(Model.StatusFilter == "expired")">
+                            ✕ Expired
+                        </option>
+                        <option value="cancelled" selected="@(Model.StatusFilter == "cancelled")">
+                            ⊘ Cancelled
+                        </option>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="filter-label">
+                        <i class="bi bi-house me-2"></i>Property
+                    </label>
+                    <select name="propertyId" class="form-select form-select-lg" onchange="this.form.submit()">
+                        <option value="">All Properties</option>
+                        @if (Model.OwnerProperties != null)
+                        {
+                            @foreach (var property in Model.OwnerProperties)
+                            {
+                                <option value="@property.Id" selected="@(Model.PropertyIdFilter == property.Id)">
+                                    @property.Title
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="filter-label">
+                        <i class="bi bi-check-circle me-2"></i>Confirmation
+                    </label>
+                    <select name="isTenantConfirmed" class="form-select form-select-lg" onchange="this.form.submit()">
+                        <option value="">All</option>
+                        <option value="true" selected="@(Model.IsTenantConfirmedFilter == true)">
+                            Confirmed
+                        </option>
+                        <option value="false" selected="@(Model.IsTenantConfirmedFilter == false)">
+                            Unconfirmed
+                        </option>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6 d-flex align-items-end">
+                    <button type="submit" class="btn btn-dark btn-lg w-100 shadow-sm">
+                        <i class="bi bi-search me-2"></i>Apply
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-4 col-md-6">
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Active</p>
+                    <h2 class="stat-value">@Model.ActiveCount</h2>
+                    <p class="stat-desc">Currently active</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stat-card stat-card-warning">
+                <div class="stat-icon">
+                    <i class="bi bi-clock-fill"></i>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Pending</p>
+                    <h2 class="stat-value">@Model.PendingCount</h2>
+                    <p class="stat-desc">Awaiting confirmation</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="stat-card stat-card-danger">
+                <div class="stat-icon">
+                    <i class="bi bi-x-circle-fill"></i>
+                </div>
+                <div class="stat-content">
+                    <p class="stat-label">Expired</p>
+                    <h2 class="stat-value">@Model.ExpiredCount</h2>
+                    <p class="stat-desc">Contract ended</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tenancies List -->
+    @if (Model.Tenancies != null && Model.Tenancies.Any())
+    {
+        <div class="tenancies-list">
+            @foreach (var tenancy in Model.Tenancies)
+            {
+                <div class="tenancy-card">
+                    <div class="tenancy-header">
+                        <div class="tenancy-property">
+                            <h3 class="tenancy-property-name">
+                                <i class="bi bi-house-fill me-2"></i>
+                                @tenancy.PropertyTitle
+                            </h3>
+                            <p class="tenancy-property-address">
+                                <i class="bi bi-geo-alt-fill me-2"></i>
+                                @tenancy.PropertyAddress
+                            </p>
+                        </div>
+                        <div class="tenancy-badge tenancy-badge-@(GetStatusClass(tenancy.Status))">
+                            @tenancy.Status.ToString().Replace("_", " ")
+                        </div>
+                    </div>
+
+                    <div class="tenancy-body">
+                        <div class="row g-4">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="tenancy-info-item">
+                                    <div class="tenancy-info-label">
+                                        <i class="bi bi-person-fill me-2"></i>Tenant
+                                    </div>
+                                    <div class="tenancy-info-value">@tenancy.TenantName</div>
+                                    <div class="tenancy-info-extra">@tenancy.TenantEmail</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="tenancy-info-item">
+                                    <div class="tenancy-info-label">
+                                        <i class="bi bi-calendar-check me-2"></i>Start Date
+                                    </div>
+                                    <div class="tenancy-info-value">@tenancy.StartDate.ToString("MMM dd, yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6">
+                                <div class="tenancy-info-item">
+                                    <div class="tenancy-info-label">
+                                        <i class="bi bi-calendar-x me-2"></i>End Date
+                                    </div>
+                                    <div class="tenancy-info-value">@tenancy.EndDate.ToString("MMM dd, yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6">
+                                <div class="tenancy-info-item">
+                                    <div class="tenancy-info-label">
+                                        <i class="bi bi-shield-check me-2"></i>Confirmation
+                                    </div>
+                                    <div class="tenancy-info-value">
+                                        @if (tenancy.IsTenantConfirmed)
+                                        {
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Confirmed
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-clock me-1"></i>Pending
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tenancy-footer">
+                        <div class="tenancy-actions">
+                            <a asp-page="/Owner/Tenancies/Details" asp-route-id="@tenancy.Id" 
+                               class="tenancy-btn tenancy-btn-view">
+                                <i class="bi bi-eye-fill me-2"></i>View Details
+                            </a>
+                            @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active || 
+                                 tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation)
+                            {
+                                <button type="button" class="tenancy-btn tenancy-btn-cancel" 
+                                        onclick="cancelTenancy('@tenancy.Id')">
+                                    <i class="bi bi-x-circle-fill me-2"></i>Cancel Tenancy
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.Tenancies.TotalPages > 1)
+        {
+            <nav class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(Model.Tenancies.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-route-pageNumber="@(Model.Tenancies.CurrentPage - 1)"
+                           asp-route-status="@Model.StatusFilter" 
+                           asp-route-propertyId="@Model.PropertyIdFilter"
+                           asp-route-isTenantConfirmed="@Model.IsTenantConfirmedFilter">
+                            <i class="bi bi-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= Model.Tenancies.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Tenancies.CurrentPage ? "active" : "")">
+                            <a class="page-link" asp-route-pageNumber="@i"
+                               asp-route-status="@Model.StatusFilter"
+                               asp-route-propertyId="@Model.PropertyIdFilter"
+                               asp-route-isTenantConfirmed="@Model.IsTenantConfirmedFilter">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.Tenancies.CurrentPage == Model.Tenancies.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-route-pageNumber="@(Model.Tenancies.CurrentPage + 1)"
+                           asp-route-status="@Model.StatusFilter"
+                           asp-route-propertyId="@Model.PropertyIdFilter"
+                           asp-route-isTenantConfirmed="@Model.IsTenantConfirmedFilter">
+                            Next <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+    else
+    {
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-inbox"></i>
+            </div>
+            <h3 class="empty-state-title">No Tenancies Found</h3>
+            <p class="empty-state-text">
+                You don't have any tenancies yet. Tenancies will appear here when tenants rent your properties.
+            </p>
+        </div>
+    }
+</div>
+
+<style>
+    /* Page Header */
+    .page-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #212529;
+    }
+
+    .page-header .display-6 {
+        color: #212529;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+        color: #6c757d;
+        font-size: 1rem;
+        margin: 0;
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .filter-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .filter-label {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: #212529;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .filter-body .form-select-lg,
+    .filter-body .form-control-lg {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .filter-body .form-select-lg:focus,
+    .filter-body .form-control-lg:focus {
+        border-color: #212529;
+        box-shadow: 0 0 0 0.15rem rgba(33, 37, 41, 0.1);
+    }
+
+    /* Statistics Cards */
+    .stat-card {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        flex-shrink: 0;
+    }
+
+    .stat-card-success .stat-icon {
+        background: #198754;
+        color: #ffffff;
+    }
+
+    .stat-card-warning .stat-icon {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .stat-card-danger .stat-icon {
+        background: #dc3545;
+        color: #ffffff;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-label {
+        margin: 0 0 0.25rem 0;
+        color: #6c757d;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+        margin: 0;
+        color: #212529;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .stat-desc {
+        margin: 0.25rem 0 0 0;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    /* Tenancies List */
+    .tenancies-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .tenancy-card {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .tenancy-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        border-color: #212529;
+    }
+
+    .tenancy-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .tenancy-property-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #212529;
+        margin: 0 0 0.5rem 0;
+    }
+
+    .tenancy-property-address {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .tenancy-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tenancy-badge-active {
+        background: #198754;
+        color: #ffffff;
+    }
+
+    .tenancy-badge-pending_confirmation {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .tenancy-badge-expired {
+        background: #dc3545;
+        color: #ffffff;
+    }
+
+    .tenancy-badge-cancelled {
+        background: #6c757d;
+        color: #ffffff;
+    }
+
+    .tenancy-body {
+        padding: 1.5rem;
+    }
+
+    .tenancy-info-item {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+        height: 100%;
+    }
+
+    .tenancy-info-label {
+        display: flex;
+        align-items: center;
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .tenancy-info-value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 0.25rem;
+    }
+
+    .tenancy-info-extra {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .tenancy-footer {
+        padding: 1rem 1.5rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .tenancy-actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .tenancy-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.625rem 1.25rem;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        background: #ffffff;
+        cursor: pointer;
+    }
+
+    .tenancy-btn-view {
+        color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    .tenancy-btn-view:hover {
+        background: #0d6efd;
+        color: #ffffff;
+    }
+
+    .tenancy-btn-cancel {
+        color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .tenancy-btn-cancel:hover {
+        background: #dc3545;
+        color: #ffffff;
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        color: #212529;
+        border-color: #dee2e6;
+        padding: 0.625rem 1rem;
+        font-weight: 500;
+        border-radius: 6px;
+        margin: 0 0.25rem;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #212529;
+        border-color: #212529;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #f8f9fa;
+        border-color: #212529;
+        color: #212529;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        opacity: 0.4;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+    }
+
+    .empty-state-icon {
+        font-size: 5rem;
+        color: #dee2e6;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 0.75rem;
+    }
+
+    .empty-state-text {
+        color: #6c757d;
+        font-size: 1rem;
+        margin-bottom: 0;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .tenancy-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .tenancy-actions {
+            flex-direction: column;
+        }
+
+        .tenancy-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<script>
+    function cancelTenancy(tenancyId) {
+        if (confirm('Are you sure you want to cancel this tenancy? This action cannot be undone.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Owner/Tenancies/Index?handler=Cancel';
+
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'tenancyId';
+            input.value = tenancyId;
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (token) {
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token.value;
+                form.appendChild(tokenInput);
+            }
+
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
+
+@functions {
+    private string GetStatusClass(Homerly.BusinessObject.Enums.TenancyStatus status)
+    {
+        return status switch
+        {
+            Homerly.BusinessObject.Enums.TenancyStatus.active => "active",
+            Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation => "pending_confirmation",
+            Homerly.BusinessObject.Enums.TenancyStatus.expired => "expired",
+            Homerly.BusinessObject.Enums.TenancyStatus.cancelled => "cancelled",
+            _ => "default"
+        };
+    }
+}

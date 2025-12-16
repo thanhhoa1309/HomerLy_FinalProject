@@ -3,7 +3,7 @@
     public enum PropertyStatus
     {
         available,
-        occupied
-
+        occupied,
+        under_maintenance
     }
 }
