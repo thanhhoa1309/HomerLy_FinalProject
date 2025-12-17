@@ -26,7 +26,7 @@ var stripePublishableKey = builder.Configuration["Stripe:PublishableKey"];
 StripeConfiguration.ApiKey = stripeSecretKey;
 
 // Set up Stripe app info
-var appInfo = new AppInfo { Name = "EVAuctionTrader", Version = "v1" };
+var appInfo = new AppInfo { Name = "HomerLy", Version = "v1" };
 StripeConfiguration.AppInfo = appInfo;
 
 // Register HTTP client for Stripe
@@ -54,6 +54,8 @@ if (string.IsNullOrEmpty(stripeSecretKey))
 // Add services to the container.
 builder.Services.AddRazorPages();
 
+
+
 // Add SignalR
 builder.Services.AddSignalR();
 
@@ -80,7 +82,7 @@ try
 
     builder.Services.AddDataProtection()
      .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionPath))
-        .SetApplicationName("EVAuctionTrader");
+        .SetApplicationName("HomerLy");
 }
 catch (Exception ex)
 {

@@ -1,7 +1,7 @@
 ﻿using Homerly.BusinessObject.Enums;
 using HomerLy.DataAccess.Entities;
 
-namespace EVAuctionTrader.DataAccess.Entities
+namespace Homerly.DataAccess.Entities
 {
     public class WalletTransaction : BaseEntity
     {

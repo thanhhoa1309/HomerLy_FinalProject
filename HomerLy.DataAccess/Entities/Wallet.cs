@@ -1,7 +1,6 @@
-﻿using Homerly.DataAccess.Entities;
-using HomerLy.DataAccess.Entities;
+﻿using HomerLy.DataAccess.Entities;
 
-namespace EVAuctionTrader.DataAccess.Entities
+namespace Homerly.DataAccess.Entities
 {
     public class Wallet : BaseEntity
     {

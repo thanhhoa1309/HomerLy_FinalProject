@@ -11,4 +11,8 @@
     <ProjectReference Include="..\HomerLy.DataAccess\HomerLy.DataAccess.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Stripe.net" Version="49.2.0"/>
+	</ItemGroup>
+
 </Project>
