@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomerLy.DataAccess.Migrations
 {
     [DbContext(typeof(HomerLyDbContext))]
-    [Migration("20251212203103_HomerLyDb")]
+    [Migration("20251216064832_HomerLyDb")]
     partial class HomerLyDb
     {
         /// <inheritdoc />

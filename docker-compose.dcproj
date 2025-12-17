@@ -10,6 +10,7 @@
     <DockerServiceName>homerly.presentation</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="CHAT_SERVICE_README.md" />
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>

@@ -11,6 +11,7 @@ namespace HomerLy.DataAccess.Interfaces
         IGenericRepository<UtilityReading> UtilityReading { get; }
         IGenericRepository<Invoice> Invoice { get; }
         IGenericRepository<PropertyReport> PropertyReport { get; }
+        IGenericRepository<ChatMessage> ChatMessage { get; }
         Task<int> SaveChangesAsync();
     }
 }

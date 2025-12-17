@@ -68,6 +68,7 @@ namespace Homerly.Presentation.Architecture
             services.AddScoped<ITenancyService, TenancyService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IPropertyReportService, PropertyReportService>();
+            services.AddScoped<IChatService, ChatService>();
 
             return services;
         }

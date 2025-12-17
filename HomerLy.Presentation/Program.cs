@@ -3,6 +3,7 @@ using Homerly.Presentation.Configuration;
 using Homerly.Presentation.Helper;
 using Homerly.Presentation.Hubs;
 using HomerLy.DataAccess;
+using HomerLy.Presentation.Hubs;
 using Microsoft.AspNetCore.DataProtection;
 using Stripe;
 using System.IdentityModel.Tokens.Jwt;
@@ -139,6 +140,7 @@ app.MapRazorPages();
 
 // Map SignalR Hub
 app.MapHub<AuctionHub>("/auctionHub");
+app.MapHub<ChatHub>("/chatHub");
 
 
 app.Run();
