@@ -123,8 +123,8 @@ try
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<HomerLyDbContext>();
 
-        // Seed initial account data
-        await DbSeeder.SeedAccountsAsync(dbContext);
+        // Seed all data (accounts, properties, tenancies, utility readings)
+        await DbSeeder.SeedAsync(dbContext);
     }
 }
 catch (Exception e)
