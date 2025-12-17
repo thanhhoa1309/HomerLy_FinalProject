@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
@@ -42,10 +43,10 @@
             text-decoration: none;
         }
 
-            a:hover {
-                color: var(--text-primary);
-                text-decoration: none;
-            }
+        a:hover {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
 
         .wrapper {
             display: flex;
@@ -68,21 +69,21 @@
             transition: transform 0.3s ease;
         }
 
-            .sidebar.active {
-                transform: translateX(-100%);
-            }
+        .sidebar.active {
+            transform: translateX(-100%);
+        }
 
         .sidebar-header {
             padding: 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
-            .sidebar-header h3 {
-                margin: 0;
-                font-size: 1.125rem;
-                font-weight: 600;
-                color: var(--text-primary);
-            }
+        .sidebar-header h3 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
 
         .sidebar-nav {
             flex: 1;
@@ -90,11 +91,11 @@
             padding: 12px;
         }
 
-            .sidebar-nav ul {
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
         .nav-item {
             margin-bottom: 2px;
@@ -111,22 +112,22 @@
             transition: all 0.15s ease;
         }
 
-            .nav-link:hover {
-                background: var(--sidebar-hover);
-                color: var(--text-primary);
-            }
+        .nav-link:hover {
+            background: var(--sidebar-hover);
+            color: var(--text-primary);
+        }
 
-            .nav-link.active {
-                background: var(--sidebar-active);
-                color: var(--text-primary);
-                font-weight: 500;
-            }
+        .nav-link.active {
+            background: var(--sidebar-active);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
 
-            .nav-link i {
-                width: 20px;
-                margin-right: 10px;
-                font-size: 1rem;
-            }
+        .nav-link i {
+            width: 20px;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
 
         /* Submenu */
         .nav-submenu {
@@ -134,16 +135,16 @@
             margin-top: 4px;
         }
 
-            .nav-submenu .nav-link {
-                padding: 8px 12px;
-                font-size: 0.8125rem;
-                color: var(--text-muted);
-            }
+        .nav-submenu .nav-link {
+            padding: 8px 12px;
+            font-size: 0.8125rem;
+            color: var(--text-muted);
+        }
 
-                .nav-submenu .nav-link:hover {
-                    color: var(--text-primary);
-                    background: var(--sidebar-hover);
-                }
+        .nav-submenu .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--sidebar-hover);
+        }
 
         /* Sidebar Footer */
         .sidebar-footer {
@@ -209,25 +210,25 @@
             transition: all 0.15s ease;
         }
 
-            .footer-link:hover {
-                background: var(--sidebar-hover);
-                color: var(--text-primary);
-            }
+        .footer-link:hover {
+            background: var(--sidebar-hover);
+            color: var(--text-primary);
+        }
 
-            .footer-link i {
-                width: 18px;
-                margin-right: 10px;
-                font-size: 0.9rem;
-            }
+        .footer-link i {
+            width: 18px;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
 
-            .footer-link.logout {
-                color: #dc3545;
-            }
+        .footer-link.logout {
+            color: #dc3545;
+        }
 
-                .footer-link.logout:hover {
-                    background: #fee2e2;
-                    color: #991b1b;
-                }
+        .footer-link.logout:hover {
+            background: #fee2e2;
+            color: #991b1b;
+        }
 
         /* Main Content */
         #content {
@@ -239,9 +240,9 @@
             transition: margin-left 0.3s ease;
         }
 
-            #content.active {
-                margin-left: 0;
-            }
+        #content.active {
+            margin-left: 0;
+        }
 
         /* Top Bar */
         .topbar {
@@ -268,14 +269,14 @@
             justify-content: center;
         }
 
-            .topbar-toggle:hover {
-                background: var(--sidebar-hover);
-                color: var(--text-primary);
-            }
+        .topbar-toggle:hover {
+            background: var(--sidebar-hover);
+            color: var(--text-primary);
+        }
 
-            .topbar-toggle i {
-                font-size: 1.25rem;
-            }
+        .topbar-toggle i {
+            font-size: 1.25rem;
+        }
 
         /* Main Area */
         .main-content {
@@ -301,9 +302,9 @@
             margin-bottom: 20px;
         }
 
-            .card:hover {
-                box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-            }
+        .card:hover {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        }
 
         .stat-card-wrapper {
             display: grid;
@@ -331,25 +332,25 @@
             min-width: 100%;
         }
 
-            .table thead th {
-                background: #fafbfc;
-                border-bottom: 1px solid var(--border-color);
-                font-weight: 500;
-                font-size: 0.75rem;
-                color: var(--text-secondary);
-                padding: 10px 14px;
-                text-transform: uppercase;
-                letter-spacing: 0.025em;
-            }
+        .table thead th {
+            background: #fafbfc;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 500;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            padding: 10px 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
 
-            .table tbody td {
-                padding: 12px 14px;
-                border-bottom: 1px solid var(--border-color);
-            }
+        .table tbody td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-            .table tbody tr:hover {
-                background: #fafbfc;
-            }
+        .table tbody tr:hover {
+            background: #fafbfc;
+        }
 
         /* Buttons */
         .btn {
@@ -360,27 +361,29 @@
             transition: all 0.15s ease;
         }
 
-        .btn-primary, .btn-dark {
+        .btn-primary,
+        .btn-dark {
             background: var(--text-primary);
             border-color: var(--text-primary);
             color: #fff;
         }
 
-            .btn-primary:hover, .btn-dark:hover {
-                background: #343a40;
-                border-color: #343a40;
-            }
+        .btn-primary:hover,
+        .btn-dark:hover {
+            background: #343a40;
+            border-color: #343a40;
+        }
 
         .btn-outline-secondary {
             border-color: var(--border-color);
             color: var(--text-secondary);
         }
 
-            .btn-outline-secondary:hover {
-                background: var(--sidebar-hover);
-                border-color: var(--border-color);
-                color: var(--text-primary);
-            }
+        .btn-outline-secondary:hover {
+            background: var(--sidebar-hover);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
 
         .btn-sm {
             padding: 5px 10px;
@@ -396,17 +399,19 @@
         }
 
         /* Forms */
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             font-size: 0.875rem;
             padding: 8px 12px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
         }
 
-            .form-control:focus, .form-select:focus {
-                border-color: var(--text-primary);
-                box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.1);
-            }
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--text-primary);
+            box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.1);
+        }
 
         .form-label {
             font-size: 0.8125rem;
@@ -466,9 +471,9 @@
                 transform: translateX(-100%);
             }
 
-                .sidebar.active {
-                    transform: translateX(0);
-                }
+            .sidebar.active {
+                transform: translateX(0);
+            }
 
             #content {
                 margin-left: 0;
@@ -485,6 +490,7 @@
         }
     </style>
 </head>
+
 <body class="owner-layout">
     <div class="wrapper">
         <!-- Sidebar -->
@@ -507,11 +513,16 @@
                             <span>My Properties</span>
                         </a>
                         <ul class="nav-submenu" id="propertySubmenu">
-                            <li class="nav-item"><a asp-page="/Owner/Properties/Index" class="nav-link">All Properties</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Properties/Create" class="nav-link">Add New Property</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Properties/Index" asp-route-status="Available" class="nav-link">Available</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Properties/Index" asp-route-status="Occupied" class="nav-link">Occupied</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Properties/Index" asp-route-status="UnderMaintenance" class="nav-link">Under Maintenance</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Properties/Index" class="nav-link">All
+                                    Properties</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Properties/Create" class="nav-link">Add New
+                                    Property</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Properties/Index" asp-route-status="Available"
+                                    class="nav-link">Available</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Properties/Index" asp-route-status="Occupied"
+                                    class="nav-link">Occupied</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Properties/Index"
+                                    asp-route-status="UnderMaintenance" class="nav-link">Under Maintenance</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -520,11 +531,16 @@
                             <span>Tenancies</span>
                         </a>
                         <ul class="nav-submenu" id="tenancySubmenu">
-                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" class="nav-link">All Tenancies</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Create" class="nav-link">Create Tenancy</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" asp-route-status="Active" class="nav-link">Active</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" asp-route-status="Pending" class="nav-link">Pending</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" asp-route-status="Expired" class="nav-link">Expired</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" class="nav-link">All Tenancies</a>
+                            </li>
+                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Create" class="nav-link">Create
+                                    Tenancy</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" asp-route-status="Active"
+                                    class="nav-link">Active</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" asp-route-status="Pending"
+                                    class="nav-link">Pending</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Tenancies/Index" asp-route-status="Expired"
+                                    class="nav-link">Expired</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -533,10 +549,14 @@
                             <span>Utility Readings</span>
                         </a>
                         <ul class="nav-submenu" id="utilitySubmenu">
-                            <li class="nav-item"><a asp-page="/Owner/Utilities/Index" class="nav-link">All Readings</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Utilities/Create" class="nav-link">Add Reading</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Utilities/Index" asp-route-isCharged="false" class="nav-link">Pending Charge</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Utilities/Index" asp-route-isCharged="true" class="nav-link">Charged</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Utilities/Index" class="nav-link">All Readings</a>
+                            </li>
+                            <li class="nav-item"><a asp-page="/Owner/Utilities/Create" class="nav-link">Add Reading</a>
+                            </li>
+                            <li class="nav-item"><a asp-page="/Owner/Utilities/Index" asp-route-isCharged="false"
+                                    class="nav-link">Pending Charge</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Utilities/Index" asp-route-isCharged="true"
+                                    class="nav-link">Charged</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -545,10 +565,14 @@
                             <span>Maintenance Reports</span>
                         </a>
                         <ul class="nav-submenu" id="reportSubmenu">
-                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" class="nav-link">All Reports</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" asp-route-priority="High" class="nav-link">High Priority</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" asp-route-priority="Medium" class="nav-link">Medium Priority</a></li>
-                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" asp-route-priority="Low" class="nav-link">Low Priority</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" class="nav-link">All Reports</a>
+                            </li>
+                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" asp-route-priority="High"
+                                    class="nav-link">High Priority</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" asp-route-priority="Medium"
+                                    class="nav-link">Medium Priority</a></li>
+                            <li class="nav-item"><a asp-page="/Owner/Reports/Index" asp-route-priority="Low"
+                                    class="nav-link">Low Priority</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
@@ -608,8 +632,8 @@
         </div>
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         document.getElementById('sidebarCollapse').addEventListener('click', function () {
@@ -617,14 +641,15 @@
             document.getElementById('content').classList.toggle('active');
         });
 
-        setTimeout(function() {
-            document.querySelectorAll('.alert').forEach(function(alert) {
+        setTimeout(function () {
+            document.querySelectorAll('.alert').forEach(function (alert) {
                 alert.style.transition = 'opacity 0.5s';
                 alert.style.opacity = '0';
-                setTimeout(function() { alert.remove(); }, 500);
+                setTimeout(function () { alert.remove(); }, 500);
             });
         }, 5000);
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

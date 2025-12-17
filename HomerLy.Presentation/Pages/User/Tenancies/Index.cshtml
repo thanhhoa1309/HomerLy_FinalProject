@@ -221,90 +221,168 @@
         <div class="card-header">
             <h5 style="margin: 0;">Active & Pending Tenancies</h5>
         </div>
-        <div class="card-body">
-            @if (Model.ActiveTenancies != null && Model.ActiveTenancies.Any())
-            {
-                <div style="overflow-x: auto;">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Property</th>
-                                <th>Owner</th>
-                                <th>Period</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var tenancy in Model.ActiveTenancies)
-                            {
-                                <tr>
-                                    <td>
-                                        <div style="display: flex; align-items: center; gap: 12px;">
-                                            <div style="width: 40px; height: 40px; background: #f8f9fa; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #1a1a1a;">
-                                                <i class="bi bi-building"></i>
-                                            </div>
-                                            <div>
-                                                <div style="font-weight: 600; color: #212529;">@tenancy.PropertyTitle</div>
-                                                <small style="color: #6c757d;"><i class="bi bi-geo-alt me-1"></i>@tenancy.PropertyAddress</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div style="display: flex; align-items: center;">
-                                            <div class="avatar-circle">
-                                                @tenancy.OwnerName.Substring(0, 1).ToUpper()
-                                            </div>
-                                            <span>@tenancy.OwnerName</span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div style="font-size: 0.875rem;">
-                                            <div style="color: #198754;"><i class="bi bi-calendar-check me-1"></i>@tenancy.StartDate.ToString("MMM dd, yyyy")</div>
-                                            <div style="color: #6c757d; margin: 4px 0;">to</div>
-                                            <div style="color: #dc3545;"><i class="bi bi-calendar-x me-1"></i>@tenancy.EndDate.ToString("MMM dd, yyyy")</div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active)
-                                        {
-                                            <span class="badge badge-active">
-                                                <i class="bi bi-check-circle-fill me-1"></i> Active
-                                            </span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge badge-pending">
-                                                <i class="bi bi-hourglass-split me-1"></i> Pending
-                                            </span>
-                                        }
-                                    </td>
-                                    <td>
-                                        <a href="#" class="btn btn-sm btn-dark">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation && !tenancy.IsTenantConfirmed)
-                                        {
-                                            <a href="#" class="btn btn-sm btn-dark" style="margin-left: 4px;">
-                                                <i class="bi bi-check-lg"></i> Confirm
-                                            </a>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+        <div class="card-body p-4">
+            <div class="tab-content" id="tenancyTabsContent">
+                <!-- Active & Pending Tab -->
+                <div class="tab-pane fade show active" id="active" role="tabpanel">
+                    @if (Model.ActiveTenancies != null && Model.ActiveTenancies.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table align-middle table-borderless table-hover">
+                                <thead class="bg-light text-muted small text-uppercase fw-bold">
+                                    <tr>
+                                        <th class="ps-4 rounded-start">Property</th>
+                                        <th>Owner</th>
+                                        <th>Period</th>
+                                        <th>Status</th>
+                                        <th class="text-end pe-4 rounded-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var tenancy in Model.ActiveTenancies)
+                                    {
+                                        <tr class="border-bottom">
+                                            <td class="ps-4">
+                                                <div class="d-flex align-items-center py-2">
+                                                    <div class="bg-white p-2 rounded border me-3 shadow-sm text-primary">
+                                                        <i class="bi bi-building fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold text-dark">@tenancy.PropertyTitle</h6>
+                                                        <small class="text-muted"><i class="bi bi-geo-alt me-1"></i>@tenancy.PropertyAddress</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-circle bg-light text-secondary me-2 small fw-bold" style="width: 30px; height: 30px;">
+                                                        @tenancy.OwnerName.Substring(0, 1).ToUpper()
+                                                    </div>
+                                                    <span>@tenancy.OwnerName</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column small">
+                                                    <span class="text-success fw-bold"><i class="bi bi-calendar-check me-2"></i>@tenancy.StartDate.ToString("MMM dd, yyyy")</span>
+                                                    <span class="text-muted ms-4 ps-1 border-start border-2 my-1">to</span>
+                                                    <span class="text-danger"><i class="bi bi-calendar-x me-2"></i>@tenancy.EndDate.ToString("MMM dd, yyyy")</span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active)
+                                                {
+                                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">
+                                                       <i class="bi bi-check-circle-fill me-1"></i> Active
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-3 py-2">
+                                                        <i class="bi bi-hourglass-split me-1"></i> Pending
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                <div class="btn-group">
+                                                    <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-light border shadow-sm text-muted" title="View Details">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation && !tenancy.IsTenantConfirmed)
+                                                    {
+                                                        <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-success shadow-sm ms-2 rounded" title="Confirm Tenancy">
+                                                            <i class="bi bi-check-lg me-1"></i>Confirm
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <div class="d-inline-block bg-primary bg-opacity-10 p-4 rounded-circle text-primary">
+                                    <i class="bi bi-house-door fs-1 opacity-50"></i>
+                                </div>
+                            </div>
+                            <h5 class="text-muted fw-bold">No active tenancies</h5>
+                            <p class="text-muted mb-4">You don't have any ongoing rental agreements.</p>
+                            <a asp-page="/User/Properties/Index" class="btn btn-primary rounded-pill px-4 shadow-sm">Browse Properties to Rent</a>
+                        </div>
+                    }
                 </div>
-            }
-            else
-            {
-                <div class="empty-state">
-                    <div class="empty-state-icon">
-                        <i class="bi bi-house-door"></i>
-                    </div>
-                    <h5>No active tenancies</h5>
-                    <p>You don't have any ongoing rental agreements.</p>
-                    <a asp-page="/User/Properties/Index" class="btn btn-dark">Browse Properties to Rent</a>
+
+                <!-- History Tab -->
+                <div class="tab-pane fade" id="history" role="tabpanel">
+                    @if (Model.HistoryTenancies != null && Model.HistoryTenancies.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table align-middle table-borderless table-hover">
+                                <thead class="bg-light text-muted small text-uppercase fw-bold">
+                                    <tr>
+                                        <th class="ps-4 rounded-start">Property</th>
+                                        <th>Owner</th>
+                                        <th>Period</th>
+                                        <th>Status</th>
+                                        <th class="text-end pe-4 rounded-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var tenancy in Model.HistoryTenancies)
+                                    {
+                                        <tr class="border-bottom">
+                                            <td class="ps-4">
+                                                <div class="d-flex align-items-center py-2 opacity-75">
+                                                     <div class="bg-light p-2 rounded border me-3 text-muted">
+                                                        <i class="bi bi-building fs-4"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0 fw-bold text-dark">@tenancy.PropertyTitle</h6>
+                                                        <small class="text-muted">@tenancy.PropertyAddress</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-muted">@tenancy.OwnerName</td>
+                                            <td class="text-muted small">
+                                                @tenancy.StartDate.ToString("MMM dd, yyyy") - @tenancy.EndDate.ToString("MMM dd, yyyy")
+                                            </td>
+                                            <td>
+                                                @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.expired)
+                                                {
+                                                    <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3 py-2">Expired</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2">Cancelled</span>
+                                                }
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-light border shadow-sm text-muted">
+                                                    <i class="bi bi-eye"></i> Details
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-5">
+                             <div class="mb-4">
+                                <div class="d-inline-block bg-secondary bg-opacity-10 p-4 rounded-circle text-secondary">
+                                    <i class="bi bi-clock-history fs-1 opacity-50"></i>
+                                </div>
+                            </div>
+                            <h5 class="text-muted fw-bold">No history</h5>
+                             <p class="text-muted">You have no past rental history.</p>
+                        </div>
+                    }
                 </div>
             }
         </div>

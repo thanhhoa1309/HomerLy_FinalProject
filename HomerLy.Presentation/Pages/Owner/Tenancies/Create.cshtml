@@ -1,0 +1,492 @@
+@page
+@model HomerLy.Presentation.Pages.Owner.Tenancies.CreateModel
+@{
+    ViewData["Title"] = "Create Tenancy";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-6 fw-bold mb-2">
+                    <i class="bi bi-file-earmark-text me-3"></i>Create Tenancy
+                </h1>
+                <p class="text-muted mb-0">Create a new rental agreement for your property</p>
+            </div>
+            <a asp-page="/Owner/Tenancies/Index" class="btn btn-outline-dark">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form method="post" id="tenancyForm">
+        <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-lg-8">
+                <!-- Property & Tenant Selection -->
+                <div class="form-card mb-4">
+                    <div class="form-card-header">
+                        <i class="bi bi-house-door me-2"></i>
+                        <span>Property & Tenant Information</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-building me-2"></i>Select Property
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="Tenancy.PropertyId" class="form-select-modern" required>
+                                    <option value="">Choose a property...</option>
+                                    @foreach (var property in Model.AvailableProperties)
+                                    {
+                                        <option value="@property.Id">
+                                            @property.Title - @property.Address (@property.MonthlyPrice.ToString("N0")
+                                            đ/month)
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Tenancy.PropertyId" class="text-danger small"></span>
+                                @if (!Model.AvailableProperties.Any())
+                                {
+                                    <div class="alert alert-warning mt-2 mb-0">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        No available properties. Please make sure you have properties with "Available"
+                                        status.
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-person me-2"></i>Select Tenant
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <select asp-for="Tenancy.TenantId" class="form-select-modern" required>
+                                    <option value="">Choose a tenant...</option>
+                                    @foreach (var tenant in Model.AvailableTenants)
+                                    {
+                                        <option value="@tenant.Id">
+                                            @tenant.FullName - @tenant.Email
+                                        </option>
+                                    }
+                                </select>
+                                <span asp-validation-for="Tenancy.TenantId" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract Period -->
+                <div class="form-card mb-4">
+                    <div class="form-card-header">
+                        <i class="bi bi-calendar-range me-2"></i>
+                        <span>Contract Period</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-calendar-check me-2"></i>Start Date
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" asp-for="Tenancy.StartDate" class="form-control-modern" required />
+                                <span asp-validation-for="Tenancy.StartDate" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-calendar-x me-2"></i>End Date
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" asp-for="Tenancy.EndDate" class="form-control-modern" required />
+                                <span asp-validation-for="Tenancy.EndDate" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="info-box mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <span>Contract duration will be calculated automatically based on start and end
+                                dates.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Utility Prices -->
+                <div class="form-card mb-4">
+                    <div class="form-card-header">
+                        <i class="bi bi-lightning-charge me-2"></i>
+                        <span>Utility Unit Prices</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-lightning-fill me-2"></i>Electric Unit Price (đ/kWh)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" asp-for="Tenancy.ElectricUnitPrice" class="form-control-modern"
+                                        step="100" min="0" placeholder="3500" required />
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                                <span asp-validation-for="Tenancy.ElectricUnitPrice" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-droplet-fill me-2"></i>Water Unit Price (đ/m³)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="number" asp-for="Tenancy.WaterUnitPrice" class="form-control-modern"
+                                        step="100" min="0" placeholder="15000" required />
+                                    <span class="input-group-text">đ</span>
+                                </div>
+                                <span asp-validation-for="Tenancy.WaterUnitPrice" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Initial Meter Readings -->
+                <div class="form-card mb-4">
+                    <div class="form-card-header">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        <span>Initial Meter Readings</span>
+                    </div>
+                    <div class="form-card-body">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-lightning-fill me-2"></i>Electric Meter (kWh)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" asp-for="Tenancy.ElectricOldIndex" class="form-control-modern"
+                                    min="0" placeholder="0" required />
+                                <span asp-validation-for="Tenancy.ElectricOldIndex" class="text-danger small"></span>
+                                <small class="text-muted">Starting electric meter reading</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label-modern">
+                                    <i class="bi bi-droplet-fill me-2"></i>Water Meter (m³)
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <input type="number" asp-for="Tenancy.WaterOldIndex" class="form-control-modern" min="0"
+                                    placeholder="0" required />
+                                <span asp-validation-for="Tenancy.WaterOldIndex" class="text-danger small"></span>
+                                <small class="text-muted">Starting water meter reading</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract Document (Optional) -->
+                <div class="form-card mb-4">
+                    <div class="form-card-header">
+                        <i class="bi bi-file-earmark-pdf me-2"></i>
+                        <span>Contract Document (Optional)</span>
+                    </div>
+                    <div class="form-card-body">
+                        <label class="form-label-modern">
+                            <i class="bi bi-link-45deg me-2"></i>Contract URL
+                        </label>
+                        <input type="url" asp-for="Tenancy.ContractUrl" class="form-control-modern"
+                            placeholder="https://example.com/contract.pdf" />
+                        <span asp-validation-for="Tenancy.ContractUrl" class="text-danger small"></span>
+                        <small class="text-muted">Link to the signed contract document (Google Drive, Dropbox,
+                            etc.)</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Summary -->
+            <div class="col-lg-4">
+                <div class="summary-card sticky-top" style="top: 20px;">
+                    <div class="summary-header">
+                        <i class="bi bi-card-checklist me-2"></i>
+                        <span>Summary</span>
+                    </div>
+                    <div class="summary-body">
+                        <div class="summary-item">
+                            <div class="summary-label">
+                                <i class="bi bi-building me-2"></i>Property
+                            </div>
+                            <div class="summary-value" id="selectedProperty">Not selected</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">
+                                <i class="bi bi-person me-2"></i>Tenant
+                            </div>
+                            <div class="summary-value" id="selectedTenant">Not selected</div>
+                        </div>
+
+                        <div class="summary-divider"></div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">
+                                <i class="bi bi-calendar-range me-2"></i>Duration
+                            </div>
+                            <div class="summary-value" id="contractDuration">-</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">
+                                <i class="bi bi-lightning-charge me-2"></i>Electric Price
+                            </div>
+                            <div class="summary-value" id="electricPrice">-</div>
+                        </div>
+
+                        <div class="summary-item">
+                            <div class="summary-label">
+                                <i class="bi bi-droplet me-2"></i>Water Price
+                            </div>
+                            <div class="summary-value" id="waterPrice">-</div>
+                        </div>
+
+                        <div class="info-box mt-4">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <div>
+                                <strong>What happens next?</strong>
+                                <ul class="mt-2 mb-0 ps-3">
+                                    <li>Tenancy will be created with "Pending" status</li>
+                                    <li>Tenant will receive notification to confirm</li>
+                                    <li>After confirmation, you can activate the tenancy</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-footer">
+                        <button type="submit" class="btn btn-dark w-100 btn-lg">
+                            <i class="bi bi-check-circle me-2"></i>Create Tenancy
+                        </button>
+                        <a asp-page="/Owner/Tenancies/Index" class="btn btn-outline-secondary w-100 mt-2">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<style>
+    /* Page Header */
+    .page-header {
+        padding-bottom: 1.5rem;
+        border-bottom: 2px solid #212529;
+    }
+
+    .page-header .display-6 {
+        color: #212529;
+        font-weight: 700;
+    }
+
+    /* Form Card */
+    .form-card {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-card-header {
+        background: #f8f9fa;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #212529;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-card-body {
+        padding: 1.5rem;
+    }
+
+    /* Form Controls */
+    .form-label-modern {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: #212529;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control-modern,
+    .form-select-modern {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-control-modern:focus,
+    .form-select-modern:focus {
+        border-color: #212529;
+        box-shadow: 0 0 0 0.15rem rgba(33, 37, 41, 0.1);
+        outline: none;
+    }
+
+    .input-group-text {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+        font-weight: 500;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: #f8f9fa;
+        border-left: 3px solid #212529;
+        padding: 1rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        color: #495057;
+    }
+
+    /* Summary Card */
+    .summary-card {
+        background: #ffffff;
+        border: 2px solid #212529;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .summary-header {
+        background: #212529;
+        color: #ffffff;
+        padding: 1rem 1.5rem;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .summary-body {
+        padding: 1.5rem;
+    }
+
+    .summary-item {
+        margin-bottom: 1rem;
+    }
+
+    .summary-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .summary-value {
+        font-size: 0.95rem;
+        color: #212529;
+        font-weight: 600;
+    }
+
+    .summary-divider {
+        height: 1px;
+        background: #e9ecef;
+        margin: 1.5rem 0;
+    }
+
+    .summary-footer {
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+
+    /* Responsive */
+    @@media (max-width: 991px) {
+        .summary-card {
+            position: static !important;
+            margin-top: 2rem;
+        }
+    }
+</style>
+
+<script>
+    // Update summary in real-time
+    document.addEventListener('DOMContentLoaded', function () {
+        const propertySelect = document.querySelector('select[name="Tenancy.PropertyId"]');
+        const tenantSelect = document.querySelector('select[name="Tenancy.TenantId"]');
+        const startDateInput = document.querySelector('input[name="Tenancy.StartDate"]');
+        const endDateInput = document.querySelector('input[name="Tenancy.EndDate"]');
+        const electricPriceInput = document.querySelector('input[name="Tenancy.ElectricUnitPrice"]');
+        const waterPriceInput = document.querySelector('input[name="Tenancy.WaterUnitPrice"]');
+
+        // Update property summary
+        propertySelect?.addEventListener('change', function () {
+            const selectedText = this.options[this.selectedIndex].text;
+            document.getElementById('selectedProperty').textContent =
+                this.value ? selectedText.split(' - ')[0] : 'Not selected';
+        });
+
+        // Update tenant summary
+        tenantSelect?.addEventListener('change', function () {
+            const selectedText = this.options[this.selectedIndex].text;
+            document.getElementById('selectedTenant').textContent =
+                this.value ? selectedText.split(' - ')[0] : 'Not selected';
+        });
+
+        // Calculate duration
+        function updateDuration() {
+            const start = new Date(startDateInput.value);
+            const end = new Date(endDateInput.value);
+
+            if (start && end && end > start) {
+                const months = Math.round((end - start) / (1000 * 60 * 60 * 24 * 30));
+                document.getElementById('contractDuration').textContent =
+                    `${months} month${months !== 1 ? 's' : ''}`;
+            } else {
+                document.getElementById('contractDuration').textContent = '-';
+            }
+        }
+
+        startDateInput?.addEventListener('change', updateDuration);
+        endDateInput?.addEventListener('change', updateDuration);
+
+        // Update prices
+        electricPriceInput?.addEventListener('input', function () {
+            const value = parseFloat(this.value);
+            document.getElementById('electricPrice').textContent =
+                value > 0 ? `${value.toLocaleString()} đ/kWh` : '-';
+        });
+
+        waterPriceInput?.addEventListener('input', function () {
+            const value = parseFloat(this.value);
+            document.getElementById('waterPrice').textContent =
+                value > 0 ? `${value.toLocaleString()} đ/m³` : '-';
+        });
+
+        // Initialize
+        updateDuration();
+        if (electricPriceInput.value) electricPriceInput.dispatchEvent(new Event('input'));
+        if (waterPriceInput.value) waterPriceInput.dispatchEvent(new Event('input'));
+    });
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

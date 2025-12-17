@@ -90,36 +90,5 @@ namespace HomerLy.Presentation.Pages.Owner.Properties
                 return Page();
             }
         }
-
-        public async Task<IActionResult> OnPostDeleteAsync(Guid propertyId)
-        {
-            try
-            {
-                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var ownerId))
-                {
-                    return RedirectToPage("/Auth/Login");
-                }
-
-                var success = await _propertyService.DeletePropertyAsync(propertyId, ownerId);
-
-                if (success)
-                {
-                    TempData["SuccessMessage"] = "Property deleted successfully!";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to delete property.";
-                }
-
-                return RedirectToPage();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error deleting property: {ex.Message}");
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToPage();
-            }
-        }
     }
 }
