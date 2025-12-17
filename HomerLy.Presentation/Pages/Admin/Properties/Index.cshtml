@@ -1,0 +1,375 @@
+﻿@page
+@using Homerly.BusinessObject.Enums
+@model HomerLy.Presentation.Pages.Admin.Properties.IndexModel
+@{
+    ViewData["Title"] = "Property Management";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    /* Properties page-specific styles */
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        height: 100%;
+        min-width: 0;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .badge-available {
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+    }
+
+    .badge-occupied {
+        background: #f5f5f5 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .badge-maintenance {
+        background: #ffffff !important;
+        color: #666666 !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .btn-group-sm .btn {
+        border-color: #e5e5e5;
+    }
+
+        .btn-group-sm .btn:hover {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+    /* Custom layout styles */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+        .filter-grid > div:last-child {
+            display: flex;
+            align-items: flex-end;
+        }
+
+    .property-cell {
+        text-align: left;
+    }
+
+    .property-title {
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .property-address {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .table tbody td,
+    .table thead th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+        .table tbody td:first-child,
+        .table thead th:first-child {
+            text-align: left;
+        }
+
+    .property-image {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+
+    .property-image-cell {
+        text-align: center;
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header">
+        <h2 class="h4 mb-0 fw-semibold">
+            <i class="bi bi-building me-2"></i>Property Management
+        </h2>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-funnel me-2"></i>Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="filter-grid">
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Statuses</option>
+                            <option value="available" selected="@(Model.StatusFilter == "available")">Available</option>
+                            <option value="occupied" selected="@(Model.StatusFilter == "occupied")">Occupied</option>
+                            <option value="under_maintenance" selected="@(Model.StatusFilter == "under_maintenance")">Under Maintenance</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Search</label>
+                        <input type="text" name="search" class="form-control" placeholder="Title, Address, Description..." value="@Model.SearchQuery" />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-dark w-100">
+                            <i class="bi bi-search me-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stat-card-wrapper">
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.TotalProperties</h3>
+                <p>Total Properties</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-building"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.AvailableCount</h3>
+                <p>Available</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.OccupiedCount</h3>
+                <p>Occupied</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-house-fill"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Properties Table -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold">Properties List</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Image</th>
+                            <th>Owner</th>
+                            <th>Monthly Price</th>
+                            <th>Area (m²)</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Properties != null && Model.Properties.Any())
+                        {
+                            @foreach (var item in Model.Properties)
+                            {
+                                <tr>
+                                    <td class="property-cell">
+                                        <div class="property-title">@item.Property.Title</div>
+                                        <div class="property-address">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                            @item.Property.Address
+                                        </div>
+                                    </td>
+                                    <td class="property-image-cell">
+                                        @if (!string.IsNullOrEmpty(item.Property.ImageUrl))
+                                        {
+                                            <img src="@item.Property.ImageUrl" alt="@item.Property.Title" class="property-image" />
+                                        }
+                                        else
+                                        {
+                                            <div class="property-image d-flex align-items-center justify-content-center" style="background: #f5f5f5;">
+                                                <i class="bi bi-image text-secondary"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">@item.OwnerName</div>
+                                        <small class="text-secondary d-block">@item.OwnerEmail</small>
+                                    </td>
+                                    <td class="fw-semibold">₫@item.Property.MonthlyPrice.ToString("N0")</td>
+                                    <td>@item.Property.AreaSqm m²</td>
+                                    <td>
+                                        @if (item.Property.Status == PropertyStatus.available)
+                                        {
+                                            <span class="badge badge-available">Available</span>
+                                        }
+                                        else if (item.Property.Status == PropertyStatus.occupied)
+                                        {
+                                            <span class="badge badge-occupied">Occupied</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-maintenance">Maintenance</span>
+                                        }
+                                    </td>
+                                    <td class="text-secondary">@item.Property.CreatedAt.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-page="/Admin/Properties/Details" asp-route-id="@item.Property.Id" class="btn btn-outline-dark" title="Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-dark" onclick="deleteProperty('@item.Property.Id', '@item.Property.OwnerId')" title="Delete">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-4 text-secondary">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No properties found
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @if (Model.PropertiesPagination?.TotalPages > 1)
+        {
+            <div class="card-footer bg-transparent">
+                <nav>
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item @(Model.PropertiesPagination.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-route-pageNumber="@(Model.PropertiesPagination.CurrentPage - 1)" asp-route-status="@Model.StatusFilter" asp-route-search="@Model.SearchQuery">Previous</a>
+                        </li>
+                        @for (int i = 1; i <= Model.PropertiesPagination.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Model.PropertiesPagination.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-route-pageNumber="@i" asp-route-status="@Model.StatusFilter" asp-route-search="@Model.SearchQuery">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.PropertiesPagination.CurrentPage == Model.PropertiesPagination.TotalPages ? "disabled" : "")">
+                            <a class="page-link" asp-route-pageNumber="@(Model.PropertiesPagination.CurrentPage + 1)" asp-route-status="@Model.StatusFilter" asp-route-search="@Model.SearchQuery">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
+</div>
+
+@Html.AntiForgeryToken()
+
+<script>
+    function deleteProperty(propertyId, ownerId) {
+        if (confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Admin/Properties/Index?handler=Delete';
+
+            const propertyInput = document.createElement('input');
+            propertyInput.type = 'hidden';
+            propertyInput.name = 'propertyId';
+            propertyInput.value = propertyId;
+
+            const ownerInput = document.createElement('input');
+            ownerInput.type = 'hidden';
+            ownerInput.name = 'ownerId';
+            ownerInput.value = ownerId;
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (token) {
+                const tokenInput = document.createElement('input');
+                tokenInput.type = 'hidden';
+                tokenInput.name = '__RequestVerificationToken';
+                tokenInput.value = token.value;
+                form.appendChild(tokenInput);
+            }
+
+            form.appendChild(propertyInput);
+            form.appendChild(ownerInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+</script>
