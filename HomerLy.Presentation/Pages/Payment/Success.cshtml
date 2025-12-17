@@ -1,0 +1,56 @@
+@page
+@model HomerLy.Presentation.Pages.Payment.SuccessModel
+@{
+    ViewData["Title"] = "Payment Successful";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow text-center">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="card-title text-success mb-3">Payment Successful!</h2>
+                    <p class="card-text mb-4">
+                        Your payment has been processed successfully. The invoice has been marked as paid.
+                    </p>
+                    <p class="text-muted mb-4">
+                        <small>Session ID: @Model.SessionId</small>
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a href="/User/Invoices" class="btn btn-primary">
+                            <i class="bi bi-receipt"></i> View My Invoices
+                        </a>
+                        <a href="/User/Dashboard" class="btn btn-secondary">
+                            <i class="bi bi-house-door"></i> Go to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle"></i> 
+                <strong>Note:</strong> A confirmation email will be sent to your registered email address shortly.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 15px;
+            border: none;
+        }
+        .bi-check-circle-fill {
+            animation: scaleIn 0.5s ease-in-out;
+        }
+        @@keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+}

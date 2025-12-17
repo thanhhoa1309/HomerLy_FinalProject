@@ -1,0 +1,62 @@
+@page
+@model HomerLy.Presentation.Pages.Payment.CancelModel
+@{
+    ViewData["Title"] = "Payment Cancelled";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow text-center">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-x-circle-fill text-warning" style="font-size: 5rem;"></i>
+                    </div>
+                    <h2 class="card-title text-warning mb-3">Payment Cancelled</h2>
+                    <p class="card-text mb-4">
+                        Your payment has been cancelled. No charges have been made to your account.
+                    </p>
+                    <p class="text-muted mb-4">
+                        If you experienced any issues during checkout, please contact support or try again.
+                    </p>
+                    <div class="d-grid gap-2">
+                        @if (Model.InvoiceId.HasValue)
+                        {
+                            <a href="/Payment/PayInvoice/@Model.InvoiceId" class="btn btn-primary">
+                                <i class="bi bi-arrow-clockwise"></i> Try Again
+                            </a>
+                        }
+                        <a href="/User/Invoices" class="btn btn-secondary">
+                            <i class="bi bi-receipt"></i> View My Invoices
+                        </a>
+                        <a href="/User/Dashboard" class="btn btn-outline-secondary">
+                            <i class="bi bi-house-door"></i> Go to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-question-circle"></i> 
+                <strong>Need Help?</strong> If you're having trouble with payment, please contact our support team.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 15px;
+            border: none;
+        }
+        .bi-x-circle-fill {
+            animation: shake 0.5s ease-in-out;
+        }
+        @@keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+}

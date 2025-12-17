@@ -10,6 +10,7 @@ namespace HomerLy.DataAccess.Interfaces
         IGenericRepository<Tenancy> Tenancy { get; }
         IGenericRepository<UtilityReading> UtilityReading { get; }
         IGenericRepository<Invoice> Invoice { get; }
+        IGenericRepository<Payment> Payment { get; }
         IGenericRepository<PropertyReport> PropertyReport { get; }
         IGenericRepository<ChatMessage> ChatMessage { get; }
         Task<int> SaveChangesAsync();

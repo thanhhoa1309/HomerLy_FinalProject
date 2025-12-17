@@ -13,6 +13,8 @@ services:
       - "JWT__SecretKey=Homerly_SECRETKEY_SIEUCAPBAOMAT_VAYMACHUADU16KYTU"
       - "JWT__Issuer=Homerly_Issuer"
       - "JWT__Audience=Homerly_Audience"
+      - Stripe__SecretKey=sk_test_51Sf7C3GwpCdpQ2BLEwlNxEE0Id5hEdCf2sQDUkzEKqnwRmXE5z0rlDg7m7MiIKu6OXkoxfRBOjoTHT96O0DUMQwo00nYDminEw
+      - Stripe__PublishableKey=pk_test_51Sf7C3GwpCdpQ2BLGDD5DvgiigDO6EgJAQcPA67Kgi8LpwEapuJGMAwKGKUV0zsaatcIOPt907EHCyXphtgsFf8a00g2sDZkee
       - AppSettings__BaseUrl=http://localhost:5000
       - ASPNETCORE_URLS=http://+:5000
     ports:

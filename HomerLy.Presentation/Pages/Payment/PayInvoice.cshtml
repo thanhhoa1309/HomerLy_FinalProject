@@ -1,0 +1,136 @@
+@page "/Payment/PayInvoice/{invoiceId:guid}"
+@model HomerLy.Presentation.Pages.Payment.PayInvoiceModel
+@{
+    ViewData["Title"] = "Pay Invoice";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i> @Model.ErrorMessage
+                </div>
+                <div class="text-center mt-4">
+                    <a href="/User/Invoices" class="btn btn-primary">
+                        <i class="bi bi-arrow-left"></i> Back to Invoices
+                    </a>
+                </div>
+            }
+            else if (Model.Invoice != null)
+            {
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-receipt"></i> Invoice Payment
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Invoice Details -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">Invoice Details</h5>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Property:</strong> @Model.Invoice.PropertyTitle</p>
+                                    <p><strong>Address:</strong> @Model.Invoice.PropertyAddress</p>
+                                    <p><strong>Billing Period:</strong><br/>
+                                       @Model.Invoice.BillingPeriodStart.ToString("MMM dd, yyyy") - @Model.Invoice.BillingPeriodEnd.ToString("MMM dd, yyyy")</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Invoice ID:</strong> INV-@Model.Invoice.Id.ToString().Substring(0, 8).ToUpper()</p>
+                                    <p><strong>Due Date:</strong> @Model.Invoice.DueDate.ToString("MMM dd, yyyy")</p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="badge bg-@(Model.Invoice.Status.ToString() == "paid" ? "success" : Model.Invoice.Status.ToString() == "overdue" ? "danger" : "warning")">
+                                            @Model.Invoice.Status.ToString().ToUpper()
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cost Breakdown -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">Cost Breakdown</h5>
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Monthly Rent</strong></td>
+                                        <td class="text-end">@Model.Invoice.MonthlyRentPrice.ToString("N0") VND</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Electricity</strong><br/>
+                                            <small class="text-muted">
+                                                @Model.Invoice.ElectricOldIndex ? @Model.Invoice.ElectricNewIndex 
+                                                (@(Model.Invoice.ElectricNewIndex - Model.Invoice.ElectricOldIndex) kWh × @Model.Invoice.ElectricUnitPrice.ToString("N0") VND)
+                                            </small>
+                                        </td>
+                                        <td class="text-end">@Model.Invoice.ElectricCost.ToString("N0") VND</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Water</strong><br/>
+                                            <small class="text-muted">
+                                                @Model.Invoice.WaterOldIndex ? @Model.Invoice.WaterNewIndex 
+                                                (@(Model.Invoice.WaterNewIndex - Model.Invoice.WaterOldIndex) m³ × @Model.Invoice.WaterUnitPrice.ToString("N0") VND)
+                                            </small>
+                                        </td>
+                                        <td class="text-end">@Model.Invoice.WaterCost.ToString("N0") VND</td>
+                                    </tr>
+                                    @if (Model.Invoice.OtherFees > 0)
+                                    {
+                                        <tr>
+                                            <td><strong>Other Fees</strong></td>
+                                            <td class="text-end">@Model.Invoice.OtherFees.ToString("N0") VND</td>
+                                        </tr>
+                                    }
+                                    <tr class="table-primary">
+                                        <td><strong>Total Amount</strong></td>
+                                        <td class="text-end"><strong>@Model.Invoice.TotalAmount.ToString("N0") VND</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Payment Section -->
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> 
+                            You will be redirected to Stripe's secure checkout page to complete the payment.
+                        </div>
+
+                        <form method="post">
+                            <input type="hidden" asp-for="InvoiceId" />
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="bi bi-credit-card"></i> Pay @Model.Invoice.TotalAmount.ToString("N0") VND with Stripe
+                                </button>
+                                <a href="/User/Invoices" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+
+                        <!-- Stripe Logo -->
+                        <div class="text-center mt-4">
+                            <small class="text-muted">
+                                Powered by <strong>Stripe</strong> - Secure Payment Processing
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border-radius: 10px;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
+}
