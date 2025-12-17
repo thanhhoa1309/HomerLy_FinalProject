@@ -1,0 +1,176 @@
+@page
+@using Homerly.BusinessObject.Enums
+@model HomerLy.Presentation.Pages.Admin.Tenancies.IndexModel
+@{
+    ViewData["Title"] = "All Tenancies";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">Tenancy Management</h2>
+            <p class="text-secondary mb-0">Manage all rental agreements, approvals, and history.</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <h5 class="mb-0 fw-semibold">All Tenancies</h5>
+                    <span class="badge bg-light text-dark border">@Model.Tenancies.Count records</span>
+                </div>
+                
+                <form method="get" class="d-flex gap-2 align-items-center">
+                    <select asp-for="Status" class="form-select form-select-sm" style="width: 150px;" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        @foreach (var status in Enum.GetValues(typeof(TenancyStatus)))
+                        {
+                            <option value="@status">@status</option>
+                        }
+                    </select>
+                    <div class="input-group input-group-sm" style="width: 250px;">
+                        <input type="text" asp-for="SearchQuery" class="form-control" placeholder="Search tenant, owner, property...">
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                    @if (Model.Status.HasValue || !string.IsNullOrEmpty(Model.SearchQuery))
+                    {
+                        <a asp-page="./Index" class="btn btn-sm btn-link text-decoration-none">Clear</a>
+                    }
+                </form>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-3">Property</th>
+                        <th>Tenant</th>
+                        <th>Owner</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Confirmation</th>
+                        <th class="text-end pe-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Tenancies.Any())
+                    {
+                        @foreach (var item in Model.Tenancies)
+                        {
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-medium">@item.PropertyTitle</div>
+                                    <small class="text-muted">@item.PropertyAddress</small>
+                                </td>
+                                <td>
+                                    <div class="fw-medium">@item.TenantName</div>
+                                    <small class="text-muted">@item.TenantEmail</small>
+                                </td>
+                                <td>
+                                    <div class="fw-medium">@item.OwnerName</div>
+                                </td>
+                                <td>
+                                    <div>@item.StartDate.ToString("MMM dd, yyyy")</div>
+                                    <small class="text-muted">to @item.EndDate.ToString("MMM dd, yyyy")</small>
+                                </td>
+                                <td>
+                                    @if(item.Status == TenancyStatus.active)
+                                    {
+                                        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Active</span>
+                                    }
+                                    else if (item.Status == TenancyStatus.pending_confirmation)
+                                    {
+                                        <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">Pending</span>
+                                    }
+                                    else if (item.Status == TenancyStatus.expired)
+                                    {
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">Expired</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">@item.Status</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsTenantConfirmed)
+                                    {
+                                        <span class="text-success small"><i class="bi bi-check-circle-fill me-1"></i>Confirmed</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-warning small"><i class="bi bi-hourglass-split me-1"></i>Waiting</span>
+                                    }
+                                </td>
+                                <td class="text-end pe-3">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        @if (!string.IsNullOrEmpty(item.ContractUrl))
+                                        {
+                                            <a href="@item.ContractUrl" target="_blank" class="btn btn-sm btn-outline-primary" title="View Contract">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                            </a>
+                                        }
+
+                                        @if (item.Status == TenancyStatus.pending_confirmation)
+                                        {
+                                            <form method="post" asp-page-handler="Approve" asp-route-id="@item.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Approve this tenancy?')">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </button>
+                                            </form>
+                                            <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Reject this tenancy? This will cancel it.')">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (item.Status == TenancyStatus.active)
+                                        {
+                                             <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancel this active tenancy?')">
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="bi bi-folder2-open display-6 text-muted mb-3 d-block"></i>
+                                <p class="text-muted">No tenancies found matching your criteria.</p>
+                                @if (Model.Status.HasValue || !string.IsNullOrEmpty(Model.SearchQuery))
+                                {
+                                    <a asp-page="./Index" class="btn btn-sm btn-secondary mt-2">Clear Filters</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
