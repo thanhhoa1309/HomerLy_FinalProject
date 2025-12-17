@@ -346,6 +346,7 @@ namespace Homerly.Business.Services
                 FullName = account.FullName,
                 Role = account.Role,
                 CccdNumber = account.CccdNumber ?? string.Empty,
+                IsOwnerApproved = account.IsOwnerApproved,
                 CreatedAt = account.CreatedAt,
                 UpdatedAt = account.UpdatedAt,
                 IsDeleted = account.IsDeleted

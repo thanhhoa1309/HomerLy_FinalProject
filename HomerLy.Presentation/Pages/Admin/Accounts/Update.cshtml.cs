@@ -68,7 +68,7 @@ namespace HomerLy.Presentation.Pages.Admin.Accounts
                     Phone = Account.Phone,
                     CccdNumber = Account.CccdNumber,
                     Role = Account.Role.ToString(),
-                    IsOwnerApproved = Account.Role == RoleType.Owner
+                    IsOwnerApproved = Account.IsOwnerApproved
                 };
 
                 SuccessMessage = TempData["SuccessMessage"] as string;

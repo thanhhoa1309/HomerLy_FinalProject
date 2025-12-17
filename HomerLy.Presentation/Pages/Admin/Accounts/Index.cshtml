@@ -232,6 +232,7 @@
                             <th>Email</th>
                             <th>CCCD</th>
                             <th>Role</th>
+                            <th>Approval Status</th>
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -257,6 +258,27 @@
                                             @account.Role
                                         </span>
                                     </td>
+                                    <td>
+                                        @if (account.Role == Homerly.BusinessObject.Enums.RoleType.Owner)
+                                        {
+                                            @if (account.IsOwnerApproved)
+                                            {
+                                                <span class="badge badge-admin">
+                                                    <i class="bi bi-check-circle me-1"></i>Approved
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-owner">
+                                                    <i class="bi bi-clock me-1"></i>Pending
+                                                </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-secondary">Not Owner</span>
+                                        }
+                                    </td>
                                     <td class="text-secondary">@account.CreatedAt.ToString("dd/MM/yyyy")</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
@@ -277,7 +299,7 @@
                         else
                         {
                             <tr>
-                                <td colspan="6" class="text-center py-4 text-secondary">
+                                <td colspan="7" class="text-center py-4 text-secondary">
                                     <i class="bi bi-inbox fs-1 d-block mb-2"></i>
                                     No accounts found
                                 </td>
