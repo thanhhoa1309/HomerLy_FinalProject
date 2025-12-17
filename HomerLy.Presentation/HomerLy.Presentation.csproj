@@ -9,13 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\Admin\Accounts\Create.cshtml.cs" />
     <Compile Remove="Pages\Admin\Accounts\Index1.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="Pages\Admin\Accounts\Component.razor" />
-    <Content Remove="Pages\Admin\Accounts\Create.cshtml" />
     <Content Remove="Pages\Admin\Accounts\Index1.cshtml" />
     <Content Remove="Pages\Admin\Accounts\Update.razor" />
   </ItemGroup>

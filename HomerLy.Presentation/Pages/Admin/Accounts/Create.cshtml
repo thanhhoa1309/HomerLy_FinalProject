@@ -1,4 +1,315 @@
-@page
+﻿@page
 @model HomerLy.Presentation.Pages.Admin.Accounts.CreateModel
 @{
+    ViewData["Title"] = "Create Account";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .container-fluid {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .page-header p {
+            margin: 0;
+            color: #6c757d;
+        }
+
+    .btn {
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 0.9375rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .btn-dark {
+        background-color: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-dark:hover {
+            background-color: #000000;
+            border-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+    .btn-outline-secondary {
+        background: transparent;
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #ffffff;
+        }
+
+    .btn-light {
+        background: #f8f9fa;
+        color: #6c757d;
+        border-color: #e9ecef;
+    }
+
+        .btn-light:hover {
+            background: #e9ecef;
+            color: #212529;
+        }
+
+    .card {
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        background: #ffffff;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .card-header {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 16px 20px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+    }
+
+    .card-body {
+        padding: 24px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: #212529;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control, .form-select {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 12px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+        margin-top: 20px;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .alert {
+        padding: 16px 20px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        border: 1px solid transparent;
+    }
+
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    .required-mark {
+        color: #dc3545;
+        margin-left: 2px;
+    }
+
+    .form-help-text {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin-top: 4px;
+        display: block;
+    }
+
+    .me-2 {
+        margin-right: 8px;
+    }
+
+    .w-100 {
+        width: 100%;
+    }
+    e
+    @@media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+            .form-actions .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div>
+            <h2>Create New Account</h2>
+            <p>Add a new user, owner, or admin account</p>
+        </div>
+        <a asp-page="/Admin/Accounts/Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Back to Accounts
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-person-plus me-2"></i>Account Information</h5>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <!-- Personal Information -->
+                <div class="form-group">
+                    <label class="form-label">
+                        Full Name <span class="required-mark">*</span>
+                    </label>
+                    <input asp-for="Input.FullName" class="form-control" placeholder="Enter full name" />
+                    <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Email Address <span class="required-mark">*</span>
+                        </label>
+                        <input asp-for="Input.Email" class="form-control" type="email" placeholder="example@email.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Phone Number <span class="required-mark">*</span>
+                        </label>
+                        <input asp-for="Input.Phone" class="form-control" type="tel" placeholder="0123456789" />
+                        <span asp-validation-for="Input.Phone" class="text-danger"></span>
+                        <small class="form-help-text">Format: 0123456789 or +84123456789</small>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            CCCD Number <span class="required-mark">*</span>
+                        </label>
+                        <input asp-for="Input.CccdNumber" class="form-control" placeholder="123456789 or 123456789012" />
+                        <span asp-validation-for="Input.CccdNumber" class="text-danger"></span>
+                        <small class="form-help-text">9 or 12 digits only</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Role <span class="required-mark">*</span>
+                        </label>
+                        <select asp-for="Input.Role" class="form-select" asp-items="Model.RoleOptions">
+                            <option value="">Select Role</option>
+                        </select>
+                        <span asp-validation-for="Input.Role" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">
+                            Password <span class="required-mark">*</span>
+                        </label>
+                        <input asp-for="Input.Password" class="form-control" type="password" placeholder="Enter password" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        <small class="form-help-text">Minimum 6 characters</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            Confirm Password <span class="required-mark">*</span>
+                        </label>
+                        <input asp-for="Input.ConfirmPassword" class="form-control" type="password" placeholder="Re-enter password" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-save me-2"></i>Create Account
+                    </button>
+                    <a asp-page="/Admin/Accounts/Index" class="btn btn-light">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
