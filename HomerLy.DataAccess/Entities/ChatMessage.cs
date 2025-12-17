@@ -11,8 +11,6 @@ namespace Homerly.DataAccess.Entities
         public Guid SenderId { get; set; }
         [Required]
         public string Message { get; set; }
-        public DateTime SentAt { get; set; } = DateTime.UtcNow;
-
-
+        public DateTime SentAt { get; set; }
     }
 }

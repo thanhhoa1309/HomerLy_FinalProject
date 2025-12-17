@@ -3,6 +3,7 @@ using HomerLy.DataAccess.Entities;
 using HomerLy.DataAccess.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace HomerLy.DataAccess.Repository
 {
@@ -23,10 +24,13 @@ namespace HomerLy.DataAccess.Repository
 
         public async Task<TEntity> AddAsync(TEntity entity)
         {
-            // Chuyển tất cả các trường DateTime thành UTC
-            entity.CreatedAt = _timeService.GetCurrentTime().ToUniversalTime();
-            entity.UpdatedAt = _timeService.GetCurrentTime().ToUniversalTime(); // Nếu có trường UpdatedAt
+            // Convert all DateTime properties to UTC
+            EnsureUtcDates(entity);
+
+            entity.CreatedAt = _timeService.GetCurrentTime(); // Already returns UtcNow
+            entity.UpdatedAt = _timeService.GetCurrentTime();
             entity.CreatedBy = _claimsService.GetCurrentUserId;
+
             var result = await _dbSet.AddAsync(entity);
             return result.Entity;
         }
@@ -35,14 +39,80 @@ namespace HomerLy.DataAccess.Repository
         {
             foreach (var entity in entities)
             {
-                entity.CreatedAt = _timeService.GetCurrentTime().ToUniversalTime();
-                entity.UpdatedAt = _timeService.GetCurrentTime().ToUniversalTime(); // Nếu có trường UpdatedAt
+                EnsureUtcDates(entity);
+                entity.CreatedAt = _timeService.GetCurrentTime();
+                entity.UpdatedAt = _timeService.GetCurrentTime();
                 entity.CreatedBy = _claimsService.GetCurrentUserId;
             }
 
             await _dbSet.AddRangeAsync(entities);
         }
 
+        public async Task<bool> SoftRemove(TEntity entity)
+        {
+            entity.IsDeleted = true;
+            entity.DeletedAt = _timeService.GetCurrentTime();
+            entity.DeletedBy = _claimsService.GetCurrentUserId;
+            entity.UpdatedAt = _timeService.GetCurrentTime();
+
+            _dbSet.Update(entity);
+            return true;
+        }
+
+        public async Task<bool> SoftRemoveRange(List<TEntity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                entity.IsDeleted = true;
+                entity.DeletedAt = _timeService.GetCurrentTime();
+                entity.DeletedBy = _claimsService.GetCurrentUserId;
+                entity.UpdatedAt = _timeService.GetCurrentTime();
+            }
+
+            _dbSet.UpdateRange(entities);
+            return true;
+        }
+
+        public async Task<bool> SoftRemoveRangeById(List<Guid> entitiesId)
+        {
+            var entities = await _dbSet.Where(e => entitiesId.Contains(e.Id)).ToListAsync();
+
+            foreach (var entity in entities)
+            {
+                entity.IsDeleted = true;
+                entity.DeletedAt = _timeService.GetCurrentTime();
+                entity.DeletedBy = _claimsService.GetCurrentUserId;
+                entity.UpdatedAt = _timeService.GetCurrentTime();
+            }
+
+            _dbContext.UpdateRange(entities);
+            return true;
+        }
+
+        public async Task<bool> Update(TEntity entity)
+        {
+            // Convert all DateTime properties to UTC
+            EnsureUtcDates(entity);
+
+            entity.UpdatedAt = _timeService.GetCurrentTime();
+            entity.UpdatedBy = _claimsService.GetCurrentUserId;
+
+            _dbSet.Update(entity);
+            return true;
+        }
+
+        public async Task<bool> UpdateRange(List<TEntity> entities)
+        {
+            foreach (var entity in entities)
+            {
+                EnsureUtcDates(entity);
+                entity.UpdatedAt = _timeService.GetCurrentTime();
+                entity.UpdatedBy = _claimsService.GetCurrentUserId;
+            }
+
+            _dbSet.UpdateRange(entities);
+            return true;
+        }
 
         public Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate,
             params Expression<Func<TEntity, object>>[] includes)
@@ -63,69 +133,6 @@ namespace HomerLy.DataAccess.Repository
             return result;
         }
 
-        public async Task<bool> SoftRemove(TEntity entity)
-        {
-            entity.IsDeleted = true;
-            entity.DeletedAt = _timeService.GetCurrentTime().ToUniversalTime();
-            entity.DeletedBy = _claimsService.GetCurrentUserId;
-            entity.UpdatedAt = _timeService.GetCurrentTime().ToUniversalTime();
-
-            _dbSet.Update(entity);
-            return true;
-        }
-
-
-        public async Task<bool> SoftRemoveRange(List<TEntity> entities)
-        {
-            foreach (var entity in entities)
-            {
-                entity.IsDeleted = true;
-                entity.DeletedAt = _timeService.GetCurrentTime();
-                entity.DeletedBy = _claimsService.GetCurrentUserId;
-            }
-
-            _dbSet.UpdateRange(entities);
-            //  await _dbContext.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> SoftRemoveRangeById(List<Guid> entitiesId) // update hàng loạt cùng 1 trường thì làm y chang
-        {
-            var entities = await _dbSet.Where(e => entitiesId.Contains(e.Id)).ToListAsync();
-
-            foreach (var entity in entities)
-            {
-                entity.IsDeleted = true;
-                entity.DeletedAt = _timeService.GetCurrentTime();
-                entity.DeletedBy = _claimsService.GetCurrentUserId;
-            }
-
-            _dbContext.UpdateRange(entities);
-            return true;
-        }
-
-        public async Task<bool> Update(TEntity entity)
-        {
-            entity.UpdatedAt = _timeService.GetCurrentTime();
-            entity.UpdatedBy = _claimsService.GetCurrentUserId;
-            _dbSet.Update(entity);
-            //   await _dbContext.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> UpdateRange(List<TEntity> entities)
-        {
-            foreach (var entity in entities)
-            {
-                entity.UpdatedAt = _timeService.GetCurrentTime();
-                entity.UpdatedBy = _claimsService.GetCurrentUserId;
-            }
-
-            _dbSet.UpdateRange(entities);
-            //  await _dbContext.SaveChangesAsync();
-            return true;
-        }
-
         public IQueryable<TEntity> GetQueryable()
         {
             return _dbSet;
@@ -137,13 +144,10 @@ namespace HomerLy.DataAccess.Repository
         {
             IQueryable<TEntity> query = _dbSet;
 
-            // Include các navigation properties
             foreach (var include in includes) query = query.Include(include);
 
-            // Áp dụng predicate (nếu có)
             if (predicate != null) query = query.Where(predicate);
 
-            // Lấy bản ghi đầu tiên
             return await query.FirstOrDefaultAsync();
         }
 
@@ -158,7 +162,7 @@ namespace HomerLy.DataAccess.Repository
                     return true;
                 }
 
-                return false; // Không có gì để xóa
+                return false;
             }
             catch (Exception ex)
             {
@@ -176,11 +180,41 @@ namespace HomerLy.DataAccess.Repository
                     return true;
                 }
 
-                return false; // Không có gì để xóa
+                return false;
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error while performing hard remove range: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Ensures all DateTime properties on the entity are in UTC
+        /// </summary>
+        private void EnsureUtcDates(TEntity entity)
+        {
+            var dateTimeProperties = entity.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => (p.PropertyType == typeof(DateTime) || p.PropertyType == typeof(DateTime?))
+                         && p.CanRead && p.CanWrite);
+
+            foreach (var property in dateTimeProperties)
+            {
+                var value = property.GetValue(entity);
+
+                if (value is DateTime dateTime)
+                {
+                    // Convert to UTC if not already
+                    if (dateTime.Kind == DateTimeKind.Unspecified)
+                    {
+                        property.SetValue(entity, DateTime.SpecifyKind(dateTime, DateTimeKind.Utc));
+                    }
+                    else if (dateTime.Kind == DateTimeKind.Local)
+                    {
+                        property.SetValue(entity, dateTime.ToUniversalTime());
+                    }
+                    // If already UTC, leave it as is
+                }
             }
         }
     }
