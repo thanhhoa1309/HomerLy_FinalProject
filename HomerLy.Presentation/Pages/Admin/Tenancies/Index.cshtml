@@ -2,25 +2,163 @@
 @using Homerly.BusinessObject.Enums
 @model HomerLy.Presentation.Pages.Admin.Tenancies.IndexModel
 @{
-    ViewData["Title"] = "All Tenancies";
+    ViewData["Title"] = "Tenancy Management";
     Layout = "~/Pages/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="page-header d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="h4 mb-1 fw-semibold">Tenancy Management</h2>
-            <p class="text-secondary mb-0">Manage all rental agreements, approvals, and history.</p>
-        </div>
-    </div>
-
-    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+<style>
+    /* Tenancies page-specific styles */
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        height: 100%;
+        min-width: 0;
     }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .badge-active {
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+    }
+
+    .badge-pending {
+        background: #f5f5f5 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .badge-expired {
+        background: #ffffff !important;
+        color: #666666 !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .badge-cancelled {
+        background: #666666 !important;
+        color: #ffffff !important;
+    }
+
+    .btn-group-sm .btn {
+        border-color: #e5e5e5;
+    }
+
+        .btn-group-sm .btn:hover {
+            background: #1a1a1a;
+            border-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+    .btn-success {
+        background: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+
+        .btn-success:hover {
+            background: #000000;
+            border-color: #000000;
+        }
+
+    .btn-danger {
+        background: #666666;
+        border-color: #666666;
+        color: #ffffff;
+    }
+
+        .btn-danger:hover {
+            background: #444444;
+            border-color: #444444;
+        }
+
+    /* Custom layout styles */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+        .filter-grid > div:last-child {
+            display: flex;
+            align-items: flex-end;
+        }
+
+    .table tbody td,
+    .table thead th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+        .property-info .fw-medium {
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .property-info small {
+            color: #6c757d;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-group-sm .btn {
+        border-color: #e5e5e5;
+    }
+
+    .btn-group-sm .btn:hover {
+        background: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="page-header">
+        <h2 class="h4 mb-0 fw-semibold">
+            <i class="bi bi-people-fill me-2"></i>Tenancy Management
+        </h2>
+    </div>
 
     @if (!string.IsNullOrEmpty(Model.SuccessMessage))
     {
@@ -30,147 +168,204 @@
         </div>
     }
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white py-3">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div class="d-flex align-items-center gap-2">
-                    <h5 class="mb-0 fw-semibold">All Tenancies</h5>
-                    <span class="badge bg-light text-dark border">@Model.Tenancies.Count records</span>
-                </div>
-                
-                <form method="get" class="d-flex gap-2 align-items-center">
-                    <select asp-for="Status" class="form-select form-select-sm" style="width: 150px;" onchange="this.form.submit()">
-                        <option value="">All Statuses</option>
-                        @foreach (var status in Enum.GetValues(typeof(TenancyStatus)))
-                        {
-                            <option value="@status">@status</option>
-                        }
-                    </select>
-                    <div class="input-group input-group-sm" style="width: 250px;">
-                        <input type="text" asp-for="SearchQuery" class="form-control" placeholder="Search tenant, owner, property...">
-                        <button class="btn btn-outline-secondary" type="submit">
-                            <i class="bi bi-search"></i>
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-funnel me-2"></i>Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="filter-grid">
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select asp-for="Status" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Statuses</option>
+                            @foreach (var status in Enum.GetValues(typeof(TenancyStatus)))
+                            {
+                                <option value="@status">@status</option>
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Confirmation</label>
+                        <select name="isTenantConfirmed" class="form-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="true">Confirmed</option>
+                            <option value="false">Waiting</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Search</label>
+                        <input type="text" asp-for="SearchQuery" class="form-control" placeholder="Tenant, owner, property..." />
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-dark w-100">
+                            <i class="bi bi-search me-2"></i>Search
                         </button>
                     </div>
-                    @if (Model.Status.HasValue || !string.IsNullOrEmpty(Model.SearchQuery))
-                    {
-                        <a asp-page="./Index" class="btn btn-sm btn-link text-decoration-none">Clear</a>
-                    }
-                </form>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stat-card-wrapper">
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.Tenancies.Count</h3>
+                <p>Total Tenancies</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-file-text"></i>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="bg-light">
-                    <tr>
-                        <th class="ps-3">Property</th>
-                        <th>Tenant</th>
-                        <th>Owner</th>
-                        <th>Duration</th>
-                        <th>Status</th>
-                        <th>Confirmation</th>
-                        <th class="text-end pe-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model.Tenancies.Any())
-                    {
-                        @foreach (var item in Model.Tenancies)
+
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.Tenancies.Count(t => t.Status == TenancyStatus.active)</h3>
+                <p>Active</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.Tenancies.Count(t => t.Status == TenancyStatus.pending_confirmation)</h3>
+                <p>Pending Confirmation</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.Tenancies.Count(t => t.Status == TenancyStatus.expired)</h3>
+                <p>Expired</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-x-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tenancies Table -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold">Tenancies List</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Tenant</th>
+                            <th>Owner</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Tenancies != null && Model.Tenancies.Any())
+                        {
+                            @foreach (var item in Model.Tenancies)
+                            {
+                                <tr>
+                                    <td class="property-info">
+                                        <div class="fw-medium">@item.PropertyTitle</div>
+                                        <small class="text-muted">@item.PropertyAddress</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">@item.TenantName</div>
+                                        <small class="text-muted d-block">@item.TenantEmail</small>
+                                    </td>
+                                    <td>
+                                        <span class="fw-medium">@item.OwnerName</span>
+                                    </td>
+                                    <td>
+                                        <div>@item.StartDate.ToString("MMM dd, yyyy")</div>
+                                        <small class="text-muted d-block">to @item.EndDate.ToString("MMM dd, yyyy")</small>
+                                    </td>
+                                    <td>
+                                        @if (item.Status == TenancyStatus.active)
+                                        {
+                                            <span class="badge badge-active">Active</span>
+                                        }
+                                        else if (item.Status == TenancyStatus.pending_confirmation)
+                                        {
+                                            <span class="badge badge-pending">Pending</span>
+                                        }
+                                        else if (item.Status == TenancyStatus.expired)
+                                        {
+                                            <span class="badge badge-expired">Expired</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-cancelled">@item.Status</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons btn-group-sm">
+                                            <a asp-page="/Admin/Tenancies/Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-dark" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            @if (!string.IsNullOrEmpty(item.ContractUrl))
+                                            {
+                                                <a href="@item.ContractUrl" target="_blank" class="btn btn-sm btn-outline-dark" title="View Contract">
+                                                    <i class="bi bi-file-earmark-text"></i>
+                                                </a>
+                                            }
+
+                                            @if (item.Status == TenancyStatus.pending_confirmation)
+                                            {
+                                                <form method="post" asp-page-handler="Approve" asp-route-id="@item.Id" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Approve this tenancy?')" title="Approve">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Reject this tenancy? This will cancel it.')" title="Reject">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else if (item.Status == TenancyStatus.active)
+                                            {
+                                                <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-dark" onclick="return confirm('Cancel this active tenancy?')" title="Cancel">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td class="ps-3">
-                                    <div class="fw-medium">@item.PropertyTitle</div>
-                                    <small class="text-muted">@item.PropertyAddress</small>
-                                </td>
-                                <td>
-                                    <div class="fw-medium">@item.TenantName</div>
-                                    <small class="text-muted">@item.TenantEmail</small>
-                                </td>
-                                <td>
-                                    <div class="fw-medium">@item.OwnerName</div>
-                                </td>
-                                <td>
-                                    <div>@item.StartDate.ToString("MMM dd, yyyy")</div>
-                                    <small class="text-muted">to @item.EndDate.ToString("MMM dd, yyyy")</small>
-                                </td>
-                                <td>
-                                    @if(item.Status == TenancyStatus.active)
-                                    {
-                                        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill">Active</span>
-                                    }
-                                    else if (item.Status == TenancyStatus.pending_confirmation)
-                                    {
-                                        <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill">Pending</span>
-                                    }
-                                    else if (item.Status == TenancyStatus.expired)
-                                    {
-                                        <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">Expired</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill">@item.Status</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.IsTenantConfirmed)
-                                    {
-                                        <span class="text-success small"><i class="bi bi-check-circle-fill me-1"></i>Confirmed</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-warning small"><i class="bi bi-hourglass-split me-1"></i>Waiting</span>
-                                    }
-                                </td>
-                                <td class="text-end pe-3">
-                                    <div class="d-flex justify-content-end gap-2">
-                                        @if (!string.IsNullOrEmpty(item.ContractUrl))
-                                        {
-                                            <a href="@item.ContractUrl" target="_blank" class="btn btn-sm btn-outline-primary" title="View Contract">
-                                                <i class="bi bi-file-earmark-text"></i>
-                                            </a>
-                                        }
-
-                                        @if (item.Status == TenancyStatus.pending_confirmation)
-                                        {
-                                            <form method="post" asp-page-handler="Approve" asp-route-id="@item.Id" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Approve this tenancy?')">
-                                                    <i class="bi bi-check-lg"></i>
-                                                </button>
-                                            </form>
-                                            <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Reject this tenancy? This will cancel it.')">
-                                                    <i class="bi bi-x-lg"></i>
-                                                </button>
-                                            </form>
-                                        }
-                                        else if (item.Status == TenancyStatus.active)
-                                        {
-                                             <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Cancel this active tenancy?')">
-                                                    Cancel
-                                                </button>
-                                            </form>
-                                        }
-                                    </div>
+                                <td colspan="7" class="text-center py-4 text-secondary">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No tenancies found
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <i class="bi bi-folder2-open display-6 text-muted mb-3 d-block"></i>
-                                <p class="text-muted">No tenancies found matching your criteria.</p>
-                                @if (Model.Status.HasValue || !string.IsNullOrEmpty(Model.SearchQuery))
-                                {
-                                    <a asp-page="./Index" class="btn btn-sm btn-secondary mt-2">Clear Filters</a>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

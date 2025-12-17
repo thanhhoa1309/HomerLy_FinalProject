@@ -502,64 +502,34 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/Admin/Accounts/Index" class="nav-link">
                             <i class="bi bi-people"></i>
                             <span>Account Management</span>
                         </a>
-                        <ul class="nav-submenu">
-                            <li class="nav-item"><a asp-page="/Admin/Accounts/Index" class="nav-link">All Accounts</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Accounts/Index" asp-route-role="Admin" class="nav-link">Admins</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Accounts/Index" asp-route-role="Owner" class="nav-link">Owners</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Accounts/Index" asp-route-role="User" class="nav-link">Users</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Accounts/Index" asp-route-isOwnerApproved="false" class="nav-link">Pending Approvals</a></li>
-                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/Admin/Properties/Index" class="nav-link">
                             <i class="bi bi-building"></i>
                             <span>Property Management</span>
                         </a>
-                        <ul class="nav-submenu" id="propertySubmenu">
-                            <li class="nav-item"><a asp-page="/Admin/Properties/Index" class="nav-link">All Properties</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Properties/Index" asp-route-status="Available" class="nav-link">Available</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Properties/Index" asp-route-status="Occupied" class="nav-link">Occupied</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Properties/Index" asp-route-status="UnderMaintenance" class="nav-link">Under Maintenance</a></li>
-                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/Admin/Tenancies/Index" class="nav-link">
                             <i class="bi bi-file-text"></i>
                             <span>Tenancy Management</span>
                         </a>
-                        <ul class="nav-submenu" id="tenancySubmenu">
-                            <li class="nav-item"><a asp-page="/Admin/Tenancies/Index" class="nav-link">All Tenancies</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Tenancies/Index" asp-route-status="Active" class="nav-link">Active</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Tenancies/Index" asp-route-status="Pending" class="nav-link">Pending</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Tenancies/Index" asp-route-status="Expired" class="nav-link">Expired</a></li>
-                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="/Admin/Utilities/Index" class="nav-link">
                             <i class="bi bi-lightning"></i>
                             <span>Utility Management</span>
                         </a>
-                        <ul class="nav-submenu" id="utilitySubmenu">
-                            <li class="nav-item"><a asp-page="/Admin/Utilities/Index" class="nav-link">All Readings</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Utilities/Index" asp-route-isCharged="false" class="nav-link">Uncharged</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Utilities/Index" asp-route-isCharged="true" class="nav-link">Charged</a></li>
-                        </ul>
                     </li>
                     <li class="nav-item">
-                        <a href="#reportSubmenu" class="nav-link">
+                        <a href="/Admin/Reports/Index" class="nav-link">
                             <i class="bi bi-flag"></i>
                             <span>Reports</span>
                         </a>
-                        <ul class="nav-submenu" id="reportSubmenu">
-                            <li class="nav-item"><a asp-page="/Admin/Reports/Index" class="nav-link">All Reports</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Reports/Index" asp-route-priority="High" class="nav-link">High Priority</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Reports/Index" asp-route-priority="Medium" class="nav-link">Medium Priority</a></li>
-                            <li class="nav-item"><a asp-page="/Admin/Reports/Index" asp-route-priority="Low" class="nav-link">Low Priority</a></li>
-                        </ul>
                     </li>
                     <li class="nav-item">
                         <a asp-page="/Admin/Analytics" class="nav-link">

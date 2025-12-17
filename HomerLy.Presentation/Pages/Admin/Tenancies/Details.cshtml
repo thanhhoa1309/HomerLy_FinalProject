@@ -1,0 +1,618 @@
+﻿@page
+@using Homerly.BusinessObject.Enums
+@model HomerLy.Presentation.Pages.Admin.Tenancies.DetailsModel
+@{
+    ViewData["Title"] = "Tenancy Details";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    /* Tenancy Details page-specific styles */
+    .detail-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .detail-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-card-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+    .detail-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        margin-bottom: 16px;
+    }
+
+    .detail-item {
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .detail-label {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .detail-value-secondary {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 4px;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        height: 100%;
+        min-width: 0;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .badge-active {
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+    }
+
+    .badge-pending {
+        background: #f5f5f5 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .badge-expired {
+        background: #ffffff !important;
+        color: #666666 !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .badge-cancelled {
+        background: #666666 !important;
+        color: #ffffff !important;
+    }
+
+    .progress-container {
+        margin-top: 24px;
+    }
+
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+        background: #f0f0f0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: #1a1a1a;
+        transition: width 0.6s ease;
+    }
+
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .user-info-box {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .user-details {
+        flex: 1;
+    }
+
+    .user-name {
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .user-contact {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 32px;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -28px;
+        top: 4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 2px #e9ecef;
+    }
+
+    .timeline-content {
+        padding: 12px 16px;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .timeline-title {
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .timeline-date {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    @@media (max-width: 768px) {
+        .detail-row {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">
+                <i class="bi bi-file-text me-2"></i>Tenancy Details
+            </h2>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">View complete tenancy information</p>
+        </div>
+        <div class="action-buttons">
+            <a asp-page="/Admin/Tenancies/Index" class="btn btn-outline-dark">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+            @if (Model.Tenancy?.Status == TenancyStatus.pending_confirmation)
+            {
+                <form method="post" asp-page-handler="Approve" asp-route-id="@Model.Tenancy.Id" class="d-inline">
+                    <button type="submit" class="btn btn-success" onclick="return confirm('Approve this tenancy?')">
+                        <i class="bi bi-check-lg me-2"></i>Approve
+                    </button>
+                </form>
+                <form method="post" asp-page-handler="Reject" asp-route-id="@Model.Tenancy.Id" class="d-inline">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Reject this tenancy? This will cancel it.')">
+                        <i class="bi bi-x-lg me-2"></i>Reject
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Tenancy == null)
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-exclamation-triangle fs-1 text-secondary d-block mb-3"></i>
+                <h5 class="text-secondary">Tenancy not found</h5>
+                <a asp-page="/Admin/Tenancies/Index" class="btn btn-dark mt-3">
+                    <i class="bi bi-arrow-left me-2"></i>Go Back
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Statistics Cards -->
+        <div class="stat-card-wrapper">
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>@Model.DaysRemaining</h3>
+                    <p>Days Remaining</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>@Model.TotalDays</h3>
+                    <p>Total Duration (Days)</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-calendar-range"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>@Model.ProgressPercentage.ToString("0")%</h3>
+                    <p>Progress</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>
+                        @if (Model.Tenancy.Status == TenancyStatus.active)
+                        {
+                            <span class="badge badge-active">Active</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.pending_confirmation)
+                        {
+                            <span class="badge badge-pending">Pending</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.expired)
+                        {
+                            <span class="badge badge-expired">Expired</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-cancelled">Cancelled</span>
+                        }
+                    </h3>
+                    <p>Status</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Property Information -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <h3><i class="bi bi-house me-2"></i>Property Information</h3>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Property Title</span>
+                    <div class="detail-value">@Model.Tenancy.PropertyTitle</div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Property Address</span>
+                    <div class="detail-value">@Model.Tenancy.PropertyAddress</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tenant & Owner Information -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <h3><i class="bi bi-people me-2"></i>Parties Involved</h3>
+            </div>
+            <div class="detail-row">
+                <div>
+                    <div class="user-info-box">
+                        <div class="user-avatar">
+                            @Model.Tenancy.TenantName?.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">@Model.Tenancy.TenantName</div>
+                            <div class="user-contact">
+                                <i class="bi bi-envelope me-1"></i>@Model.Tenancy.TenantEmail
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge badge-pending">Tenant</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="user-info-box">
+                        <div class="user-avatar">
+                            @Model.Tenancy.OwnerName?.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">@Model.Tenancy.OwnerName</div>
+                            <div class="mt-2">
+                                <span class="badge badge-active">Owner</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tenancy Period & Status -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <h3><i class="bi bi-calendar me-2"></i>Tenancy Period</h3>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Start Date</span>
+                    <div class="detail-value">@Model.Tenancy.StartDate.ToString("MMMM dd, yyyy")</div>
+                    <div class="detail-value-secondary">@Model.Tenancy.StartDate.ToString("dddd")</div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">End Date</span>
+                    <div class="detail-value">@Model.Tenancy.EndDate.ToString("MMMM dd, yyyy")</div>
+                    <div class="detail-value-secondary">@Model.Tenancy.EndDate.ToString("dddd")</div>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Tenant Confirmation</span>
+                    <div class="detail-value">
+                        @if (Model.Tenancy.IsTenantConfirmed)
+                        {
+                            <span class="badge badge-active"><i class="bi bi-check-circle me-1"></i>Confirmed</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-pending"><i class="bi bi-hourglass-split me-1"></i>Waiting</span>
+                        }
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Current Status</span>
+                    <div class="detail-value">
+                        @if (Model.Tenancy.Status == TenancyStatus.active)
+                        {
+                            <span class="badge badge-active">Active</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.pending_confirmation)
+                        {
+                            <span class="badge badge-pending">Pending Confirmation</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.expired)
+                        {
+                            <span class="badge badge-expired">Expired</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-cancelled">Cancelled</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" style="width: @Model.ProgressPercentage%"></div>
+                </div>
+                <div class="progress-info">
+                    <span>@Model.Tenancy.StartDate.ToString("MMM dd, yyyy")</span>
+                    <span>@Model.ProgressPercentage.ToString("0.0")% Complete</span>
+                    <span>@Model.Tenancy.EndDate.ToString("MMM dd, yyyy")</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utility Information -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <h3><i class="bi bi-lightning me-2"></i>Utility Information</h3>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Electric Unit Price</span>
+                    <div class="detail-value">₫@Model.Tenancy.ElectricUnitPrice.ToString("N0")</div>
+                    <div class="detail-value-secondary">per kWh</div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Water Unit Price</span>
+                    <div class="detail-value">₫@Model.Tenancy.WaterUnitPrice.ToString("N0")</div>
+                    <div class="detail-value-secondary">per m³</div>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Initial Electric Index</span>
+                    <div class="detail-value">@Model.Tenancy.ElectricOldIndex kWh</div>
+                    @if (Model.Tenancy.LatestElectricIndex.HasValue)
+                    {
+                        <div class="detail-value-secondary">
+                            Latest: @Model.Tenancy.LatestElectricIndex kWh
+                        </div>
+                    }
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Initial Water Index</span>
+                    <div class="detail-value">@Model.Tenancy.WaterOldIndex m³</div>
+                    @if (Model.Tenancy.LatestWaterIndex.HasValue)
+                    {
+                        <div class="detail-value-secondary">
+                            Latest: @Model.Tenancy.LatestWaterIndex m³
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Contract & Timeline -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        <h3><i class="bi bi-file-earmark-text me-2"></i>Contract Document</h3>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.Tenancy.ContractUrl))
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-file-earmark-pdf display-1 text-secondary mb-3"></i>
+                            <div class="mb-3">
+                                <span class="fw-medium">Contract Document Available</span>
+                            </div>
+                            <a href="@Model.Tenancy.ContractUrl" target="_blank" class="btn btn-dark">
+                                <i class="bi bi-download me-2"></i>View/Download Contract
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4 text-secondary">
+                            <i class="bi bi-file-earmark-x display-1 mb-3"></i>
+                            <p>No contract document uploaded</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        <h3><i class="bi bi-clock-history me-2"></i>Timeline</h3>
+                    </div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-title">Tenancy Created</div>
+                                <div class="timeline-date">@Model.Tenancy.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</div>
+                            </div>
+                        </div>
+                        @if (Model.Tenancy.UpdatedAt.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Last Updated</div>
+                                    <div class="timeline-date">@Model.Tenancy.UpdatedAt.Value.ToString("MMMM dd, yyyy - hh:mm tt")</div>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Tenancy.LatestReadingDate.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Latest Utility Reading</div>
+                                    <div class="timeline-date">@Model.Tenancy.LatestReadingDate.Value.ToString("MMMM dd, yyyy")</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
