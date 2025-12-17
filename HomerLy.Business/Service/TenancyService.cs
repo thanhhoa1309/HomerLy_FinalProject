@@ -61,14 +61,14 @@ namespace Homerly.Business.Services
                     throw ErrorHelper.Conflict("Property is already occupied.");
                 }
 
-                // Verify tenant exists and has User role (ng??i thuê)
+                // Verify tenant exists and has User role (ng??i thuï¿½)
                 var tenant = await _unitOfWork.Account.GetByIdAsync(createDto.TenantId);
                 if (tenant == null || tenant.IsDeleted)
                 {
                     throw ErrorHelper.NotFound($"Tenant with ID {createDto.TenantId} not found.");
                 }
 
-                // Tenant ph?i có role User
+                // Tenant ph?i cï¿½ role User
                 if (tenant.Role != RoleType.User)
                 {
                     throw ErrorHelper.BadRequest("Tenant must be a User (not Owner or Admin).");
@@ -92,14 +92,18 @@ namespace Homerly.Business.Services
                     throw ErrorHelper.BadRequest("End date must be after start date.");
                 }
 
+                // Convert dates to UTC for PostgreSQL
+                var startDateUtc = DateTime.SpecifyKind(createDto.StartDate, DateTimeKind.Utc);
+                var endDateUtc = DateTime.SpecifyKind(createDto.EndDate, DateTimeKind.Utc);
+
                 // Create tenancy with initial utility indexes
                 var tenancy = new Tenancy
                 {
                     PropertyId = createDto.PropertyId,
                     TenantId = createDto.TenantId,
                     OwnerId = ownerId,
-                    StartDate = createDto.StartDate,
-                    EndDate = createDto.EndDate,
+                    StartDate = startDateUtc,
+                    EndDate = endDateUtc,
                     ContractUrl = createDto.ContractUrl ?? string.Empty,
                     Status = TenancyStatus.pending_confirmation,
                     IsTenantConfirmed = false,
@@ -297,12 +301,22 @@ namespace Homerly.Business.Services
                     throw ErrorHelper.Conflict("Tenancy is already confirmed.");
                 }
 
+                // Set confirmation flag and activate tenancy
                 tenancy.IsTenantConfirmed = true;
+                tenancy.Status = TenancyStatus.active;
+
+                // Update property status to occupied
+                var property = await _unitOfWork.Property.GetByIdAsync(tenancy.PropertyId);
+                if (property != null)
+                {
+                    property.Status = PropertyStatus.occupied;
+                    await _unitOfWork.Property.Update(property);
+                }
 
                 await _unitOfWork.Tenancy.Update(tenancy);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.LogInformation($"Tenancy {tenancyId} confirmed by tenant");
+                _logger.LogInformation($"Tenancy {tenancyId} confirmed by tenant and activated");
 
                 return await MapToResponseDto(tenancy);
             }
