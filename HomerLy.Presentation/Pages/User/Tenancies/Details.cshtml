@@ -1,0 +1,321 @@
+@page
+@model HomerLy.Presentation.Pages.User.Tenancies.DetailsModel
+@{
+    ViewData["Title"] = "Tenancy Details";
+    Layout = "~/Pages/Shared/_UserLayout.cshtml";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header -->
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-6 fw-bold mb-2">
+                    <i class="bi bi-file-earmark-text me-3"></i>Tenancy Details
+                </h1>
+                <p class="text-muted mb-0">Review your rental agreement</p>
+            </div>
+            <a asp-page="/User/Tenancies/Index" class="btn btn-outline-dark">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.Tenancy != null)
+    {
+        <!-- Status Badge -->
+        <div class="mb-4">
+            @{
+                var statusClass = Model.Tenancy.Status switch
+                {
+                    Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation => "warning",
+                    Homerly.BusinessObject.Enums.TenancyStatus.active => "success",
+                    Homerly.BusinessObject.Enums.TenancyStatus.expired => "secondary",
+                    Homerly.BusinessObject.Enums.TenancyStatus.cancelled => "danger",
+                    _ => "secondary"
+                        };
+
+                var statusIcon = Model.Tenancy.Status switch
+                {
+                    Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation => "clock-history",
+                    Homerly.BusinessObject.Enums.TenancyStatus.active => "check-circle",
+                    Homerly.BusinessObject.Enums.TenancyStatus.expired => "x-circle",
+                    Homerly.BusinessObject.Enums.TenancyStatus.cancelled => "x-circle",
+                    _ => "question-circle"
+                        };
+            }
+
+            <span class="badge bg-@statusClass fs-6 px-3 py-2">
+                <i class="bi bi-@statusIcon me-2"></i>
+                @Model.Tenancy.Status.ToString().Replace("_", " ").ToUpper()
+            </span>
+
+            @if (!Model.Tenancy.IsTenantConfirmed && Model.Tenancy.Status ==
+                    Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation)
+            {
+                <span class="badge bg-danger fs-6 px-3 py-2 ms-2">
+                    <i class="bi bi-exclamation-triangle me-2"></i>AWAITING YOUR CONFIRMATION
+                </span>
+            }
+            else if (Model.Tenancy.IsTenantConfirmed)
+            {
+                <span class="badge bg-info fs-6 px-3 py-2 ms-2">
+                    <i class="bi bi-check-circle me-2"></i>CONFIRMED BY YOU
+                </span>
+            }
+        </div>
+
+        <div class="row">
+            <!-- Left Column: Tenancy Details -->
+            <div class="col-lg-8">
+                <!-- Property Information -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-house-door me-2"></i>Property Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <h4 class="fw-bold mb-3">@Model.Tenancy.PropertyTitle</h4>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-geo-alt me-2"></i>@Model.Tenancy.PropertyAddress
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Contract Period -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-calendar-range me-2"></i>Contract Period</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="text-muted small mb-1">Start Date</label>
+                                <p class="fs-5 fw-bold">@Model.Tenancy.StartDate.ToString("MMM dd, yyyy")</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-muted small mb-1">End Date</label>
+                                <p class="fs-5 fw-bold">@Model.Tenancy.EndDate.ToString("MMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Contract Duration: @((Model.Tenancy.EndDate - Model.Tenancy.StartDate).Days / 30) months
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Utility Pricing -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-lightning me-2"></i>Utility Pricing</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-lightning-charge fs-3 text-warning me-3"></i>
+                                    <div>
+                                        <label class="text-muted small mb-0">Electric Unit Price</label>
+                                        <p class="fs-5 fw-bold mb-0">@Model.Tenancy.ElectricUnitPrice.ToString("N0") đ/kWh
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="small text-muted">Initial Reading: @Model.Tenancy.ElectricOldIndex kWh</p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <i class="bi bi-droplet fs-3 text-primary me-3"></i>
+                                    <div>
+                                        <label class="text-muted small mb-0">Water Unit Price</label>
+                                        <p class="fs-5 fw-bold mb-0">@Model.Tenancy.WaterUnitPrice.ToString("N0") đ/m³</p>
+                                    </div>
+                                </div>
+                                <p class="small text-muted">Initial Reading: @Model.Tenancy.WaterOldIndex m³</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contract Document -->
+                @if (!string.IsNullOrEmpty(Model.Tenancy.ContractUrl))
+                {
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0"><i class="bi bi-file-earmark-pdf me-2"></i>Contract Document</h5>
+                        </div>
+                        <div class="card-body">
+                            <a href="@Model.Tenancy.ContractUrl" target="_blank" class="btn btn-outline-primary">
+                                <i class="bi bi-download me-2"></i>Download Contract
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                <!-- Owner Information -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-person me-2"></i>Owner Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0"><strong>Owner:</strong> @Model.Tenancy.OwnerName</p>
+                        <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Contact your owner through the platform messaging system.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Actions -->
+            <div class="col-lg-4">
+                <!-- Action Card -->
+                @if (!Model.Tenancy.IsTenantConfirmed && Model.Tenancy.Status ==
+                            Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation)
+                {
+                    <div class="card shadow-sm border-warning mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Action Required</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-3">Please review the tenancy details carefully and take action:</p>
+
+                            <form method="post" asp-page-handler="Confirm" class="mb-2">
+                                <input type="hidden" name="id" value="@Model.Tenancy.Id" />
+                                <button type="submit" class="btn btn-success w-100 mb-2"
+                                    onclick="return confirm('Are you sure you want to confirm this tenancy? This action will activate your rental agreement.')">
+                                    <i class="bi bi-check-circle me-2"></i>Confirm Tenancy
+                                </button>
+                            </form>
+
+                            <form method="post" asp-page-handler="Reject">
+                                <input type="hidden" name="id" value="@Model.Tenancy.Id" />
+                                <button type="submit" class="btn btn-danger w-100"
+                                    onclick="return confirm('Are you sure you want to reject this tenancy? This action cannot be undone.')">
+                                    <i class="bi bi-x-circle me-2"></i>Reject Tenancy
+                                </button>
+                            </form>
+
+                            <div class="alert alert-info mt-3 mb-0">
+                                <small><i class="bi bi-info-circle me-1"></i>If you reject, the property will become available
+                                    again.</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (Model.Tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active)
+                {
+                    <div class="card shadow-sm border-success mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="bi bi-check-circle me-2"></i>Active Tenancy</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-3">This tenancy is currently active.</p>
+                            <p class="small text-muted mb-3">Started: @Model.Tenancy.StartDate.ToString("MMM dd, yyyy")</p>
+
+                            @if (Model.Tenancy.IsTenantConfirmed)
+                            {
+                                <div class="alert alert-success">
+                                    <i class="bi bi-check-circle me-2"></i>You confirmed this tenancy
+                                </div>
+                            }
+
+                            <form method="post" asp-page-handler="Reject">
+                                <input type="hidden" name="id" value="@Model.Tenancy.Id" />
+                                <button type="submit" class="btn btn-outline-danger w-100"
+                                    onclick="return confirm('Are you sure you want to cancel this active tenancy? This is a serious action.')">
+                                    <i class="bi bi-x-circle me-2"></i>Cancel Tenancy
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                }
+
+                <!-- Timeline -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Timeline</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-3">
+                                <i class="bi bi-circle-fill text-primary me-2" style="font-size: 8px;"></i>
+                                <strong>Created:</strong><br />
+                                <small class="text-muted ms-3">@Model.Tenancy.CreatedAt.ToString("MMM dd, yyyy HH:mm")</small>
+                            </li>
+                            @if (Model.Tenancy.IsTenantConfirmed)
+                            {
+                                <li class="mb-3">
+                                    <i class="bi bi-circle-fill text-success me-2" style="font-size: 8px;"></i>
+                                    <strong>Confirmed:</strong><br />
+                                    <small class="text-muted ms-3">By you</small>
+                                </li>
+                            }
+                            @if (Model.Tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active)
+                            {
+                                <li class="mb-3">
+                                    <i class="bi bi-circle-fill text-success me-2" style="font-size: 8px;"></i>
+                                    <strong>Activated:</strong><br />
+                                    <small class="text-muted ms-3">@Model.Tenancy.StartDate.ToString("MMM dd, yyyy")</small>
+                                </li>
+                            }
+                            @if (Model.Tenancy.UpdatedAt != null)
+                            {
+                                <li class="mb-0">
+                                    <i class="bi bi-circle-fill text-info me-2" style="font-size: 8px;"></i>
+                                    <strong>Last Updated:</strong><br />
+                                    <small class="text-muted ms-3">@Model.Tenancy.UpdatedAt?.ToString("MMM dd, yyyy HH:mm")</small>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .page-header {
+        border-bottom: 2px solid #212529;
+        padding-bottom: 1rem;
+    }
+
+    .card {
+        border: none;
+        transition: transform 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .card-header {
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .btn {
+        border-radius: 0.375rem;
+        padding: 0.625rem 1.25rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge {
+        border-radius: 0.375rem;
+    }
+
+    .alert {
+        border-radius: 0.375rem;
+        border: none;
+    }
+</style>

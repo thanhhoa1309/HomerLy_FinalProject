@@ -94,12 +94,12 @@
                                             </td>
                                             <td class="text-end pe-4">
                                                 <div class="btn-group">
-                                                    <a href="#" class="btn btn-sm btn-light border shadow-sm text-muted" title="View Details">
+                                                    <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-light border shadow-sm text-muted" title="View Details">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
                                                     @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation && !tenancy.IsTenantConfirmed)
                                                     {
-                                                        <a href="#" class="btn btn-sm btn-success shadow-sm ms-2 rounded" title="Confirm Tenancy">
+                                                        <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-success shadow-sm ms-2 rounded" title="Confirm Tenancy">
                                                             <i class="bi bi-check-lg me-1"></i>Confirm
                                                         </a>
                                                     }
@@ -171,7 +171,7 @@
                                                 }
                                             </td>
                                             <td class="text-end pe-4">
-                                                <a href="#" class="btn btn-sm btn-light border shadow-sm text-muted">
+                                                <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-light border shadow-sm text-muted">
                                                     <i class="bi bi-eye"></i> Details
                                                 </a>
                                             </td>
