@@ -301,15 +301,14 @@ namespace Homerly.Business.Services
                     throw ErrorHelper.Conflict("Tenancy is already confirmed.");
                 }
 
-                // FIXED: Only set confirmation flag, do NOT change status to active
-                // Admin approval is still required after tenant confirmation
+                // Set confirmation flag and activate tenancy immediately
                 tenancy.IsTenantConfirmed = true;
-                // tenancy.Status remains pending_confirmation until Admin approves
+                tenancy.Status = TenancyStatus.active;
 
                 await _unitOfWork.Tenancy.Update(tenancy);
                 await _unitOfWork.SaveChangesAsync();
 
-                _logger.LogInformation($"Tenancy {tenancyId} confirmed by tenant. Waiting for admin approval.");
+                _logger.LogInformation($"Tenancy {tenancyId} confirmed by tenant and activated.");
 
                 return await MapToResponseDto(tenancy);
             }

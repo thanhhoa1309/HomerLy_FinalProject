@@ -3,6 +3,7 @@ using System;
 using HomerLy.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomerLy.DataAccess.Migrations
 {
     [DbContext(typeof(HomerLyDbContext))]
-    partial class HomerLyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218061538_UpdateChatMessageForAdminOnly")]
+    partial class UpdateChatMessageForAdminOnly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

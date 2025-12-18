@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -77,9 +78,9 @@
             gap: 8px;
         }
 
-            .navbar-brand:hover {
-                opacity: 0.8;
-            }
+        .navbar-brand:hover {
+            opacity: 0.8;
+        }
 
         .navbar-toggler {
             display: none;
@@ -92,10 +93,10 @@
             color: var(--text-primary);
         }
 
-            .navbar-toggler:focus {
-                outline: none;
-                box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.1);
-            }
+        .navbar-toggler:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(33, 37, 41, 0.1);
+        }
 
         .navbar-menu {
             display: flex;
@@ -125,19 +126,19 @@
             white-space: nowrap;
         }
 
-            .nav-link:hover {
-                color: var(--text-primary);
-                background-color: var(--bg-light);
-            }
+        .nav-link:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-light);
+        }
 
-            .nav-link.active {
-                color: var(--text-primary);
-                background-color: var(--bg-light);
-            }
+        .nav-link.active {
+            color: var(--text-primary);
+            background-color: var(--bg-light);
+        }
 
-            .nav-link i {
-                font-size: 1rem;
-            }
+        .nav-link i {
+            font-size: 1rem;
+        }
 
         /* Container */
         .container {
@@ -174,9 +175,9 @@
             transition: opacity 0.2s ease;
         }
 
-            .footer a:hover {
-                opacity: 0.7;
-            }
+        .footer a:hover {
+            opacity: 0.7;
+        }
 
         /* Responsive */
         @@media (max-width: 768px) {
@@ -198,9 +199,9 @@
                 box-shadow: var(--shadow);
             }
 
-                .navbar-menu.active {
-                    display: flex;
-                }
+            .navbar-menu.active {
+                display: flex;
+            }
 
             .navbar-nav {
                 flex-direction: column;
@@ -223,7 +224,9 @@
             }
         }
     </style>
+    @await RenderSectionAsync("Styles", required: false)
 </head>
+
 <body>
     <header>
         <nav class="navbar">
@@ -286,7 +289,7 @@
         }
 
         // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const navbar = document.querySelector('.navbar');
             const menu = document.getElementById('navbarMenu');
             const toggler = document.querySelector('.navbar-toggler');
@@ -299,4 +302,5 @@
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

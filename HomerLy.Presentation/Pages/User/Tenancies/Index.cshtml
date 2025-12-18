@@ -121,10 +121,12 @@
         flex-wrap: wrap;
     }
 
-    .table tbody td, .table thead th {
+    .table tbody td,
+    .table thead th {
         vertical-align: middle;
         text-align: center;
     }
+
     @@media (max-width: 768px) {
         .stat-card-wrapper {
             flex-direction: column;
@@ -255,12 +257,22 @@
                                     </td>
                                     <td>
                                         <div class="action-buttons btn-group-sm">
-                                            <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-outline-dark" title="View Details">
+                                            <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id"
+                                                class="btn btn-sm btn-outline-dark" title="View Details">
                                                 <i class="bi bi-eye"></i>
                                             </a>
-                                            @if (tenancy.Status == TenancyStatus.pending_confirmation && !tenancy.IsTenantConfirmed)
+                                            @if (tenancy.Status == TenancyStatus.active)
                                             {
-                                                <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-dark" title="Confirm">
+                                                <a href="/Chat/Tenancy/@tenancy.Id" class="btn btn-sm btn-primary" title="Open Chat"
+                                                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                                                    <i class="bi bi-chat-dots-fill"></i>
+                                                </a>
+                                            }
+                                            @if (tenancy.Status == TenancyStatus.pending_confirmation &&
+                                                                                !tenancy.IsTenantConfirmed)
+                                            {
+                                                <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id"
+                                                    class="btn btn-sm btn-dark" title="Confirm">
                                                     <i class="bi bi-check-lg"></i>
                                                 </a>
                                             }
@@ -328,7 +340,8 @@
                                         }
                                     </td>
                                     <td>
-                                        <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-outline-dark" title="View Details">
+                                        <a asp-page="/User/Tenancies/Details" asp-route-id="@tenancy.Id"
+                                            class="btn btn-sm btn-outline-dark" title="View Details">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     </td>
