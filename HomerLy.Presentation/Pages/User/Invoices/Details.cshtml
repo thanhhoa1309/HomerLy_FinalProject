@@ -36,11 +36,20 @@
     .info-label {
         color: #6c757d;
         font-weight: 500;
+        flex: 1;
     }
 
     .info-value {
         color: #1a1a1a;
         font-weight: 600;
+        text-align: right;
+    }
+
+    .info-sublabel {
+        display: block;
+        font-size: 0.8125rem;
+        color: #adb5bd;
+        margin-top: 2px;
     }
 
     .total-section {
@@ -48,6 +57,23 @@
         padding: 20px;
         border-radius: 8px;
         margin-top: 24px;
+        border: 2px solid #1a1a1a;
+    }
+
+    .section-divider {
+        border-top: 2px solid #e9ecef;
+        margin: 20px 0;
+    }
+
+    .utility-usage {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        font-size: 0.8125rem;
+        margin-top: 4px;
     }
 </style>
 
@@ -57,6 +83,11 @@
         <div class="alert alert-danger" role="alert">
             <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
         </div>
+        <div class="text-center mt-3">
+            <a asp-page="/User/Invoices/Index" class="btn btn-dark">
+                <i class="bi bi-arrow-left me-2"></i>Back to Invoices
+            </a>
+        </div>
     }
 
     @if (Model.Invoice != null)
@@ -64,7 +95,7 @@
         <div class="invoice-header">
             <div class="d-flex justify-content-between align-items-start">
                 <div>
-                    <h2 class="mb-2">Invoice #@Model.Invoice.Id.ToString().Substring(0, 8)</h2>
+                    <h2 class="mb-2">Invoice #@Model.Invoice.Id.ToString().Substring(0, 8).ToUpper()</h2>
                     <p class="mb-0">@Model.Invoice.PropertyTitle</p>
                     <small style="opacity: 0.8;">@Model.Invoice.PropertyAddress</small>
                 </div>
@@ -81,6 +112,12 @@
                             <i class="bi bi-exclamation-triangle me-1"></i>Overdue
                         </span>
                     }
+                    else if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.draft)
+                    {
+                        <span class="badge bg-secondary" style="padding: 8px 16px; font-size: 0.875rem;">
+                            <i class="bi bi-file-earmark me-1"></i>Draft
+                        </span>
+                    }
                     else
                     {
                         <span class="badge bg-warning text-dark" style="padding: 8px 16px; font-size: 0.875rem;">
@@ -94,82 +131,111 @@
         <div class="invoice-body">
             <div class="row mb-4">
                 <div class="col-md-6">
-                    <h6 class="fw-bold mb-3">Billing Period</h6>
+                    <h6 class="fw-bold mb-3"><i class="bi bi-calendar-range me-2"></i>Billing Period</h6>
                     <p class="mb-1">
                         <i class="bi bi-calendar3 me-2"></i>
                         @Model.Invoice.BillingPeriodStart.ToString("MMM dd, yyyy") - @Model.Invoice.BillingPeriodEnd.ToString("MMM dd, yyyy")
                     </p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <h6 class="fw-bold mb-3">Due Date</h6>
+                    <h6 class="fw-bold mb-3"><i class="bi bi-calendar-event me-2"></i>Due Date</h6>
                     <p class="mb-1">
-                        <i class="bi bi-calendar-event me-2"></i>
+                        <i class="bi bi-calendar-check me-2"></i>
                         @Model.Invoice.DueDate.ToString("MMM dd, yyyy")
                     </p>
                 </div>
             </div>
 
-            <hr />
+            <div class="section-divider"></div>
 
-            <h6 class="fw-bold mb-3">Invoice Details</h6>
+            <h6 class="fw-bold mb-3"><i class="bi bi-receipt-cutoff me-2"></i>Charges Breakdown</h6>
 
             <div class="info-row">
-                <span class="info-label">Monthly Rent</span>
-                <span class="info-value">₫@Model.Invoice.MonthlyRentPrice.ToString("N0")</span>
+                <div class="info-label">
+                    <i class="bi bi-house-door text-primary me-2"></i>
+                    <strong>Monthly Rent</strong>
+                </div>
+                <div class="info-value">₫@Model.Invoice.MonthlyRentPrice.ToString("N0")</div>
             </div>
 
             <div class="info-row">
-                <span class="info-label">
-                    <i class="bi bi-lightning-charge text-warning me-1"></i>
-                    Electricity (@Model.Invoice.ElectricOldIndex → @Model.Invoice.ElectricNewIndex)
-                </span>
-                <span class="info-value">₫@Model.Invoice.ElectricCost.ToString("N0")</span>
+                <div class="info-label">
+                    <i class="bi bi-lightning-charge text-warning me-2"></i>
+                    <strong>Electricity</strong>
+                    <span class="info-sublabel">
+                        Usage: @Model.Invoice.ElectricOldIndex → @Model.Invoice.ElectricNewIndex kWh 
+                        (@(Model.Invoice.ElectricNewIndex - Model.Invoice.ElectricOldIndex) kWh × ₫@Model.Invoice.ElectricUnitPrice.ToString("N0")/kWh)
+                    </span>
+                </div>
+                <div class="info-value">₫@Model.Invoice.ElectricCost.ToString("N0")</div>
             </div>
 
             <div class="info-row">
-                <span class="info-label">
-                    <i class="bi bi-droplet text-primary me-1"></i>
-                    Water (@Model.Invoice.WaterOldIndex → @Model.Invoice.WaterNewIndex)
-                </span>
-                <span class="info-value">₫@Model.Invoice.WaterCost.ToString("N0")</span>
+                <div class="info-label">
+                    <i class="bi bi-droplet text-info me-2"></i>
+                    <strong>Water</strong>
+                    <span class="info-sublabel">
+                        Usage: @Model.Invoice.WaterOldIndex → @Model.Invoice.WaterNewIndex m³ 
+                        (@(Model.Invoice.WaterNewIndex - Model.Invoice.WaterOldIndex) m³ × ₫@Model.Invoice.WaterUnitPrice.ToString("N0")/m³)
+                    </span>
+                </div>
+                <div class="info-value">₫@Model.Invoice.WaterCost.ToString("N0")</div>
             </div>
 
             @if (Model.Invoice.OtherFees > 0)
             {
                 <div class="info-row">
-                    <span class="info-label">Other Fees</span>
-                    <span class="info-value">₫@Model.Invoice.OtherFees.ToString("N0")</span>
+                    <div class="info-label">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        <strong>Other Fees</strong>
+                    </div>
+                    <div class="info-value">₫@Model.Invoice.OtherFees.ToString("N0")</div>
                 </div>
             }
 
             <div class="total-section">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Total Amount</h4>
+                    <h4 class="mb-0"><i class="bi bi-calculator me-2"></i>Total Amount</h4>
                     <h3 class="mb-0 text-dark">₫@Model.Invoice.TotalAmount.ToString("N0")</h3>
                 </div>
             </div>
 
-            @if (Model.Invoice.Status != HomerLy.BusinessObject.Enums.InvoiceStatus.paid)
-            {
-                <div class="d-grid gap-2 mt-4">
-                    <a asp-page="/Payment/PayInvoice" asp-route-invoiceId="@Model.Invoice.Id"
-                       class="btn btn-success btn-lg">
-                        <i class="bi bi-credit-card me-2"></i>Pay Now via Stripe
-                    </a>
-                </div>
-            }
-            else if (Model.Invoice.PaymentDate.HasValue)
+            @if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.paid && Model.Invoice.PaymentDate.HasValue)
             {
                 <div class="alert alert-success mt-4">
                     <i class="bi bi-check-circle me-2"></i>
-                    Paid on @Model.Invoice.PaymentDate.Value.ToString("MMM dd, yyyy")
+                    <strong>Payment Received</strong><br/>
+                    Paid on @Model.Invoice.PaymentDate.Value.ToString("MMMM dd, yyyy 'at' hh:mm tt")
+                </div>
+            }
+            else if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.draft)
+            {
+                <div class="alert alert-info mt-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Draft Invoice</strong><br/>
+                    This invoice is in draft status and has not been sent yet. Please wait for the owner to finalize and send it.
+                </div>
+            }
+            else if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.overdue)
+            {
+                <div class="alert alert-danger mt-4">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <strong>Payment Overdue</strong><br/>
+                    This invoice is past its due date. Please pay as soon as possible to avoid penalties.
                 </div>
             }
 
-            <div class="mt-3">
+            <div class="mt-4 d-flex gap-2">
                 <a asp-page="/User/Invoices/Index" class="btn btn-outline-dark">
                     <i class="bi bi-arrow-left me-2"></i>Back to Invoices
                 </a>
+                @if (Model.Invoice.Status != HomerLy.BusinessObject.Enums.InvoiceStatus.paid && Model.Invoice.Status != HomerLy.BusinessObject.Enums.InvoiceStatus.draft)
+                {
+                    <a asp-page="/Payment/PayInvoice" asp-route-invoiceId="@Model.Invoice.Id"
+                       class="btn btn-success btn-lg flex-grow-1">
+                        <i class="bi bi-credit-card me-2"></i>Pay ₫@Model.Invoice.TotalAmount.ToString("N0") via Stripe
+                    </a>
+                }
             </div>
         </div>
     }
