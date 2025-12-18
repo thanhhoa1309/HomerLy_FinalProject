@@ -14,6 +14,9 @@ namespace HomerLy.Presentation.Pages.User.Tenancies
         private readonly ITenancyService _tenancyService;
         private readonly ILogger<IndexModel> _logger;
 
+        public string? ErrorMessage { get; set; }
+        public string? SuccessMessage { get; set; }
+
         public IndexModel(ITenancyService tenancyService, ILogger<IndexModel> logger)
         {
             _tenancyService = tenancyService;

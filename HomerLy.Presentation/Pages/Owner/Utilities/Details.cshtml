@@ -1,0 +1,602 @@
+﻿@page
+@model HomerLy.Presentation.Pages.Owner.Utilities.DetailsModel
+@{
+    ViewData["Title"] = "Utility Reading Details";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<style>
+    /* Minimalist Black & White Theme */
+    .detail-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .detail-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-card-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+    .detail-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+        margin-bottom: 16px;
+    }
+
+    .detail-item {
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .detail-label {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .detail-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .detail-value-secondary {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 4px;
+    }
+
+    .stat-card-wrapper {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        min-width: 0;
+        flex: 1 1 200px;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .badge-charged {
+        background: #1a1a1a !important;
+        color: #fff !important;
+    }
+
+    .badge-pending {
+        background: #f5f5f5 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+    }
+
+    .meter-display {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin: 16px 0;
+    }
+
+    .meter-reading {
+        flex: 1;
+        text-align: center;
+        padding: 16px;
+        background: #fff;
+        border-radius: 6px;
+        border: 2px solid #e9ecef;
+    }
+
+        .meter-reading .label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .meter-reading .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .meter-reading .unit {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+    .arrow-divider {
+        font-size: 2rem;
+        color: #6c757d;
+        flex-shrink: 0;
+    }
+
+    .usage-highlight {
+        text-align: center;
+        padding: 16px;
+        background: #1a1a1a;
+        color: #fff;
+        border-radius: 6px;
+    }
+
+        .usage-highlight .label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+
+        .usage-highlight .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .usage-highlight .unit {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+    .cost-summary {
+        background: linear-gradient(135deg, #1a1a1a 0%, #343a40 100%);
+        color: #fff;
+        border-radius: 8px;
+        padding: 24px;
+    }
+
+    .cost-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+        .cost-item:last-child {
+            border-bottom: none;
+            padding-top: 16px;
+            margin-top: 8px;
+            border-top: 2px solid rgba(255,255,255,0.2);
+        }
+
+    .cost-label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+    }
+
+    .cost-value {
+        font-size: 1.125rem;
+        font-weight: 600;
+    }
+
+    .cost-item:last-child .cost-value {
+        font-size: 1.5rem;
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 32px;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e9ecef;
+        }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: -28px;
+        top: 4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #1a1a1a;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 2px #e9ecef;
+    }
+
+    .timeline-content {
+        padding: 12px 16px;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .timeline-title {
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 4px;
+    }
+
+    .timeline-date {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+    @@media (max-width: 768px) {
+        .detail-row {
+            grid-template-columns: 1fr;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+            }
+
+        .stat-card-wrapper {
+            flex-direction: column;
+        }
+
+        .meter-display {
+            flex-direction: column;
+        }
+
+        .arrow-divider {
+            transform: rotate(90deg);
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">
+                <i class="bi bi-speedometer me-2"></i>Utility Reading Details
+            </h2>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">View detailed meter reading information</p>
+        </div>
+        <div class="action-buttons">
+            <a asp-page="/Owner/Utilities/Index" class="btn btn-outline-dark">
+                <i class="bi bi-arrow-left me-2"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (Model.UtilityReading == null)
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-exclamation-triangle fs-1 text-secondary d-block mb-3"></i>
+                <h5 class="text-secondary">Utility reading not found</h5>
+                <a asp-page="/Owner/Utilities/Index" class="btn btn-dark mt-3">
+                    <i class="bi bi-arrow-left me-2"></i>Go Back
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Status Badge and Navigation -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+            <div>
+                @if (Model.UtilityReading.IsCharged)
+                {
+                    <span class="badge badge-charged fs-6 px-3 py-2">
+                        <i class="bi bi-check-circle me-2"></i>CHARGED
+                    </span>
+                }
+                else
+                {
+                    <span class="badge badge-pending fs-6 px-3 py-2">
+                        <i class="bi bi-hourglass-split me-2"></i>PENDING CHARGE
+                    </span>
+                }
+            </div>
+            <div style="display: flex; gap: 12px;">
+                @if (Model.PreviousReading != null)
+                {
+                    <a asp-page="/Owner/Utilities/Details" asp-route-id="@Model.PreviousReading.Id"
+                       class="btn btn-outline-dark btn-sm" title="Previous Reading">
+                        <i class="bi bi-chevron-left"></i> Previous
+                    </a>
+                }
+                @if (Model.NextReading != null)
+                {
+                    <a asp-page="/Owner/Utilities/Details" asp-route-id="@Model.NextReading.Id"
+                       class="btn btn-outline-dark btn-sm" title="Next Reading">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
+                }
+            </div>
+        </div>
+
+        <!-- Reading Date & Property Info -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <h3><i class="bi bi-calendar-event me-2"></i>Reading Information</h3>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Reading Date</span>
+                    <div class="detail-value">@Model.UtilityReading.ReadingDate.ToString("MMMM dd, yyyy")</div>
+                    <div class="detail-value-secondary">@Model.UtilityReading.ReadingDate.ToString("dddd")</div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Property</span>
+                    <div class="detail-value">@(Model.Tenancy?.PropertyTitle ?? "N/A")</div>
+                    <div class="detail-value-secondary">@(Model.Tenancy?.PropertyAddress ?? "")</div>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Tenant</span>
+                    <div class="detail-value">@(Model.Tenancy?.TenantName ?? "N/A")</div>
+                    <div class="detail-value-secondary">@(Model.Tenancy?.TenantEmail ?? "")</div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Created At</span>
+                    <div class="detail-value">@Model.UtilityReading.CreatedAt.ToString("MMM dd, yyyy")</div>
+                    <div class="detail-value-secondary">@Model.UtilityReading.CreatedAt.ToString("hh:mm tt")</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Electricity Meter Reading -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <h3><i class="bi bi-lightning-charge text-warning me-2"></i>Electricity Meter</h3>
+            </div>
+            <div class="meter-display">
+                <div class="meter-reading">
+                    <div class="label">Previous Reading</div>
+                    <div class="value">@Model.UtilityReading.ElectricOldIndex</div>
+                    <div class="unit">kWh</div>
+                </div>
+                <i class="bi bi-arrow-right arrow-divider"></i>
+                <div class="meter-reading">
+                    <div class="label">Current Reading</div>
+                    <div class="value">@Model.UtilityReading.ElectricNewIndex</div>
+                    <div class="unit">kWh</div>
+                </div>
+                <i class="bi bi-arrow-right arrow-divider"></i>
+                <div class="usage-highlight" style="flex: 1;">
+                    <div class="label">Usage</div>
+                    <div class="value">@Model.UtilityReading.ElectricUsage</div>
+                    <div class="unit">kWh</div>
+                </div>
+            </div>
+            @if (Model.Tenancy != null)
+            {
+                <div class="detail-item" style="margin-top: 16px;">
+                    <span class="detail-label">Unit Price</span>
+                    <div class="detail-value">₫@Model.Tenancy.ElectricUnitPrice.ToString("N0") per kWh</div>
+                </div>
+            }
+        </div>
+
+        <!-- Water Meter Reading -->
+        <div class="detail-card">
+            <div class="detail-card-header">
+                <h3><i class="bi bi-droplet text-primary me-2"></i>Water Meter</h3>
+            </div>
+            <div class="meter-display">
+                <div class="meter-reading">
+                    <div class="label">Previous Reading</div>
+                    <div class="value">@Model.UtilityReading.WaterOldIndex</div>
+                    <div class="unit">m³</div>
+                </div>
+                <i class="bi bi-arrow-right arrow-divider"></i>
+                <div class="meter-reading">
+                    <div class="label">Current Reading</div>
+                    <div class="value">@Model.UtilityReading.WaterNewIndex</div>
+                    <div class="unit">m³</div>
+                </div>
+                <i class="bi bi-arrow-right arrow-divider"></i>
+                <div class="usage-highlight" style="flex: 1;">
+                    <div class="label">Usage</div>
+                    <div class="value">@Model.UtilityReading.WaterUsage</div>
+                    <div class="unit">m³</div>
+                </div>
+            </div>
+            @if (Model.Tenancy != null)
+            {
+                <div class="detail-item" style="margin-top: 16px;">
+                    <span class="detail-label">Unit Price</span>
+                    <div class="detail-value">₫@Model.Tenancy.WaterUnitPrice.ToString("N0") per m³</div>
+                </div>
+            }
+        </div>
+
+        <!-- Cost Summary -->
+        @if (Model.Tenancy != null)
+        {
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="cost-summary">
+                        <h5 style="margin: 0 0 16px 0; font-weight: 600;">
+                            <i class="bi bi-calculator me-2"></i>Estimated Costs
+                        </h5>
+                        <div class="cost-item">
+                            <span class="cost-label">
+                                <i class="bi bi-lightning-charge me-1"></i>Electricity (@Model.UtilityReading.ElectricUsage kWh × ₫@Model.Tenancy.ElectricUnitPrice.ToString("N0"))
+                            </span>
+                            <span class="cost-value">₫@Model.EstimatedElectricCost.ToString("N0")</span>
+                        </div>
+                        <div class="cost-item">
+                            <span class="cost-label">
+                                <i class="bi bi-droplet me-1"></i>Water (@Model.UtilityReading.WaterUsage m³ × ₫@Model.Tenancy.WaterUnitPrice.ToString("N0"))
+                            </span>
+                            <span class="cost-value">₫@Model.EstimatedWaterCost.ToString("N0")</span>
+                        </div>
+                        <div class="cost-item">
+                            <span class="cost-label" style="font-weight: 600;">Total Estimated Cost</span>
+                            <span class="cost-value">₫@Model.TotalEstimatedCost.ToString("N0")</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="detail-card">
+                        <div class="detail-card-header">
+                            <h3><i class="bi bi-clock-history me-2"></i>Timeline</h3>
+                        </div>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Reading Created</div>
+                                    <div class="timeline-date">@Model.UtilityReading.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</div>
+                                </div>
+                            </div>
+                            @if (Model.UtilityReading.UpdatedAt.HasValue)
+                            {
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">Last Updated</div>
+                                        <div class="timeline-date">@Model.UtilityReading.UpdatedAt.Value.ToString("MMMM dd, yyyy - hh:mm tt")</div>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.UtilityReading.IsCharged)
+                            {
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-content">
+                                        <div class="timeline-title">Marked as Charged</div>
+                                        <div class="timeline-date">Invoice created</div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Action Buttons -->
+        @if (!Model.UtilityReading.IsCharged)
+        {
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <h3><i class="bi bi-gear me-2"></i>Actions</h3>
+                </div>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <a asp-page="/Owner/Utilities/Edit" asp-route-id="@Model.UtilityReading.Id"
+                       class="btn btn-dark">
+                        <i class="bi bi-pencil me-2"></i>Edit Reading
+                    </a>
+                    <form method="post" asp-page="/Owner/Utilities/Index" asp-page-handler="MarkCharged"
+                          asp-route-readingId="@Model.UtilityReading.Id" class="d-inline">
+                        <button type="submit" class="btn btn-outline-dark"
+                                onclick="return confirm('Mark this reading as charged? This action will prevent further edits.')">
+                            <i class="bi bi-check-lg me-2"></i>Mark as Charged
+                        </button>
+                    </form>
+                    <form method="post" asp-page="/Owner/Utilities/Index" asp-page-handler="Delete"
+                          asp-route-readingId="@Model.UtilityReading.Id" class="d-inline">
+                        <button type="submit" class="btn btn-outline-danger"
+                                onclick="return confirm('Are you sure you want to delete this reading? This action cannot be undone.')">
+                            <i class="bi bi-trash me-2"></i>Delete Reading
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="detail-card" style="background: #f8f9fa; border-color: #e9ecef;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #6c757d;"></i>
+                    <div style="flex: 1;">
+                        <strong>This reading has been charged</strong>
+                        <p class="mb-0" style="font-size: 0.875rem; color: #6c757d; margin-top: 4px;">
+                            This utility reading has been marked as charged and can no longer be edited or deleted. An invoice has been created based on this reading.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</div>

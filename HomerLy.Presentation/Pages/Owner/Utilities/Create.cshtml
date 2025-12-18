@@ -1,0 +1,384 @@
+﻿@page
+@model HomerLy.Presentation.Pages.Owner.Utilities.CreateModel
+@{
+    ViewData["Title"] = "Create Utility Reading";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<style>
+    /* Minimalist Black & White Theme */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .detail-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .detail-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .detail-card-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+    .info-box {
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border-left: 3px solid #1a1a1a;
+        margin-bottom: 24px;
+    }
+
+        .info-box .info-label {
+            font-size: 0.8125rem;
+            color: #6c757d;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .info-box .info-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+    .form-helper {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin-top: 4px;
+    }
+
+    .index-display {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        margin-top: 8px;
+    }
+
+    .index-item {
+        flex: 1;
+        text-align: center;
+        padding: 8px;
+        background: #fff;
+        border-radius: 4px;
+    }
+
+        .index-item .label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .index-item .value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+    .arrow-icon {
+        font-size: 1.5rem;
+        color: #6c757d;
+    }
+    @@media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">
+                <i class="bi bi-plus-circle me-2"></i>Create Utility Reading
+            </h2>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">Record new electricity and water meter readings</p>
+        </div>
+        <a asp-page="/Owner/Utilities/Index" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left me-2"></i>Back to List
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <form method="post">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Property & Tenancy Selection -->
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        <h3><i class="bi bi-house me-2"></i>Property & Tenancy Information</h3>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CreateDto.PropertyId" class="form-label">Property *</label>
+                        <select asp-for="CreateDto.PropertyId" class="form-select" id="propertySelect" required>
+                            <option value="">-- Select Property --</option>
+                            @if (Model.OwnerProperties != null)
+                            {
+                                @foreach (var property in Model.OwnerProperties)
+                                {
+                                    <option value="@property.Id">@property.Title - @property.Address</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="CreateDto.PropertyId" class="text-danger"></span>
+                        <div class="form-helper">Select the property for this utility reading</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CreateDto.TenancyId" class="form-label">Tenancy *</label>
+                        <select asp-for="CreateDto.TenancyId" class="form-select" id="tenancySelect" required>
+                            <option value="">-- Select Property First --</option>
+                            @if (Model.PropertyTenancies != null)
+                            {
+                                @foreach (var tenancy in Model.PropertyTenancies)
+                                {
+                                    <option value="@tenancy.Id">
+                                        @tenancy.TenantName - @tenancy.StartDate.ToString("MMM dd, yyyy") to @tenancy.EndDate.ToString("MMM dd, yyyy")
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="CreateDto.TenancyId" class="text-danger"></span>
+                        <div class="form-helper">Select the active tenancy for this property</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CreateDto.ReadingDate" class="form-label">Reading Date *</label>
+                        <input asp-for="CreateDto.ReadingDate" type="date" class="form-control" required />
+                        <span asp-validation-for="CreateDto.ReadingDate" class="text-danger"></span>
+                        <div class="form-helper">Date when the meter reading was taken</div>
+                    </div>
+                </div>
+
+                <!-- Meter Readings -->
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        <h3><i class="bi bi-speedometer me-2"></i>Meter Readings</h3>
+                    </div>
+
+                    <!-- Electric Reading -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-lightning-charge text-warning me-2"></i>Electric Meter
+                        </label>
+
+                        @if (Model.LatestReading != null)
+                        {
+                            <div class="index-display">
+                                <div class="index-item">
+                                    <div class="label">Previous Reading</div>
+                                    <div class="value">@Model.LatestReading.ElectricNewIndex</div>
+                                    <small class="text-muted">kWh</small>
+                                </div>
+                                <i class="bi bi-arrow-right arrow-icon"></i>
+                                <div class="index-item" style="flex: 1.5;">
+                                    <div class="label">New Reading *</div>
+                                    <input asp-for="CreateDto.ElectricNewIndex" type="number"
+                                           class="form-control form-control-lg text-center"
+                                           style="font-size: 1.25rem; font-weight: 600;"
+                                           min="@Model.LatestReading.ElectricNewIndex"
+                                           placeholder="Enter kWh" required />
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <input asp-for="CreateDto.ElectricNewIndex" type="number"
+                                   class="form-control form-control-lg"
+                                   placeholder="Enter electric meter reading (kWh)"
+                                   min="0" required />
+                            <div class="form-helper">This is the first reading for this property</div>
+                        }
+                        <span asp-validation-for="CreateDto.ElectricNewIndex" class="text-danger"></span>
+                    </div>
+
+                    <!-- Water Reading -->
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="bi bi-droplet text-primary me-2"></i>Water Meter
+                        </label>
+
+                        @if (Model.LatestReading != null)
+                        {
+                            <div class="index-display">
+                                <div class="index-item">
+                                    <div class="label">Previous Reading</div>
+                                    <div class="value">@Model.LatestReading.WaterNewIndex</div>
+                                    <small class="text-muted">m³</small>
+                                </div>
+                                <i class="bi bi-arrow-right arrow-icon"></i>
+                                <div class="index-item" style="flex: 1.5;">
+                                    <div class="label">New Reading *</div>
+                                    <input asp-for="CreateDto.WaterNewIndex" type="number"
+                                           class="form-control form-control-lg text-center"
+                                           style="font-size: 1.25rem; font-weight: 600;"
+                                           min="@Model.LatestReading.WaterNewIndex"
+                                           placeholder="Enter m³" required />
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <input asp-for="CreateDto.WaterNewIndex" type="number"
+                                   class="form-control form-control-lg"
+                                   placeholder="Enter water meter reading (m³)"
+                                   min="0" required />
+                            <div class="form-helper">This is the first reading for this property</div>
+                        }
+                        <span asp-validation-for="CreateDto.WaterNewIndex" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-check-lg me-2"></i>Create Reading
+                    </button>
+                    <a asp-page="/Owner/Utilities/Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-lg me-2"></i>Cancel
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Instructions -->
+                <div class="detail-card">
+                    <div class="detail-card-header">
+                        <h3><i class="bi bi-info-circle me-2"></i>Instructions</h3>
+                    </div>
+                    <div style="font-size: 0.875rem; color: #6c757d; line-height: 1.6;">
+                        <p><strong>How to create a utility reading:</strong></p>
+                        <ol style="padding-left: 20px; margin-bottom: 0;">
+                            <li class="mb-2">Select the property you want to record readings for</li>
+                            <li class="mb-2">Choose the active tenancy</li>
+                            <li class="mb-2">Enter the date when the readings were taken</li>
+                            <li class="mb-2">Record the current electricity meter reading (kWh)</li>
+                            <li class="mb-2">Record the current water meter reading (m³)</li>
+                            <li class="mb-2">Click "Create Reading" to save</li>
+                        </ol>
+                    </div>
+                </div>
+
+                @if (Model.LatestReading != null)
+                {
+                    <div class="info-box">
+                        <div class="info-label">
+                            <i class="bi bi-clock-history me-1"></i>Latest Reading
+                        </div>
+                        <div class="info-value mb-2">@Model.LatestReading.ReadingDate.ToString("MMMM dd, yyyy")</div>
+                        <hr style="margin: 12px 0; border-color: #e9ecef;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span style="font-size: 0.875rem; color: #6c757d;">
+                                <i class="bi bi-lightning-charge text-warning me-1"></i>Electric:
+                            </span>
+                            <span style="font-weight: 600;">@Model.LatestReading.ElectricNewIndex kWh</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span style="font-size: 0.875rem; color: #6c757d;">
+                                <i class="bi bi-droplet text-primary me-1"></i>Water:
+                            </span>
+                            <span style="font-weight: 600;">@Model.LatestReading.WaterNewIndex m³</span>
+                        </div>
+                    </div>
+                }
+
+                <!-- Tips -->
+                <div class="detail-card" style="background: #fef3c7; border-color: #fde68a;">
+                    <div style="display: flex; gap: 12px;">
+                        <i class="bi bi-lightbulb text-warning" style="font-size: 1.5rem; flex-shrink: 0;"></i>
+                        <div style="font-size: 0.875rem; color: #92400e;">
+                            <strong>Tips:</strong>
+                            <ul style="margin: 8px 0 0 0; padding-left: 20px;">
+                                <li>New readings must be greater than or equal to previous readings</li>
+                                <li>Double-check the meter numbers before submitting</li>
+                                <li>Take a photo of the meters for your records</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function() {
+            // Load tenancies when property is selected
+            $('#propertySelect').change(function() {
+                var propertyId = $(this).val();
+                if (propertyId) {
+                    $.get('@Url.Page("/Owner/Utilities/Create", "LoadPropertyData")', { propertyId: propertyId }, function(data) {
+                        if (data.success) {
+                            // Populate tenancies
+                            var tenancySelect = $('#tenancySelect');
+                            tenancySelect.empty();
+                            tenancySelect.append('<option value="">-- Select Tenancy --</option>');
+
+                            if (data.tenancies && data.tenancies.length > 0) {
+                                $.each(data.tenancies, function(i, tenancy) {
+                                    tenancySelect.append($('<option>', {
+                                        value: tenancy.id,
+                                        text: tenancy.text
+                                    }));
+                                });
+                            } else {
+                                tenancySelect.append('<option value="">No active tenancies found</option>');
+                            }
+
+                            // Show latest reading info if exists
+                            if (data.latestReading) {
+                                // Update min values for inputs
+                                $('input[name="CreateDto.ElectricNewIndex"]').attr('min', data.latestReading.electricOldIndex);
+                                $('input[name="CreateDto.WaterNewIndex"]').attr('min', data.latestReading.waterOldIndex);
+                            }
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    }).fail(function() {
+                        alert('Failed to load property data');
+                    });
+                } else {
+                    $('#tenancySelect').empty().append('<option value="">-- Select Property First --</option>');
+                }
+            });
+
+            // Trigger change if property is pre-selected
+            if ($('#propertySelect').val()) {
+                $('#propertySelect').trigger('change');
+            }
+        });
+    </script>
+}

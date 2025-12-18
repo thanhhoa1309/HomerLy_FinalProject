@@ -1,0 +1,392 @@
+﻿@page
+@using Homerly.BusinessObject.Enums
+@model HomerLy.Presentation.Pages.Owner.Utilities.IndexModel
+@{
+    ViewData["Title"] = "Utility Readings";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<style>
+    /* Minimalist Black & White Theme */
+    .stat-card-wrapper {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        min-width: 0;
+        flex: 1 1 200px;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .badge-charged {
+        background: #1a1a1a !important;
+        color: #fff !important;
+    }
+
+    .badge-pending {
+        background: #f5f5f5 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #e5e5e5 !important;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .table tbody td, .table thead th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .usage-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .usage-value {
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .usage-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+    @@media (max-width: 768px) {
+        .stat-card-wrapper {
+            flex-direction: column;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">
+                <i class="bi bi-lightning me-2"></i>Utility Readings
+            </h2>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">Manage electricity and water meter readings</p>
+        </div>
+        <div class="action-buttons">
+            <a asp-page="/Owner/Utilities/Create" class="btn btn-dark">
+                <i class="bi bi-plus-lg me-2"></i>Add Reading
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="stat-card-wrapper">
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.TotalReadings</h3>
+                <p>Total Readings</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-file-text"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.PendingCharge</h3>
+                <p>Pending Charge</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.ChargedCount</h3>
+                <p>Charged</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-funnel me-2"></i>Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Property</label>
+                        <select asp-for="PropertyIdFilter" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Properties</option>
+                            @if (Model.OwnerProperties != null)
+                            {
+                                @foreach (var property in Model.OwnerProperties)
+                                {
+                                    <option value="@property.Id">@property.Title</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                        <select name="isCharged" class="form-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="false">Pending Charge</option>
+                            <option value="true">Charged</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">From Date</label>
+                        <input type="date" asp-for="FromDateFilter" class="form-control" />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">To Date</label>
+                        <input type="date" asp-for="ToDateFilter" class="form-control" />
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-dark">
+                        <i class="bi bi-search me-2"></i>Apply Filters
+                    </button>
+                    <a asp-page="/Owner/Utilities/Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-lg me-2"></i>Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Utility Readings Table -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold">Utility Readings List</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Reading Date</th>
+                            <th>Property</th>
+                            <th>Electric Usage</th>
+                            <th>Water Usage</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.UtilityReadings != null && Model.UtilityReadings.Any())
+                        {
+                            @foreach (var reading in Model.UtilityReadings)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-medium">@reading.ReadingDate.ToString("MMM dd, yyyy")</div>
+                                        <small class="text-muted">@reading.ReadingDate.ToString("dddd")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">Property ID</div>
+                                        <small class="text-muted">@reading.PropertyId.ToString().Substring(0, 8)...</small>
+                                    </td>
+                                    <td>
+                                        <div class="usage-cell">
+                                            <span class="usage-value">
+                                                <i class="bi bi-lightning-charge text-warning me-1"></i>@reading.ElectricUsage kWh
+                                            </span>
+                                            <span class="usage-label">@reading.ElectricOldIndex → @reading.ElectricNewIndex</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="usage-cell">
+                                            <span class="usage-value">
+                                                <i class="bi bi-droplet text-primary me-1"></i>@reading.WaterUsage m³
+                                            </span>
+                                            <span class="usage-label">@reading.WaterOldIndex → @reading.WaterNewIndex</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (reading.IsCharged)
+                                        {
+                                            <span class="badge badge-charged">
+                                                <i class="bi bi-check-circle me-1"></i>Charged
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-pending">
+                                                <i class="bi bi-hourglass-split me-1"></i>Pending
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons btn-group-sm">
+                                            <a asp-page="/Owner/Utilities/Details" asp-route-id="@reading.Id" 
+                                               class="btn btn-sm btn-outline-dark" title="View Details">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            @if (!reading.IsCharged)
+                                            {
+                                                <!-- ADD THIS BUTTON -->
+                                                <form method="post" asp-page-handler="CreateInvoice" asp-route-readingId="@reading.Id" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-success" 
+                                                            onclick="return confirm('Create invoice from this utility reading? This will mark the reading as charged.')" 
+                                                            title="Create Invoice">
+                                                        <i class="bi bi-receipt"></i>
+                                                    </button>
+                                                </form>
+                                                
+                                                <a asp-page="/Owner/Utilities/Edit" asp-route-id="@reading.Id" 
+                                                   class="btn btn-sm btn-outline-dark" title="Edit">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form method="post" asp-page-handler="MarkCharged" asp-route-readingId="@reading.Id" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-dark" 
+                                                            onclick="return confirm('Mark this reading as charged?')" 
+                                                            title="Mark as Charged">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" asp-page-handler="Delete" asp-route-readingId="@reading.Id" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                                            onclick="return confirm('Delete this reading?')" 
+                                                            title="Delete">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-secondary">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No utility readings found
+                                    <div class="mt-3">
+                                        <a asp-page="/Owner/Utilities/Create" class="btn btn-dark">
+                                            <i class="bi bi-plus-lg me-2"></i>Add First Reading
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.UtilityReadings != null && Model.UtilityReadings.TotalPages > 1)
+        {
+            <div class="card-footer">
+                <nav>
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item @(Model.UtilityReadings.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-route-pageNumber="@(Model.UtilityReadings.CurrentPage - 1)"
+                               asp-route-propertyId="@Model.PropertyIdFilter"
+                               asp-route-isCharged="@Model.IsChargedFilter"
+                               asp-route-fromDate="@Model.FromDateFilter"
+                               asp-route-toDate="@Model.ToDateFilter">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= Model.UtilityReadings.TotalPages; i++)
+                        {
+                            <li class="page-item @(Model.UtilityReadings.CurrentPage == i ? "active" : "")">
+                                <a class="page-link" asp-route-pageNumber="@i"
+                                   asp-route-propertyId="@Model.PropertyIdFilter"
+                                   asp-route-isCharged="@Model.IsChargedFilter"
+                                   asp-route-fromDate="@Model.FromDateFilter"
+                                   asp-route-toDate="@Model.ToDateFilter">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.UtilityReadings.CurrentPage == Model.UtilityReadings.TotalPages ? "disabled" : "")">
+                            <a class="page-link" asp-route-pageNumber="@(Model.UtilityReadings.CurrentPage + 1)"
+                               asp-route-propertyId="@Model.PropertyIdFilter"
+                               asp-route-isCharged="@Model.IsChargedFilter"
+                               asp-route-fromDate="@Model.FromDateFilter"
+                               asp-route-toDate="@Model.ToDateFilter">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="text-center text-secondary mt-2" style="font-size: 0.875rem;">
+                    Showing @((Model.UtilityReadings.CurrentPage - 1) * Model.UtilityReadings.PageSize + 1)
+                    to @Math.Min(Model.UtilityReadings.CurrentPage * Model.UtilityReadings.PageSize, Model.UtilityReadings.TotalCount)
+                    of @Model.UtilityReadings.TotalCount readings
+                </div>
+            </div>
+        }
+    </div>
+</div>

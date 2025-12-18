@@ -416,6 +416,11 @@
         color: #ffffff;
     }
 
+    .bg-cancel {
+        background: #dc3545;
+        color: #ffffff;
+    }
+
     .bg-warning {
         background: #ffc107;
         color: #212529;
@@ -749,16 +754,28 @@
                                     <i class="bi bi-shield-check"></i>Confirmation
                                 </div>
                                 <div class="tenancy-info-value">
-                                    @if (tenancy.IsTenantConfirmed)
+                                    @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active)
                                     {
                                         <span class="badge bg-success">
                                             <i class="bi bi-check-circle me-1"></i>Confirmed
                                         </span>
                                     }
-                                    else
+                                    @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.cancelled)
                                     {
-                                        <span class="badge bg-warning text-dark">
-                                            <i class="bi bi-clock me-1"></i>Pending
+                                        <span class="badge bg-cancel">
+                                            <i class="bi bi-check-circle me-1"></i>Cancelled
+                                        </span>
+                                    }
+                                    @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.expired)
+                                    {
+                                        <span class="badge bg-cancel">
+                                            <i class="bi bi-check-circle me-1"></i>Expired
+                                        </span>
+                                    }
+                                    @if (tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation)
+                                    {
+                                        <span class="badge bg-cancel">
+                                            <i class="bi bi-check-circle me-1"></i>Pending
                                         </span>
                                     }
                                 </div>

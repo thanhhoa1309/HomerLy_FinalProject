@@ -19,8 +19,9 @@ namespace HomerLy.Presentation.Pages.User.Tenancies
             _logger = logger;
         }
 
-        public TenancyResponseDto Tenancy { get; set; } = null!;
+        public TenancyResponseDto? Tenancy { get; set; }
         public string? ErrorMessage { get; set; }
+        public string? SuccessMessage { get; set; }
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
@@ -32,25 +33,30 @@ namespace HomerLy.Presentation.Pages.User.Tenancies
 
                 if (tenancy == null)
                 {
-                    TempData["ErrorMessage"] = "Tenancy not found.";
-                    return RedirectToPage("/User/Tenancies/Index");
+                    ErrorMessage = "Tenancy not found.";
+                    return Page();
                 }
 
                 // Verify this tenancy belongs to current user
                 if (tenancy.TenantId != userId)
                 {
-                    TempData["ErrorMessage"] = "You are not authorized to view this tenancy.";
-                    return RedirectToPage("/User/Tenancies/Index");
+                    ErrorMessage = "You are not authorized to view this tenancy.";
+                    return Page();
                 }
 
                 Tenancy = tenancy;
+
+                // Get messages from TempData
+                SuccessMessage = TempData["SuccessMessage"] as string;
+                ErrorMessage = TempData["ErrorMessage"] as string;
+
                 return Page();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error loading tenancy {id}");
-                TempData["ErrorMessage"] = "An error occurred while loading the tenancy.";
-                return RedirectToPage("/User/Tenancies/Index");
+                ErrorMessage = "An error occurred while loading the tenancy.";
+                return Page();
             }
         }
 

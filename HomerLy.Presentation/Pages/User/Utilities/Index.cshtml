@@ -1,0 +1,520 @@
+﻿@page
+@using Homerly.BusinessObject.Enums
+@model HomerLy.Presentation.Pages.User.Utilities.IndexModel
+@{
+    ViewData["Title"] = "My Utility Usage";
+    Layout = "~/Pages/Shared/_UserLayout.cshtml";
+}
+
+<style>
+    /* Minimalist Black & White Theme */
+    .stat-card-wrapper {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        min-width: 0;
+        flex: 1 1 200px;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .badge-charged {
+        background: #1a1a1a !important;
+        color: #fff !important;
+    }
+
+    .badge-pending {
+        background: #f5f5f5 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #e5e5e5 !important;
+        display: flex;
+        justify-content: center;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .usage-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .usage-value {
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .usage-label {
+        font-size: 0.75rem;
+        color: #6c757d;
+    }
+
+    .info-banner {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .latest-reading-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #343a40 100%);
+        color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 24px;
+    }
+
+    .reading-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+        .reading-item:last-child {
+            border-bottom: none;
+        }
+
+    /* Filter Card - Matching Owner Properties Style */
+    .filter-card {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 32px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .fw-medium {
+        display: flex;
+        justify-content: center;
+    }
+
+    .text-muted {
+        display: flex;
+        justify-content: center;
+    }
+
+    .filter-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #212529;
+    }
+
+    .filter-body {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-group1 {
+        display: flex;
+    }
+
+    .filter-label {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: #212529;
+        font-size: 0.875rem;
+        margin-bottom: 8px;
+    }
+
+    .form-select,
+    .form-control {
+        width: 100%;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        background: #ffffff;
+    }
+
+        .form-select:focus,
+        .form-control:focus {
+            outline: none;
+            border-color: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+        }
+
+    .form-select-lg,
+    .form-control-lg {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    @@media (max-width: 992px) {
+        .filter-body {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .stat-card-wrapper {
+            flex-direction: column;
+        }
+
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .filter-body {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">
+                <i class="bi bi-lightning me-2"></i>My Utility Usage
+            </h2>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">View your electricity and water consumption</p>
+        </div>
+        <a asp-page="/User/Dashboard" class="btn btn-outline-dark">
+            <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+        <i class="bi bi-info-circle" style="font-size: 1.5rem; color: #1a1a1a;"></i>
+        <div style="flex: 1;">
+            <strong>About Utility Readings</strong>
+            <p class="mb-0" style="font-size: 0.875rem; color: #6c757d; margin-top: 4px;">
+                Your property owner records electricity and water meter readings monthly. These readings are used to calculate your utility bills.
+            </p>
+        </div>
+    </div>
+
+    <!-- Latest Reading Card -->
+    @if (Model.LatestReading != null)
+    {
+        <div class="latest-reading-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <div>
+                    <h5 style="margin: 0; font-weight: 600;">Latest Reading</h5>
+                    <small style="opacity: 0.8;">@Model.LatestReading.ReadingDate.ToString("MMMM dd, yyyy")</small>
+                </div>
+                @if (Model.LatestReading.IsCharged)
+                {
+                    <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff;">
+                        <i class="bi bi-check-circle me-1"></i>Charged
+                    </span>
+                }
+                else
+                {
+                    <span class="badge" style="background: rgba(255,255,255,0.2); color: #fff;">
+                        <i class="bi bi-hourglass-split me-1"></i>Pending
+                    </span>
+                }
+            </div>
+            <div class="reading-item">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="bi bi-lightning-charge" style="font-size: 1.5rem; color: #ffc107;"></i>
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.8;">Electricity Usage</div>
+                        <div style="font-size: 1.5rem; font-weight: 600;">@Model.LatestReading.ElectricUsage kWh</div>
+                    </div>
+                </div>
+                <div style="text-align: right; opacity: 0.8; font-size: 0.875rem;">
+                    @Model.LatestReading.ElectricOldIndex → @Model.LatestReading.ElectricNewIndex
+                </div>
+            </div>
+            <div class="reading-item">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="bi bi-droplet" style="font-size: 1.5rem; color: #0dcaf0;"></i>
+                    <div>
+                        <div style="font-size: 0.875rem; opacity: 0.8;">Water Usage</div>
+                        <div style="font-size: 1.5rem; font-weight: 600;">@Model.LatestReading.WaterUsage m³</div>
+                    </div>
+                </div>
+                <div style="text-align: right; opacity: 0.8; font-size: 0.875rem;">
+                    @Model.LatestReading.WaterOldIndex → @Model.LatestReading.WaterNewIndex
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="stat-card-wrapper">
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.TotalReadings</h3>
+                <p>Total Readings</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-file-text"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.TotalElectricUsage</h3>
+                <p>Total Electric (kWh)</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-lightning-charge"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.TotalWaterUsage</h3>
+                <p>Total Water (m³)</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-droplet"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section - Matching Owner Properties Style -->
+    <div class="filter-card">
+        <div class="filter-header">
+            <i class="bi bi-sliders me-2"></i>
+            <span>Search & Filter</span>
+        </div>
+        <div class="filter-body">
+            <form method="get" style="display: contents;">
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="bi bi-house me-2"></i>Tenancy
+                    </label>
+                    <select asp-for="TenancyIdFilter" class="form-select form-select-lg" onchange="this.form.submit()">
+                        <option value="">All Tenancies</option>
+                        @if (Model.MyTenancies != null)
+                        {
+                            @foreach (var tenancy in Model.MyTenancies)
+                            {
+                                <option value="@tenancy.Id">
+                                    @tenancy.PropertyTitle (@tenancy.StartDate.ToString("MMM yyyy") - @tenancy.EndDate.ToString("MMM yyyy"))
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="bi bi-calendar-event me-2"></i>From Date
+                    </label>
+                    <input type="date" asp-for="FromDateFilter" class="form-control form-control-lg" />
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i class="bi bi-calendar-check me-2"></i>To Date
+                    </label>
+                    <input type="date" asp-for="ToDateFilter" class="form-control form-control-lg" />
+                </div>
+                <div class="filter-group1" style="display: flex; align-items: flex-end;">
+                    <button type="submit" class="btn btn-dark btn-lg" style="width: 100%; padding: 12px 16px;">
+                        <i class="bi bi-search me-2"></i>Apply
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Utility Readings Table -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold">Usage History</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Reading Date</th>
+                            <th>Property</th>
+                            <th>Electric Usage</th>
+                            <th>Water Usage</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.UtilityReadings != null && Model.UtilityReadings.Any())
+                        {
+                            @foreach (var reading in Model.UtilityReadings)
+                            {
+                                var tenancy = Model.MyTenancies?.FirstOrDefault(t => t.Id == reading.TenancyId);
+                                <tr>
+                                    <td>
+                                        <div class="fw-medium">@reading.ReadingDate.ToString("MMM dd, yyyy")</div>
+                                        <small class="text-muted">@reading.ReadingDate.ToString("dddd")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">@(tenancy?.PropertyTitle ?? "Property")</div>
+                                        <small class="text-muted">@(tenancy?.PropertyAddress ?? "")</small>
+                                    </td>
+                                    <td>
+                                        <div class="usage-cell">
+                                            <span class="usage-value">
+                                                <i class="bi bi-lightning-charge text-warning me-1"></i>@reading.ElectricUsage kWh
+                                            </span>
+                                            <span class="usage-label">@reading.ElectricOldIndex → @reading.ElectricNewIndex</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="usage-cell">
+                                            <span class="usage-value">
+                                                <i class="bi bi-droplet text-primary me-1"></i>@reading.WaterUsage m³
+                                            </span>
+                                            <span class="usage-label">@reading.WaterOldIndex → @reading.WaterNewIndex</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        @if (reading.IsCharged)
+                                        {
+                                            <span class="badge badge-charged">
+                                                <i class="bi bi-check-circle me-1"></i>Charged
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-pending">
+                                                <i class="bi bi-hourglass-split me-1"></i>Pending
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-page="/User/Utilities/Details" asp-route-id="@reading.Id"
+                                           class="btn btn-sm btn-outline-dark" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-secondary">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    <p class="mb-0">No utility readings found</p>
+                                    <small>Your property owner will record meter readings monthly</small>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.UtilityReadings != null && Model.UtilityReadings.TotalPages > 1)
+        {
+            <div class="card-footer">
+                <nav>
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item @(Model.UtilityReadings.CurrentPage == 1 ? "disabled" : "")">
+                            <a class="page-link" asp-route-pageNumber="@(Model.UtilityReadings.CurrentPage - 1)"
+                               asp-route-tenancyId="@Model.TenancyIdFilter"
+                               asp-route-fromDate="@Model.FromDateFilter"
+                               asp-route-toDate="@Model.ToDateFilter">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= Model.UtilityReadings.TotalPages; i++)
+                        {
+                            <li class="page-item @(Model.UtilityReadings.CurrentPage == i ? "active" : "")">
+                                <a class="page-link" asp-route-pageNumber="@i"
+                                   asp-route-tenancyId="@Model.TenancyIdFilter"
+                                   asp-route-fromDate="@Model.FromDateFilter"
+                                   asp-route-toDate="@Model.ToDateFilter">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(Model.UtilityReadings.CurrentPage == Model.UtilityReadings.TotalPages ? "disabled" : "")">
+                            <a class="page-link" asp-route-pageNumber="@(Model.UtilityReadings.CurrentPage + 1)"
+                               asp-route-tenancyId="@Model.TenancyIdFilter"
+                               asp-route-fromDate="@Model.FromDateFilter"
+                               asp-route-toDate="@Model.ToDateFilter">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <div class="text-center text-secondary mt-2" style="font-size: 0.875rem;">
+                    Showing @((Model.UtilityReadings.CurrentPage - 1) * Model.UtilityReadings.PageSize + 1)
+                    to @Math.Min(Model.UtilityReadings.CurrentPage * Model.UtilityReadings.PageSize, Model.UtilityReadings.TotalCount)
+                    of @Model.UtilityReadings.TotalCount readings
+                </div>
+            </div>
+        }
+    </div>
+</div>

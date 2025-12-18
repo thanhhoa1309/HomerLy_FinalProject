@@ -317,40 +317,46 @@
                                         }
                                     </td>
                                     <td>
-                                        <div class="action-buttons btn-group-sm">
-                                            <a asp-page="/Admin/Tenancies/Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-dark" title="View Details">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
-                                            @if (!string.IsNullOrEmpty(item.ContractUrl))
-                                            {
-                                                <a href="@item.ContractUrl" target="_blank" class="btn btn-sm btn-outline-dark" title="View Contract">
-                                                    <i class="bi bi-file-earmark-text"></i>
-                                                </a>
-                                            }
+    <div class="action-buttons btn-group-sm">
+        <a asp-page="/Admin/Tenancies/Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-dark" title="View Details">
+            <i class="bi bi-eye"></i>
+        </a>
+        @if (!string.IsNullOrEmpty(item.ContractUrl))
+        {
+            <a href="@item.ContractUrl" target="_blank" class="btn btn-sm btn-outline-dark" title="View Contract">
+                <i class="bi bi-file-earmark-text"></i>
+            </a>
+        }
 
-                                            @if (item.Status == TenancyStatus.pending_confirmation)
-                                            {
-                                                <form method="post" asp-page-handler="Approve" asp-route-id="@item.Id" class="d-inline">
-                                                    <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Approve this tenancy?')" title="Approve">
-                                                        <i class="bi bi-check-lg"></i>
-                                                    </button>
-                                                </form>
-                                                <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
-                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Reject this tenancy? This will cancel it.')" title="Reject">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                            else if (item.Status == TenancyStatus.active)
-                                            {
-                                                <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
-                                                    <button type="submit" class="btn btn-sm btn-outline-dark" onclick="return confirm('Cancel this active tenancy?')" title="Cancel">
-                                                        <i class="bi bi-x-lg"></i>
-                                                    </button>
-                                                </form>
-                                            }
-                                        </div>
-                                    </td>
+        @if (item.Status == TenancyStatus.pending_confirmation && item.IsTenantConfirmed)
+        {
+            <form method="post" asp-page-handler="Approve" asp-route-id="@item.Id" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Approve this tenancy?')" title="Approve">
+                    <i class="bi bi-check-lg"></i>
+                </button>
+            </form>
+            <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Reject this tenancy? This will cancel it.')" title="Reject">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </form>
+        }
+        else if (item.Status == TenancyStatus.pending_confirmation && !item.IsTenantConfirmed)
+        {
+            <span class="badge badge-pending" title="Waiting for tenant confirmation">
+                <i class="bi bi-hourglass-split me-1"></i>Waiting
+            </span>
+        }
+        else if (item.Status == TenancyStatus.active)
+        {
+            <form method="post" asp-page-handler="Reject" asp-route-id="@item.Id" class="d-inline">
+                <button type="submit" class="btn btn-sm btn-outline-dark" onclick="return confirm('Cancel this active tenancy?')" title=".Cancel">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </form>
+        }
+    </div>
+</td>
                                 </tr>
                             }
                         }

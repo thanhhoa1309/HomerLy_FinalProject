@@ -21,11 +21,9 @@ namespace Homerly.BusinessObject.DTOs.TenancyDTOs
         public decimal ElectricUnitPrice { get; set; }
         public decimal WaterUnitPrice { get; set; }
         
-        // Ch? s? ?i?n/n??c ban ??u (khi b?t ??u h?p ??ng)
         public int ElectricOldIndex { get; set; }
         public int WaterOldIndex { get; set; }
         
-        // Latest utility reading info (if exists)
         public int? LatestElectricIndex { get; set; }
         public int? LatestWaterIndex { get; set; }
         public DateTime? LatestReadingDate { get; set; }

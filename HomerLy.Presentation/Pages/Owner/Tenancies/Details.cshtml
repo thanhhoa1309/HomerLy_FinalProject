@@ -1,13 +1,12 @@
-@page
+﻿@page
 @using Homerly.BusinessObject.Enums
-@model HomerLy.Presentation.Pages.User.Tenancies.DetailsModel
+@model HomerLy.Presentation.Pages.Owner.Tenancies.DetailsModel
 @{
     ViewData["Title"] = "Tenancy Details";
-    Layout = "~/Pages/Shared/_UserLayout.cshtml";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
 }
 
 <style>
-    /* Minimalist Black & White Theme */
     .detail-card {
         background: #fff;
         border: 1px solid #e9ecef;
@@ -133,10 +132,29 @@
         color: #fff !important;
     }
 
-    .badge-warning {
-        background: #fef3c7 !important;
-        color: #92400e !important;
-        border: 1px solid #fde68a !important;
+    .progress-container {
+        margin-top: 24px;
+    }
+
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+        background: #f0f0f0;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: #1a1a1a;
+        transition: width 0.6s ease;
+    }
+
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        font-size: 0.875rem;
+        color: #6c757d;
     }
 
     .page-header {
@@ -182,6 +200,11 @@
         font-weight: 600;
         color: #1a1a1a;
         margin-bottom: 4px;
+    }
+
+    .user-contact {
+        font-size: 0.875rem;
+        color: #6c757d;
     }
 
     .timeline {
@@ -258,10 +281,10 @@
             <h2 class="h4 mb-1 fw-semibold">
                 <i class="bi bi-file-text me-2"></i>Tenancy Details
             </h2>
-            <p class="text-secondary mb-0" style="font-size: 0.875rem;">Review your rental agreement</p>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">View complete tenancy information</p>
         </div>
         <div class="action-buttons">
-            <a asp-page="/User/Tenancies/Index" class="btn btn-outline-dark">
+            <a asp-page="/Owner/Tenancies/Index" class="btn btn-outline-dark">
                 <i class="bi bi-arrow-left me-2"></i>Back to List
             </a>
         </div>
@@ -281,14 +304,13 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     }
-
     @if (Model.Tenancy == null)
     {
         <div class="card">
             <div class="card-body text-center py-5">
                 <i class="bi bi-exclamation-triangle fs-1 text-secondary d-block mb-3"></i>
                 <h5 class="text-secondary">Tenancy not found</h5>
-                <a asp-page="/User/Tenancies/Index" class="btn btn-dark mt-3">
+                <a asp-page="/Owner/Tenancies/Index" class="btn btn-dark mt-3">
                     <i class="bi bi-arrow-left me-2"></i>Go Back
                 </a>
             </div>
@@ -296,69 +318,62 @@
     }
     else
     {
-        <!-- Action Required Alert -->
-        @if (Model.Tenancy.Status == TenancyStatus.pending_confirmation && !Model.Tenancy.IsTenantConfirmed)
-        {
-            <div class="alert alert-warning border-0 mb-4" style="background: #fef3c7;">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h5 class="mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Action Required</h5>
-                        <p class="mb-0" style="color: #92400e;">Please review the tenancy details and confirm or reject this agreement.</p>
-                    </div>
-                    <div class="action-buttons">
-                        <form method="post" asp-page-handler="Confirm" class="d-inline">
-                            <input type="hidden" name="id" value="@Model.Tenancy.Id" />
-                            <button type="submit" class="btn btn-dark" onclick="return confirm('Confirm this tenancy?')">
-                                <i class="bi bi-check-lg me-2"></i>Confirm
-                            </button>
-                        </form>
-                        <form method="post" asp-page-handler="Reject" class="d-inline">
-                            <input type="hidden" name="id" value="@Model.Tenancy.Id" />
-                            <button type="submit" class="btn btn-outline-secondary" onclick="return confirm('Reject this tenancy?')">
-                                <i class="bi bi-x-lg me-2"></i>Reject
-                            </button>
-                        </form>
-                    </div>
+        <div class="stat-card-wrapper">
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>@Model.DaysRemaining</h3>
+                    <p>Days Remaining</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-calendar-check"></i>
                 </div>
             </div>
-        }
-
-        <!-- Status Badge -->
-        <div class="mb-4">
-            @if (Model.Tenancy.Status == TenancyStatus.active)
-            {
-                <span class="badge badge-active fs-6 px-3 py-2">
-                    <i class="bi bi-check-circle me-2"></i>ACTIVE
-                </span>
-            }
-            else if (Model.Tenancy.Status == TenancyStatus.pending_confirmation)
-            {
-                <span class="badge badge-pending fs-6 px-3 py-2">
-                    <i class="bi bi-hourglass-split me-2"></i>PENDING CONFIRMATION
-                </span>
-            }
-            else if (Model.Tenancy.Status == TenancyStatus.expired)
-            {
-                <span class="badge badge-expired fs-6 px-3 py-2">
-                    <i class="bi bi-x-circle me-2"></i>EXPIRED
-                </span>
-            }
-            else
-            {
-                <span class="badge badge-cancelled fs-6 px-3 py-2">
-                    <i class="bi bi-x-circle me-2"></i>CANCELLED
-                </span>
-            }
-
-            @if (Model.Tenancy.IsTenantConfirmed)
-            {
-                <span class="badge badge-active fs-6 px-3 py-2 ms-2">
-                    <i class="bi bi-check-circle me-2"></i>CONFIRMED BY YOU
-                </span>
-            }
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>@Model.TotalDays</h3>
+                    <p>Total Duration (Days)</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-calendar-range"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>@Model.ProgressPercentage.ToString("0")%</h3>
+                    <p>Progress</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-hourglass-split"></i>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-content">
+                    <h3>
+                        @if (Model.Tenancy.Status == TenancyStatus.active)
+                        {
+                            <span class="badge badge-active">Active</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.pending_confirmation)
+                        {
+                            <span class="badge badge-pending">Pending</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.expired)
+                        {
+                            <span class="badge badge-expired">Expired</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-cancelled">Cancelled</span>
+                        }
+                    </h3>
+                    <p>Status</p>
+                </div>
+                <div class="stat-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+            </div>
         </div>
 
-        <!-- Property Information -->
         <div class="detail-card">
             <div class="detail-card-header">
                 <h3><i class="bi bi-house me-2"></i>Property Information</h3>
@@ -375,25 +390,43 @@
             </div>
         </div>
 
-        <!-- Owner Information -->
         <div class="detail-card">
             <div class="detail-card-header">
-                <h3><i class="bi bi-person me-2"></i>Owner Information</h3>
+                <h3><i class="bi bi-people me-2"></i>Parties Involved</h3>
             </div>
-            <div class="user-info-box">
-                <div class="user-avatar">
-                    @Model.Tenancy.OwnerName?.Substring(0, 1).ToUpper()
+            <div class="detail-row">
+                <div>
+                    <div class="user-info-box">
+                        <div class="user-avatar">
+                            @Model.Tenancy.TenantName?.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">@Model.Tenancy.TenantName</div>
+                            <div class="user-contact">
+                                <i class="bi bi-envelope me-1"></i>@Model.Tenancy.TenantEmail
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge badge-pending">Tenant</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="user-details">
-                    <div class="user-name">@Model.Tenancy.OwnerName</div>
-                    <div class="mt-2">
-                        <span class="badge badge-active">Owner</span>
+                <div>
+                    <div class="user-info-box">
+                        <div class="user-avatar">
+                            @Model.Tenancy.OwnerName?.Substring(0, 1).ToUpper()
+                        </div>
+                        <div class="user-details">
+                            <div class="user-name">@Model.Tenancy.OwnerName</div>
+                            <div class="mt-2">
+                                <span class="badge badge-active">Owner</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tenancy Period -->
         <div class="detail-card">
             <div class="detail-card-header">
                 <h3><i class="bi bi-calendar me-2"></i>Tenancy Period</h3>
@@ -410,13 +443,54 @@
                     <div class="detail-value-secondary">@Model.Tenancy.EndDate.ToString("dddd")</div>
                 </div>
             </div>
-            <div class="detail-item">
-                <span class="detail-label">Duration</span>
-                <div class="detail-value">@((Model.Tenancy.EndDate - Model.Tenancy.StartDate).Days) days</div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <span class="detail-label">Tenant Confirmation</span>
+                    <div class="detail-value">
+                        @if (Model.Tenancy.IsTenantConfirmed)
+                        {
+                            <span class="badge badge-active"><i class="bi bi-check-circle me-1"></i>Confirmed</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-pending"><i class="bi bi-hourglass-split me-1"></i>Waiting</span>
+                        }
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Current Status</span>
+                    <div class="detail-value">
+                        @if (Model.Tenancy.Status == TenancyStatus.active)
+                        {
+                            <span class="badge badge-active">Active</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.pending_confirmation)
+                        {
+                            <span class="badge badge-pending">Pending Confirmation</span>
+                        }
+                        else if (Model.Tenancy.Status == TenancyStatus.expired)
+                        {
+                            <span class="badge badge-expired">Expired</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-cancelled">Cancelled</span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" style="width: @Model.ProgressPercentage%"></div>
+                </div>
+                <div class="progress-info">
+                    <span>@Model.Tenancy.StartDate.ToString("MMM dd, yyyy")</span>
+                    <span>@Model.ProgressPercentage.ToString("0.0")% Complete</span>
+                    <span>@Model.Tenancy.EndDate.ToString("MMM dd, yyyy")</span>
+                </div>
             </div>
         </div>
 
-        <!-- Utility Information -->
         <div class="detail-card">
             <div class="detail-card-header">
                 <h3><i class="bi bi-lightning me-2"></i>Utility Information</h3>
@@ -437,15 +511,26 @@
                 <div class="detail-item">
                     <span class="detail-label">Initial Electric Index</span>
                     <div class="detail-value">@Model.Tenancy.ElectricOldIndex kWh</div>
+                    @if (Model.Tenancy.LatestElectricIndex.HasValue)
+                    {
+                        <div class="detail-value-secondary">
+                            Latest: @Model.Tenancy.LatestElectricIndex kWh
+                        </div>
+                    }
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Initial Water Index</span>
                     <div class="detail-value">@Model.Tenancy.WaterOldIndex m³</div>
+                    @if (Model.Tenancy.LatestWaterIndex.HasValue)
+                    {
+                        <div class="detail-value-secondary">
+                            Latest: @Model.Tenancy.LatestWaterIndex m³
+                        </div>
+                    }
                 </div>
             </div>
         </div>
 
-        <!-- Contract Document & Timeline -->
         <div class="row">
             <div class="col-md-6">
                 <div class="detail-card">
@@ -486,16 +571,6 @@
                                 <div class="timeline-date">@Model.Tenancy.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</div>
                             </div>
                         </div>
-                        @if (Model.Tenancy.IsTenantConfirmed)
-                        {
-                            <div class="timeline-item">
-                                <div class="timeline-dot"></div>
-                                <div class="timeline-content">
-                                    <div class="timeline-title">Confirmed by You</div>
-                                    <div class="timeline-date">You accepted this tenancy</div>
-                                </div>
-                            </div>
-                        }
                         @if (Model.Tenancy.UpdatedAt.HasValue)
                         {
                             <div class="timeline-item">
@@ -503,6 +578,16 @@
                                 <div class="timeline-content">
                                     <div class="timeline-title">Last Updated</div>
                                     <div class="timeline-date">@Model.Tenancy.UpdatedAt.Value.ToString("MMMM dd, yyyy - hh:mm tt")</div>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Tenancy.LatestReadingDate.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-dot"></div>
+                                <div class="timeline-content">
+                                    <div class="timeline-title">Latest Utility Reading</div>
+                                    <div class="timeline-date">@Model.Tenancy.LatestReadingDate.Value.ToString("MMMM dd, yyyy")</div>
                                 </div>
                             </div>
                         }
