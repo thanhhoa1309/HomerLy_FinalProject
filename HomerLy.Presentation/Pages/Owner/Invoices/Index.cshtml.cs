@@ -26,6 +26,7 @@ namespace HomerLy.Presentation.Pages.Owner.Invoices
         public string? ErrorMessage { get; set; }
 
         // Statistics
+        public int DraftCount { get; set; }
         public int PendingCount { get; set; }
         public int PaidCount { get; set; }
         public int OverdueCount { get; set; }
@@ -54,6 +55,7 @@ namespace HomerLy.Presentation.Pages.Owner.Invoices
                 }
 
                 // Calculate statistics
+                DraftCount = Invoices.Count(i => i.Status == InvoiceStatus.draft);
                 PendingCount = Invoices.Count(i => i.Status == InvoiceStatus.pending);
                 PaidCount = Invoices.Count(i => i.Status == InvoiceStatus.paid);
                 OverdueCount = Invoices.Count(i => i.Status == InvoiceStatus.overdue);
@@ -70,6 +72,65 @@ namespace HomerLy.Presentation.Pages.Owner.Invoices
                 _logger.LogError($"Error loading invoices: {ex.Message}");
                 ErrorMessage = "An error occurred while loading invoices.";
                 return Page();
+            }
+        }
+
+        public async Task<IActionResult> OnPostSendAsync(Guid invoiceId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var ownerId))
+                {
+                    return RedirectToPage("/Auth/Login");
+                }
+
+                var updateDto = new UpdateInvoiceStatusDto
+                {
+                    Status = InvoiceStatus.pending
+                };
+
+                await _invoiceService.UpdateInvoiceStatusAsync(invoiceId, updateDto);
+                TempData["SuccessMessage"] = "Invoice sent to tenant successfully!";
+
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error sending invoice: {ex.Message}");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToPage();
+            }
+        }
+
+        public async Task<IActionResult> OnPostDeleteAsync(Guid invoiceId)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var ownerId))
+                {
+                    return RedirectToPage("/Auth/Login");
+                }
+
+                var success = await _invoiceService.DeleteInvoiceAsync(invoiceId, ownerId);
+
+                if (success)
+                {
+                    TempData["SuccessMessage"] = "Draft invoice deleted successfully!";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to delete invoice.";
+                }
+
+                return RedirectToPage();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error deleting invoice: {ex.Message}");
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToPage();
             }
         }
     }

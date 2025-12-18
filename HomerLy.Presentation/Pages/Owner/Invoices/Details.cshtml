@@ -1,0 +1,252 @@
+﻿@page
+@model HomerLy.Presentation.Pages.Owner.Invoices.DetailsModel
+@{
+    ViewData["Title"] = "Invoice Details";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<style>
+    .invoice-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .invoice-details-card {
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .detail-value {
+        font-size: 0.875rem;
+        color: #1a1a1a;
+        font-weight: 500;
+        text-align: right;
+    }
+
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 16px 0;
+        border-top: 2px solid #1a1a1a;
+        margin-top: 16px;
+    }
+
+    .total-label {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .total-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .status-badge-large {
+        display: inline-block;
+        padding: 8px 16px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 6px;
+    }
+
+    .badge-draft {
+        background: #e9ecef;
+        color: #495057;
+        border: 1px solid #adb5bd;
+    }
+
+    .badge-pending {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffc107;
+    }
+
+    .badge-paid {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #28a745;
+    }
+
+    .badge-overdue {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #dc3545;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: #1a1a1a;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="invoice-header">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">
+                <i class="bi bi-receipt me-2"></i>Invoice Details
+            </h2>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">
+                @if (Model.Invoice != null)
+                {
+                    <span>Invoice #@Model.Invoice.Id.ToString().Substring(0, 8)</span>
+                }
+            </p>
+        </div>
+        <div>
+            <a asp-page="/Owner/Invoices/Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Back to Invoices
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-circle me-2"></i>@Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Invoice != null)
+    {
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Invoice Information -->
+                <div class="invoice-details-card">
+                    <h5 class="section-title"><i class="bi bi-info-circle me-2"></i>Invoice Information</h5>
+                    <div class="detail-row">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value">
+                            @if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.draft)
+                            {
+                                <span class="status-badge-large badge-draft">
+                                    <i class="bi bi-file-earmark me-1"></i>Draft
+                                </span>
+                            }
+                            else if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.paid)
+                            {
+                                <span class="status-badge-large badge-paid">
+                                    <i class="bi bi-check-circle me-1"></i>Paid
+                                </span>
+                            }
+                            else if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.overdue)
+                            {
+                                <span class="status-badge-large badge-overdue">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Overdue
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge-large badge-pending">
+                                    <i class="bi bi-hourglass-split me-1"></i>Pending
+                                </span>
+                            }
+                        </span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Billing Period</span>
+                        <span class="detail-value">@Model.Invoice.BillingPeriodStart.ToString("MMM dd, yyyy") - @Model.Invoice.BillingPeriodEnd.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Due Date</span>
+                        <span class="detail-value">@Model.Invoice.DueDate.ToString("MMM dd, yyyy")</span>
+                    </div>
+                    @if (Model.Invoice.PaymentDate.HasValue)
+                    {
+                        <div class="detail-row">
+                            <span class="detail-label">Payment Date</span>
+                            <span class="detail-value">@Model.Invoice.PaymentDate.Value.ToString("MMM dd, yyyy")</span>
+                        </div>
+                    }
+                    <div class="detail-row">
+                        <span class="detail-label">Created Date</span>
+                        <span class="detail-value">@Model.Invoice.CreatedAt.ToString("MMM dd, yyyy")</span>
+                    </div>
+                </div>
+
+                <!-- Charges Breakdown -->
+                <div class="invoice-details-card">
+                    <h5 class="section-title"><i class="bi bi-receipt-cutoff me-2"></i>Charges Breakdown</h5>
+                    <div class="detail-row">
+                        <span class="detail-label">Monthly Rent</span>
+                        <span class="detail-value">₫@Model.Invoice.MonthlyRentPrice.ToString("N0")</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">
+                            Electric (@Model.Invoice.ElectricOldIndex → @Model.Invoice.ElectricNewIndex kWh)
+                            @@₫@Model.Invoice.ElectricUnitPrice.ToString("N0")/kWh
+                        </span>
+                        <span class="detail-value">₫@Model.Invoice.ElectricCost.ToString("N0")</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">
+                            Water (@Model.Invoice.WaterOldIndex → @Model.Invoice.WaterNewIndex m³)
+                            @@₫@Model.Invoice.WaterUnitPrice.ToString("N0")/m³
+                        </span>
+                        <span class="detail-value">₫@Model.Invoice.WaterCost.ToString("N0")</span>
+                    </div>
+                    @if (Model.Invoice.OtherFees > 0)
+                    {
+                        <div class="detail-row">
+                            <span class="detail-label">Other Fees</span>
+                            <span class="detail-value">₫@Model.Invoice.OtherFees.ToString("N0")</span>
+                        </div>
+                    }
+                    <div class="total-row">
+                        <span class="total-label">Total Amount</span>
+                        <span class="total-value">₫@Model.Invoice.TotalAmount.ToString("N0")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <!-- Tenant Information -->
+                <div class="invoice-details-card">
+                    <h5 class="section-title"><i class="bi bi-person me-2"></i>Tenant Information</h5>
+                    <div class="detail-row">
+                        <span class="detail-label">Name</span>
+                        <span class="detail-value">@Model.Invoice.TenantName</span>
+                    </div>
+                </div>
+
+                <!-- Property Information -->
+                <div class="invoice-details-card">
+                    <h5 class="section-title"><i class="bi bi-building me-2"></i>Property Information</h5>
+                    <div class="detail-row">
+                        <span class="detail-label">Title</span>
+                        <span class="detail-value">@Model.Invoice.PropertyTitle</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Address</span>
+                        <span class="detail-value">@Model.Invoice.PropertyAddress</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,4 +1,4 @@
-using HomerLy.Business.Interfaces;
+﻿using HomerLy.Business.Interfaces;
 using HomerLy.BusinessObject.DTOs.InvoiceDTOs;
 using HomerLy.BusinessObject.Enums;
 using HomerLy.DataAccess.Entities;
@@ -19,74 +19,68 @@ namespace HomerLy.Business.Service
 
         public async Task<InvoiceResponseDto> CreateInvoiceAsync(Guid ownerId, CreateInvoiceDto dto)
         {
-            // 1. L?y th�ng tin tenancy
+            // 1. Lấy thông tin tenancy
             var tenancy = await _unitOfWork.Tenancy.FirstOrDefaultAsync(
                 t => t.Id == dto.TenancyId && !t.IsDeleted);
 
             if (tenancy == null)
             {
-                throw new Exception("Tenancy kh�ng t?n t?i");
+                throw new Exception("Tenancy không tồn tại");
             }
 
-            // 2. Ki?m tra owner c� quy?n t?o invoice cho tenancy n�y kh�ng
+            // 2. Kiểm tra owner có quyền tạo invoice cho tenancy này không
             var property = await _unitOfWork.Property.GetByIdAsync(tenancy.PropertyId);
 
             if (property == null || property.IsDeleted)
             {
-                throw new Exception("Property kh�ng t?n t?i");
+                throw new Exception("Property không tồn tại");
             }
 
             if (property.OwnerId != ownerId)
             {
-                throw new UnauthorizedAccessException("B?n kh�ng c� quy?n t?o invoice cho tenancy n�y");
+                throw new UnauthorizedAccessException("Bạn không có quyền tạo invoice cho tenancy này");
             }
 
-            // 3. L?y utility reading c? nh?t c?a property (old index)
-            var lastUtilityReading = await _unitOfWork.UtilityReading.GetQueryable()
+            // 3. Lấy utility reading để lấy thông tin (KHÔNG TẠO MỚI)
+            var utilityReading = await _unitOfWork.UtilityReading.GetQueryable()
                 .Where(u => u.PropertyId == tenancy.PropertyId && u.TenancyId == tenancy.Id && !u.IsDeleted)
                 .OrderByDescending(u => u.ReadingDate)
                 .FirstOrDefaultAsync();
 
-            int electricOldIndex = lastUtilityReading?.ElectricNewIndex ?? 0;
-            int waterOldIndex = lastUtilityReading?.WaterNewIndex ?? 0;
+            if (utilityReading == null)
+            {
+                throw new Exception("Không tìm thấy utility reading. Vui lòng tạo utility reading trước khi tạo invoice.");
+            }
 
-            // 4. Validate new index ph?i l?n h?n old index
+            int electricOldIndex = utilityReading.ElectricOldIndex;
+            int waterOldIndex = utilityReading.WaterOldIndex;
+
+            // 4. Validate new index phải lớn hơn old index
             if (dto.ElectricNewIndex < electricOldIndex)
             {
-                throw new Exception($"Ch? s? ?i?n m?i ({dto.ElectricNewIndex}) ph?i l?n h?n ho?c b?ng ch? s? c? ({electricOldIndex})");
+                throw new Exception($"Chỉ số điện mới ({dto.ElectricNewIndex}) phải lớn hơn hoặc bằng chỉ số cũ ({electricOldIndex})");
             }
 
             if (dto.WaterNewIndex < waterOldIndex)
             {
-                throw new Exception($"Ch? s? n??c m?i ({dto.WaterNewIndex}) ph?i l?n h?n ho?c b?ng ch? s? c? ({waterOldIndex})");
+                throw new Exception($"Chỉ số nước mới ({dto.WaterNewIndex}) phải lớn hơn hoặc bằng chỉ số cũ ({waterOldIndex})");
             }
 
-            // 5. T�nh to�n chi ph�
+            // 5. Kiểm tra xem utility reading đã có invoice chưa
+            var existingInvoice = await _unitOfWork.Invoice.FirstOrDefaultAsync(
+                i => i.UtilityReadingId == utilityReading.Id && !i.IsDeleted);
+
+            if (existingInvoice != null)
+            {
+                throw new Exception("Utility reading này đã có invoice. Vui lòng sử dụng invoice hiện có hoặc tạo utility reading mới.");
+            }
+
+            // 6. Tính toán chi phí
             decimal electricCost = (dto.ElectricNewIndex - electricOldIndex) * dto.ElectricUnitPrice;
             decimal waterCost = (dto.WaterNewIndex - waterOldIndex) * dto.WaterUnitPrice;
             decimal totalAmount = property.MonthlyPrice + electricCost + waterCost + dto.OtherFees;
 
-            // 6. T?o utility reading m?i
-            var utilityReading = new UtilityReading
-            {
-                Id = Guid.NewGuid(),
-                PropertyId = tenancy.PropertyId,
-                TenancyId = tenancy.Id,
-                ElectricOldIndex = electricOldIndex,
-                ElectricNewIndex = dto.ElectricNewIndex,
-                WaterOldIndex = waterOldIndex,
-                WaterNewIndex = dto.WaterNewIndex,
-                ReadingDate = DateTime.UtcNow,
-                IsCharged = false,
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = ownerId,
-                CreatedById = ownerId,
-                IsDeleted = false
-            };
-
-            await _unitOfWork.UtilityReading.AddAsync(utilityReading);
-
-            // 7. T?o invoice
+            // 7. Tạo invoice với status là DRAFT
             var invoice = new Invoice
             {
                 Id = Guid.NewGuid(),
@@ -99,7 +93,7 @@ namespace HomerLy.Business.Service
                 BillingPeriodStart = dto.BillingPeriodStart,
                 BillingPeriodEnd = dto.BillingPeriodEnd,
                 DueDate = dto.DueDate,
-                Status = InvoiceStatus.pending,
+                Status = InvoiceStatus.draft, // Changed to draft
 
                 MonthlyRentPrice = property.MonthlyPrice,
 
@@ -158,7 +152,7 @@ namespace HomerLy.Business.Service
         public async Task<List<InvoiceResponseDto>> GetInvoicesByTenantAsync(Guid tenantId)
         {
             var invoices = await _unitOfWork.Invoice.GetQueryable()
-                .Where(i => i.TenantId == tenantId && !i.IsDeleted)
+                .Where(i => i.TenantId == tenantId && !i.IsDeleted && i.Status != InvoiceStatus.draft) // Don't show draft to tenants
                 .OrderByDescending(i => i.CreatedAt)
                 .ToListAsync();
 
@@ -193,20 +187,20 @@ namespace HomerLy.Business.Service
 
             if (invoice == null || invoice.IsDeleted)
             {
-                throw new Exception("Invoice kh�ng t?n t?i");
+                throw new Exception("Invoice không tồn tại");
             }
 
             if (invoice.OwnerId != ownerId)
             {
-                throw new UnauthorizedAccessException("B?n kh�ng c� quy?n c?p nh?t invoice n�y");
+                throw new UnauthorizedAccessException("Bạn không có quyền cập nhật invoice này");
             }
 
             if (invoice.Status != InvoiceStatus.draft && invoice.Status != InvoiceStatus.pending)
             {
-                throw new Exception("Ch? c� th? c?p nh?t invoice ? tr?ng th�i draft ho?c pending");
+                throw new Exception("Chỉ có thể cập nhật invoice ở trạng thái draft hoặc pending");
             }
 
-            // C?p nh?t c�c field n?u c�
+            // Cập nhật các field nếu có
             if (dto.BillingPeriodStart.HasValue)
                 invoice.BillingPeriodStart = dto.BillingPeriodStart.Value;
 
@@ -219,14 +213,14 @@ namespace HomerLy.Business.Service
             if (dto.OtherFees.HasValue)
                 invoice.OtherFees = dto.OtherFees.Value;
 
-            // N?u c?p nh?t ch? s? ho?c ??n gi�, c?n t�nh l?i
+            // Nếu cập nhật chỉ số hoặc đơn giá, cần tính lại
             bool needRecalculate = false;
 
             if (dto.ElectricNewIndex.HasValue)
             {
                 if (dto.ElectricNewIndex.Value < invoice.ElectricOldIndex)
                 {
-                    throw new Exception($"Ch? s? ?i?n m?i ({dto.ElectricNewIndex.Value}) ph?i l?n h?n ho?c b?ng ch? s? c? ({invoice.ElectricOldIndex})");
+                    throw new Exception($"Chỉ số điện mới ({dto.ElectricNewIndex.Value}) phải lớn hơn hoặc bằng chỉ số cũ ({invoice.ElectricOldIndex})");
                 }
                 invoice.ElectricNewIndex = dto.ElectricNewIndex.Value;
                 needRecalculate = true;
@@ -236,7 +230,7 @@ namespace HomerLy.Business.Service
             {
                 if (dto.WaterNewIndex.Value < invoice.WaterOldIndex)
                 {
-                    throw new Exception($"Ch? s? n??c m?i ({dto.WaterNewIndex.Value}) ph?i l?n h?n ho?c b?ng ch? s? c? ({invoice.WaterOldIndex})");
+                    throw new Exception($"Chỉ số nước mới ({dto.WaterNewIndex.Value}) phải lớn hơn hoặc bằng chỉ số cũ ({invoice.WaterOldIndex})");
                 }
                 invoice.WaterNewIndex = dto.WaterNewIndex.Value;
                 needRecalculate = true;
@@ -254,14 +248,14 @@ namespace HomerLy.Business.Service
                 needRecalculate = true;
             }
 
-            // T�nh l?i cost v� total
+            // Tính lại cost và total
             if (needRecalculate || dto.OtherFees.HasValue)
             {
                 invoice.ElectricCost = (invoice.ElectricNewIndex - invoice.ElectricOldIndex) * invoice.ElectricUnitPrice;
                 invoice.WaterCost = (invoice.WaterNewIndex - invoice.WaterOldIndex) * invoice.WaterUnitPrice;
                 invoice.TotalAmount = invoice.MonthlyRentPrice + invoice.ElectricCost + invoice.WaterCost + invoice.OtherFees;
 
-                // C?p nh?t utility reading n?u c?n
+                // Cập nhật utility reading nếu cần
                 var utilityReading = await _unitOfWork.UtilityReading.GetByIdAsync(invoice.UtilityReadingId);
 
                 if (utilityReading != null && !utilityReading.IsDeleted)
@@ -293,7 +287,7 @@ namespace HomerLy.Business.Service
 
             if (invoice == null || invoice.IsDeleted)
             {
-                throw new Exception("Invoice kh�ng t?n t?i");
+                throw new Exception("Invoice không tồn tại");
             }
 
             invoice.Status = dto.Status;
@@ -327,12 +321,12 @@ namespace HomerLy.Business.Service
 
             if (invoice.OwnerId != ownerId)
             {
-                throw new UnauthorizedAccessException("B?n kh�ng c� quy?n x�a invoice n�y");
+                throw new UnauthorizedAccessException("Bạn không có quyền xóa invoice này");
             }
 
             if (invoice.Status != InvoiceStatus.draft)
             {
-                throw new Exception("Ch? c� th? x�a invoice ? tr?ng th�i draft");
+                throw new Exception("Chỉ có thể xóa invoice ở trạng thái draft");
             }
 
             invoice.IsDeleted = true;
@@ -348,8 +342,8 @@ namespace HomerLy.Business.Service
         public async Task UpdateOverdueInvoicesAsync()
         {
             var overdueInvoices = await _unitOfWork.Invoice.GetQueryable()
-                .Where(i => !i.IsDeleted 
-                    && i.Status == InvoiceStatus.pending 
+                .Where(i => !i.IsDeleted
+                    && i.Status == InvoiceStatus.pending
                     && i.DueDate < DateTime.UtcNow)
                 .ToListAsync();
 
@@ -372,22 +366,22 @@ namespace HomerLy.Business.Service
 
             if (invoice == null || invoice.IsDeleted)
             {
-                throw new Exception("Invoice kh�ng t?n t?i");
+                throw new Exception("Invoice không tồn tại");
             }
 
             if (invoice.TenantId != tenantId)
             {
-                throw new UnauthorizedAccessException("B?n kh�ng c� quy?n thanh to�n invoice n�y");
+                throw new UnauthorizedAccessException("Bạn không có quyền thanh toán invoice này");
             }
 
             if (invoice.Status == InvoiceStatus.paid)
             {
-                throw new Exception("Invoice ?� ???c thanh to�n");
+                throw new Exception("Invoice đã được thanh toán");
             }
 
-            if (invoice.Status == InvoiceStatus.cancelled)
+            if (invoice.Status == InvoiceStatus.cancelled || invoice.Status == InvoiceStatus.draft)
             {
-                throw new Exception("Invoice ?� b? h?y");
+                throw new Exception("Không thể thanh toán invoice này");
             }
 
             invoice.Status = InvoiceStatus.paid;
@@ -403,13 +397,13 @@ namespace HomerLy.Business.Service
 
         private async Task<InvoiceResponseDto> MapToResponseDto(Invoice invoice)
         {
-            // L?y th�ng tin property
+            // Lấy thông tin property
             var property = await _unitOfWork.Property.GetByIdAsync(invoice.PropertyId);
 
-            // L?y th�ng tin tenant
+            // Lấy thông tin tenant
             var tenant = await _unitOfWork.Account.GetByIdAsync(invoice.TenantId);
 
-            // L?y th�ng tin owner
+            // Lấy thông tin owner
             var owner = await _unitOfWork.Account.GetByIdAsync(invoice.OwnerId);
 
             return new InvoiceResponseDto
