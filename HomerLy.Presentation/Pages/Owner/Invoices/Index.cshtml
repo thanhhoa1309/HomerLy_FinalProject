@@ -1,0 +1,271 @@
+﻿@page
+@model HomerLy.Presentation.Pages.Owner.Invoices.IndexModel
+@{
+    ViewData["Title"] = "Invoices Management";
+    Layout = "~/Pages/Shared/_OwnerLayout.cshtml";
+}
+
+<style>
+    /* Same minimalist styles as User/Invoices/Index */
+    .stat-card-wrapper {
+        display: flex;
+        gap: 24px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 24px;
+        background: #fff;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        min-width: 0;
+        flex: 1 1 200px;
+    }
+
+    .stat-card-content h3 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .stat-card-content p {
+        font-size: 0.8125rem;
+        color: #6c757d;
+        margin: 4px 0 0 0;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+
+    .badge-pending {
+        background: #fff3cd !important;
+        color: #856404 !important;
+        border: 1px solid #ffc107 !important;
+    }
+
+    .badge-paid {
+        background: #d4edda !important;
+        color: #155724 !important;
+        border: 1px solid #28a745 !important;
+    }
+
+    .badge-overdue {
+        background: #f8d7da !important;
+        color: #721c24 !important;
+        border: 1px solid #dc3545 !important;
+    }
+
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .table tbody td, .table thead th {
+        vertical-align: middle;
+        text-align: center;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="page-header">
+        <div>
+            <h2 class="h4 mb-1 fw-semibold">
+                <i class="bi bi-receipt me-2"></i>Invoices Management
+            </h2>
+            <p class="text-secondary mb-0" style="font-size: 0.875rem;">Track all invoices sent to tenants</p>
+        </div>
+        <div>
+            <a asp-page="/Owner/Utilities/Index" class="btn btn-dark">
+                <i class="bi bi-plus-lg me-2"></i>Create Invoice from Reading
+            </a>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>@Model.SuccessMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Statistics Cards -->
+    <div class="stat-card-wrapper">
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.PendingCount</h3>
+                <p>Pending Payment</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>@Model.PaidCount</h3>
+                <p>Paid Invoices</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>₫@Model.TotalRevenue.ToString("N0")</h3>
+                <p>Total Revenue</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-card-content">
+                <h3>₫@Model.PendingRevenue.ToString("N0")</h3>
+                <p>Pending Revenue</p>
+            </div>
+            <div class="stat-icon">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold"><i class="bi bi-funnel me-2"></i>Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">Status</label>
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Invoices</option>
+                            <option value="pending" selected="@(Model.StatusFilter == "pending")">Pending</option>
+                            <option value="paid" selected="@(Model.StatusFilter == "paid")">Paid</option>
+                            <option value="overdue" selected="@(Model.StatusFilter == "overdue")">Overdue</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Invoices Table -->
+    <div class="card">
+        <div class="card-header">
+            <h6 class="mb-0 fw-semibold">Invoices List</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Tenant</th>
+                            <th>Property</th>
+                            <th>Billing Period</th>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Invoices != null && Model.Invoices.Any())
+                        {
+                            @foreach (var invoice in Model.Invoices)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-medium">#@invoice.Id.ToString().Substring(0, 8)</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">@invoice.TenantName</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">@invoice.PropertyTitle</div>
+                                        <small class="text-muted">@invoice.PropertyAddress</small>
+                                    </td>
+                                    <td>
+                                        <div>@invoice.BillingPeriodStart.ToString("MMM dd")</div>
+                                        <small class="text-muted">to @invoice.BillingPeriodEnd.ToString("MMM dd, yyyy")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">@invoice.DueDate.ToString("MMM dd, yyyy")</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-bold">₫@invoice.TotalAmount.ToString("N0")</div>
+                                    </td>
+                                    <td>
+                                        @if (invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.paid)
+                                        {
+                                            <span class="badge badge-paid">
+                                                <i class="bi bi-check-circle me-1"></i>Paid
+                                            </span>
+                                            @if (invoice.PaymentDate.HasValue)
+                                            {
+                                                <br />
+                                
+                                                <small class="text-muted">@invoice.PaymentDate.Value.ToString("MMM dd")</small>
+                                            }
+                                        }
+                                        else if (invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.overdue)
+                                        {
+                                            <span class="badge badge-overdue">
+                                                <i class="bi bi-exclamation-triangle me-1"></i>Overdue
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-pending">
+                                                <i class="bi bi-hourglass-split me-1"></i>Pending
+                                            </span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-page="/Owner/Invoices/Details" asp-route-id="@invoice.Id"
+                                           class="btn btn-sm btn-outline-dark" title="View Details">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-4 text-secondary">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    No invoices found
+                                    <div class="mt-3">
+                                        <a asp-page="/Owner/Utilities/Index" class="btn btn-dark">
+                                            <i class="bi bi-plus-lg me-2"></i>Create First Invoice
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

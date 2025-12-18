@@ -1,6 +1,7 @@
 ﻿using Homerly.Business.Interfaces;
 using Homerly.Business.Utils;
-using Homerly.BusinessObject.DTOs.InvoiceDTOs;
+using HomerLy.Business.Interfaces;
+using HomerLy.BusinessObject.DTOs.InvoiceDTOs;
 using Homerly.BusinessObject.DTOs.PropertyDTOs;
 using Homerly.BusinessObject.DTOs.TenancyDTOs;
 using Homerly.BusinessObject.DTOs.UtilityReadingDTOs;
@@ -179,9 +180,6 @@ namespace HomerLy.Presentation.Pages.Owner.Utilities
                 };
 
                 var invoice = await _invoiceService.CreateInvoiceAsync(ownerId, createInvoiceDto);
-
-                await _utilityReadingService.MarkAsChargedAsync(readingId, ownerId);
-
                 TempData["SuccessMessage"] = $"Invoice created successfully! Invoice ID: {invoice.Id}. Total Amount: ₫{invoice.TotalAmount:N0}";
                 return RedirectToPage();
             }

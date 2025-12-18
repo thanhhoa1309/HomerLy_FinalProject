@@ -1,4 +1,4 @@
-using HomerLy.Business.Interfaces;
+﻿using HomerLy.Business.Interfaces;
 using HomerLy.BusinessObject.DTOs.PaymentDTOs;
 using HomerLy.DataAccess.Interfaces;
 using Homerly.DataAccess.Entities;
@@ -29,20 +29,17 @@ namespace HomerLy.Business.Service
             {
                 _logger.LogInformation($"Creating Stripe checkout session for user {userId} and invoice {createDto.InvoiceId}");
 
-                // Get invoice details
                 var invoice = await _unitOfWork.Invoice.GetByIdAsync(createDto.InvoiceId);
                 if (invoice == null)
                 {
                     throw new Exception($"Invoice with ID {createDto.InvoiceId} not found");
                 }
 
-                // Verify user is the tenant
                 if (invoice.TenantId != userId)
                 {
                     throw new UnauthorizedAccessException("You don't have permission to pay this invoice");
                 }
 
-                // Create payment record
                 var payment = new Payment
                 {
                     PropertyId = invoice.PropertyId,
@@ -59,7 +56,6 @@ namespace HomerLy.Business.Service
                 await _unitOfWork.Payment.AddAsync(payment);
                 await _unitOfWork.SaveChangesAsync();
 
-                // Create Stripe checkout session
                 var domain = _configuration["AppSettings:Domain"] ?? "http://localhost:5000";
                 
                 var options = new SessionCreateOptions
@@ -77,7 +73,7 @@ namespace HomerLy.Business.Service
                                     Name = $"Invoice #{invoice.Id}",
                                     Description = $"Payment for invoice from {invoice.BillingPeriodStart:MM/dd/yyyy} to {invoice.BillingPeriodEnd:MM/dd/yyyy}"
                                 },
-                                UnitAmount = (long)(invoice.TotalAmount * 100), // Convert to cents
+                                UnitAmount = (long)(invoice.TotalAmount * 100),    
                             },
                             Quantity = 1,
                         },
@@ -96,7 +92,6 @@ namespace HomerLy.Business.Service
                 var service = new SessionService();
                 var session = await service.CreateAsync(options);
 
-                // Update payment with Stripe session ID
                 payment.StripeSessionId = session.Id;
                 await _unitOfWork.Payment.Update(payment);
                 await _unitOfWork.SaveChangesAsync();
@@ -143,10 +138,8 @@ namespace HomerLy.Business.Service
                                 payment.IsPaid = true;
                                 payment.StripePaymentIntentId = session.PaymentIntentId;
                                 payment.PaymentDate = DateTime.UtcNow;
-
                                 await _unitOfWork.Payment.Update(payment);
 
-                                // Update invoice status
                                 if (payment.InvoiceId.HasValue)
                                 {
                                     var invoice = await _unitOfWork.Invoice.GetByIdAsync(payment.InvoiceId.Value);
@@ -155,11 +148,26 @@ namespace HomerLy.Business.Service
                                         invoice.Status = HomerLy.BusinessObject.Enums.InvoiceStatus.paid;
                                         invoice.PaymentDate = DateTime.UtcNow;
                                         await _unitOfWork.Invoice.Update(invoice);
+
+                                        try
+                                        {
+                                            var utilityReading = await _unitOfWork.UtilityReading.GetByIdAsync(invoice.UtilityReadingId);
+                                            if (utilityReading != null && !utilityReading.IsCharged)
+                                            {
+                                                utilityReading.IsCharged = true;
+                                                await _unitOfWork.UtilityReading.Update(utilityReading);
+                                                _logger.LogInformation($"Utility reading {invoice.UtilityReadingId} marked as charged after payment");
+                                            }
+                                        }
+                                        catch (Exception urEx)
+                                        {
+                                            _logger.LogError($"Error marking utility reading as charged: {urEx.Message}");
+                                        }
                                     }
                                 }
 
                                 await _unitOfWork.SaveChangesAsync();
-                                _logger.LogInformation($"Payment {paymentId} marked as paid");
+                                _logger.LogInformation($"Payment {paymentId} marked as paid, invoice status updated, utility reading marked as charged");
                             }
                         }
                     }
@@ -185,7 +193,6 @@ namespace HomerLy.Business.Service
                     return null;
                 }
 
-                // Verify user has access
                 if (payment.PayerId != userId)
                 {
                     throw new UnauthorizedAccessException("You don't have permission to view this payment");
@@ -262,7 +269,6 @@ namespace HomerLy.Business.Service
         {
             try
             {
-                // Verify ownership
                 var property = await _unitOfWork.Property.GetByIdAsync(propertyId);
                 if (property == null || property.OwnerId != ownerId)
                 {
@@ -322,7 +328,6 @@ namespace HomerLy.Business.Service
                     return null;
                 }
 
-                // Verify user has access
                 if (payment.PayerId != userId)
                 {
                     throw new UnauthorizedAccessException("You don't have permission to view this payment");

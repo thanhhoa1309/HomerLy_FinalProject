@@ -110,6 +110,20 @@
             gap: 16px;
         }
     }
+
+    .btn-success {
+        background-color: #198754;
+        border-color: #198754;
+        color: #ffffff;
+    }
+
+    .btn-success:hover {
+        background-color: #157347;
+        border-color: #146c43;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+    }
 </style>
 
 <div class="container-fluid">
@@ -296,7 +310,6 @@
                                                 <!-- ADD THIS BUTTON -->
                                                 <form method="post" asp-page-handler="CreateInvoice" asp-route-readingId="@reading.Id" class="d-inline">
                                                     <button type="submit" class="btn btn-sm btn-success" 
-                                                            onclick="return confirm('Create invoice from this utility reading? This will mark the reading as charged.')" 
                                                             title="Create Invoice">
                                                         <i class="bi bi-receipt"></i>
                                                     </button>

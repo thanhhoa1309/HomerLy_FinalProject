@@ -1,0 +1,176 @@
+﻿@page
+@model HomerLy.Presentation.Pages.User.Invoices.DetailsModel
+@{
+    ViewData["Title"] = "Invoice Details";
+    Layout = "~/Pages/Shared/_UserLayout.cshtml";
+}
+
+<style>
+    .invoice-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .invoice-header {
+        background: #1a1a1a;
+        color: #ffffff;
+        padding: 32px 24px;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .invoice-body {
+        background: #ffffff;
+        border: 1px solid #e9ecef;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        padding: 24px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .info-value {
+        color: #1a1a1a;
+        font-weight: 600;
+    }
+
+    .total-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 24px;
+    }
+</style>
+
+<div class="container-fluid invoice-container">
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Invoice != null)
+    {
+        <div class="invoice-header">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2 class="mb-2">Invoice #@Model.Invoice.Id.ToString().Substring(0, 8)</h2>
+                    <p class="mb-0">@Model.Invoice.PropertyTitle</p>
+                    <small style="opacity: 0.8;">@Model.Invoice.PropertyAddress</small>
+                </div>
+                <div class="text-end">
+                    @if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.paid)
+                    {
+                        <span class="badge bg-success" style="padding: 8px 16px; font-size: 0.875rem;">
+                            <i class="bi bi-check-circle me-1"></i>Paid
+                        </span>
+                    }
+                    else if (Model.Invoice.Status == HomerLy.BusinessObject.Enums.InvoiceStatus.overdue)
+                    {
+                        <span class="badge bg-danger" style="padding: 8px 16px; font-size: 0.875rem;">
+                            <i class="bi bi-exclamation-triangle me-1"></i>Overdue
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning text-dark" style="padding: 8px 16px; font-size: 0.875rem;">
+                            <i class="bi bi-hourglass-split me-1"></i>Pending
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="invoice-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-3">Billing Period</h6>
+                    <p class="mb-1">
+                        <i class="bi bi-calendar3 me-2"></i>
+                        @Model.Invoice.BillingPeriodStart.ToString("MMM dd, yyyy") - @Model.Invoice.BillingPeriodEnd.ToString("MMM dd, yyyy")
+                    </p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <h6 class="fw-bold mb-3">Due Date</h6>
+                    <p class="mb-1">
+                        <i class="bi bi-calendar-event me-2"></i>
+                        @Model.Invoice.DueDate.ToString("MMM dd, yyyy")
+                    </p>
+                </div>
+            </div>
+
+            <hr />
+
+            <h6 class="fw-bold mb-3">Invoice Details</h6>
+
+            <div class="info-row">
+                <span class="info-label">Monthly Rent</span>
+                <span class="info-value">₫@Model.Invoice.MonthlyRentPrice.ToString("N0")</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">
+                    <i class="bi bi-lightning-charge text-warning me-1"></i>
+                    Electricity (@Model.Invoice.ElectricOldIndex → @Model.Invoice.ElectricNewIndex)
+                </span>
+                <span class="info-value">₫@Model.Invoice.ElectricCost.ToString("N0")</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">
+                    <i class="bi bi-droplet text-primary me-1"></i>
+                    Water (@Model.Invoice.WaterOldIndex → @Model.Invoice.WaterNewIndex)
+                </span>
+                <span class="info-value">₫@Model.Invoice.WaterCost.ToString("N0")</span>
+            </div>
+
+            @if (Model.Invoice.OtherFees > 0)
+            {
+                <div class="info-row">
+                    <span class="info-label">Other Fees</span>
+                    <span class="info-value">₫@Model.Invoice.OtherFees.ToString("N0")</span>
+                </div>
+            }
+
+            <div class="total-section">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Total Amount</h4>
+                    <h3 class="mb-0 text-dark">₫@Model.Invoice.TotalAmount.ToString("N0")</h3>
+                </div>
+            </div>
+
+            @if (Model.Invoice.Status != HomerLy.BusinessObject.Enums.InvoiceStatus.paid)
+            {
+                <div class="d-grid gap-2 mt-4">
+                    <a asp-page="/Payment/PayInvoice" asp-route-invoiceId="@Model.Invoice.Id"
+                       class="btn btn-success btn-lg">
+                        <i class="bi bi-credit-card me-2"></i>Pay Now via Stripe
+                    </a>
+                </div>
+            }
+            else if (Model.Invoice.PaymentDate.HasValue)
+            {
+                <div class="alert alert-success mt-4">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Paid on @Model.Invoice.PaymentDate.Value.ToString("MMM dd, yyyy")
+                </div>
+            }
+
+            <div class="mt-3">
+                <a asp-page="/User/Invoices/Index" class="btn btn-outline-dark">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Invoices
+                </a>
+            </div>
+        </div>
+    }
+</div>
