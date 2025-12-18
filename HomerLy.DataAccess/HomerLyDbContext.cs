@@ -150,18 +150,19 @@ namespace HomerLy.DataAccess
                 .HasForeignKey(i => i.UtilityReadingId);
 
 
-            // ChatMessage -> Tenancy (Many-to-One)
-            modelBuilder.Entity<ChatMessage>()
-                .HasOne<Tenancy>()
-                .WithMany()
-                .HasForeignKey(cm => cm.TenancyId);
-
-
             // ChatMessage -> Sender (Many-to-One)
             modelBuilder.Entity<ChatMessage>()
                 .HasOne<Account>()
                 .WithMany()
-                .HasForeignKey(cm => cm.SenderId);
+                .HasForeignKey(cm => cm.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // ChatMessage -> Receiver (Many-to-One)
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne<Account>()
+                .WithMany()
+                .HasForeignKey(cm => cm.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

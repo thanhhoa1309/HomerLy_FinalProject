@@ -19,17 +19,17 @@
         margin-bottom: 24px;
     }
 
-        .page-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 0 0 4px 0;
-        }
+    .page-header h2 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+    }
 
-        .page-header p {
-            margin: 0;
-            font-size: 0.875rem;
-            color: #6c757d;
-        }
+    .page-header p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
 
     /* Stat Cards Wrapper - 4 columns */
     .stat-card-wrapper {
@@ -39,10 +39,10 @@
         margin-bottom: 24px;
     }
 
-        .stat-card-wrapper a {
-            text-decoration: none;
-            color: inherit;
-        }
+    .stat-card-wrapper a {
+        text-decoration: none;
+        color: inherit;
+    }
 
     .stat-card {
         display: flex;
@@ -57,13 +57,13 @@
         transition: all 0.2s ease;
     }
 
-        .stat-card:hover {
-            background: #1a1a1a;
-            border-color: #1a1a1a;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+    .stat-card:hover {
+        background: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
     .stat-card-icon {
         width: 40px;
@@ -96,6 +96,83 @@
         color: rgba(255, 255, 255, 0.7);
     }
 
+    /* Floating Chat Button */
+    .floating-chat-btn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        cursor: pointer;
+        z-index: 1000;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        border: none;
+    }
+
+    .floating-chat-btn:hover {
+        transform: scale(1.1) translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        color: white;
+    }
+
+    .floating-chat-btn:active {
+        transform: scale(0.95);
+    }
+
+    .floating-chat-btn .chat-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: #dc3545;
+        color: white;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 600;
+        border: 2px solid white;
+    }
+
+    .chat-tooltip {
+        position: absolute;
+        right: 70px;
+        background: #333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .chat-tooltip::after {
+        content: '';
+        position: absolute;
+        right: -8px;
+        top: 50%;
+        transform: translateY(-50%);
+        border: 4px solid transparent;
+        border-left-color: #333;
+    }
+
+    .floating-chat-btn:hover .chat-tooltip {
+        opacity: 1;
+    }
+
     .quick-action-card {
         display: flex;
         flex-direction: column;
@@ -113,23 +190,23 @@
         color: #1a1a1a;
     }
 
-        .quick-action-card:hover {
-            background: #1a1a1a;
-            border-color: #1a1a1a;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+    .quick-action-card:hover {
+        background: #1a1a1a;
+        border-color: #1a1a1a;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-        .quick-action-card i {
-            font-size: 1.75rem;
-            margin-bottom: 12px;
-        }
+    .quick-action-card i {
+        font-size: 1.75rem;
+        margin-bottom: 12px;
+    }
 
-        .quick-action-card span {
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
+    .quick-action-card span {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
 
     .mt-4 {
         margin-top: 24px;
@@ -163,11 +240,11 @@
         align-items: center;
     }
 
-        .card-header h3 {
-            margin: 0;
-            font-size: 0.9375rem;
-            font-weight: 600;
-        }
+    .card-header h3 {
+        margin: 0;
+        font-size: 0.9375rem;
+        font-weight: 600;
+    }
 
     .card-body {
         padding: 20px;
@@ -194,16 +271,16 @@
         background: #fff;
     }
 
-        .property-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
+    .property-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
 
-        .property-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-        }
+    .property-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
 
     .property-status {
         position: absolute;
@@ -239,34 +316,34 @@
         border-collapse: collapse;
     }
 
-        .table thead th {
-            border-bottom: 1px solid #e9ecef;
-            font-weight: 600;
-            text-transform: capitalize;
-            font-size: 0.875rem;
-            color: #6c757d;
-            padding: 12px 16px;
-            text-align: center;
-        }
+    .table thead th {
+        border-bottom: 1px solid #e9ecef;
+        font-weight: 600;
+        text-transform: capitalize;
+        font-size: 0.875rem;
+        color: #6c757d;
+        padding: 12px 16px;
+        text-align: center;
+    }
 
-        .table tbody td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #f8f9fa;
-            vertical-align: middle;
-            text-align: center
-        }
+    .table tbody td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f8f9fa;
+        vertical-align: middle;
+        text-align: center
+    }
 
-        .table tbody tr {
-            transition: background-color 0.2s ease;
-        }
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
 
-            .table tbody tr:hover {
-                background-color: #f8f9fa;
-            }
+    .table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
 
-        .table .fw-medium {
-            font-weight: 500;
-        }
+    .table .fw-medium {
+        font-weight: 500;
+    }
 
     .user-cell {
         display: flex;
@@ -362,13 +439,13 @@
         color: #ffffff;
     }
 
-        .btn-dark:hover {
-            background-color: #000000;
-            border-color: #000000;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
+    .btn-dark:hover {
+        background-color: #000000;
+        border-color: #000000;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
 
     .btn-sm {
         padding: 6px 12px;
@@ -423,9 +500,9 @@
         align-items: center;
     }
 
-        .list-group-item:last-child {
-            border-bottom: none;
-        }
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
 
     .px-0 {
         padding-left: 0;
@@ -673,11 +750,13 @@
                                     }
                                     else
                                     {
-                                        <div style="height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
+                                        <div
+                                            style="height: 180px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
                                             <i class="bi bi-building text-white" style="font-size: 2.5rem;"></i>
                                         </div>
                                     }
-                                    <span class="badge property-status @(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "badge-available" : "badge-occupied")">
+                                    <span
+                                        class="badge property-status @(property.Status == Homerly.BusinessObject.Enums.PropertyStatus.available ? "badge-available" : "badge-occupied")">
                                         @property.Status
                                     </span>
                                     <div class="card-body">
@@ -686,8 +765,10 @@
                                             <i class="bi bi-geo-alt me-1"></i>@property.Address
                                         </p>
                                         <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span class="fw-semibold">@property.MonthlyPrice.ToString("N0") VNĐ<small class="text-secondary">/mo</small></span>
-                                            <a asp-page="/Owner/Properties/Details" asp-route-id="@property.Id" class="btn btn-sm btn-dark">View</a>
+                                            <span class="fw-semibold">@property.MonthlyPrice.ToString("N0") VNĐ<small
+                                                    class="text-secondary">/mo</small></span>
+                                            <a asp-page="/Owner/Properties/Details" asp-route-id="@property.Id"
+                                                class="btn btn-sm btn-dark">View</a>
                                         </div>
                                     </div>
                                 </div>
@@ -738,15 +819,18 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <small class="text-secondary">@tenancy.StartDate.ToString("dd/MM/yyyy") - @tenancy.EndDate.ToString("dd/MM/yyyy")</small>
+                                                <small class="text-secondary">@tenancy.StartDate.ToString("dd/MM/yyyy") -
+                                                    @tenancy.EndDate.ToString("dd/MM/yyyy")</small>
                                             </td>
                                             <td>
-                                                <span class="badge @(tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active ? "badge-active" : tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation ? "badge-pending" : "badge-inactive")">
+                                                <span
+                                                    class="badge @(tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.active ? "badge-active" : tenancy.Status == Homerly.BusinessObject.Enums.TenancyStatus.pending_confirmation ? "badge-pending" : "badge-inactive")">
                                                     @tenancy.Status
                                                 </span>
                                             </td>
                                             <td>
-                                                <a asp-page="/Owner/Tenancies/Details" asp-route-id="@tenancy.Id" class="btn btn-sm btn-dark">
+                                                <a asp-page="/Owner/Tenancies/Details" asp-route-id="@tenancy.Id"
+                                                    class="btn btn-sm btn-dark">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
                                             </td>
@@ -835,3 +919,10 @@
         </div>
     </div>
 </div>
+
+<!-- Floating Chat Button -->
+<!-- Floating Chat Button -->
+<a href="/Chat/AdminChat" class="floating-chat-btn" title="Chat with Admin">
+    <i class="bi bi-chat-dots-fill"></i>
+    <span class="chat-tooltip">Chat with Admin</span>
+</a>

@@ -16,31 +16,63 @@ namespace HomerLy.Business.Service
             _unitOfWork = unitOfWork;
         }
 
+        public async Task<Guid?> GetAdminIdAsync()
+        {
+            var admin = await _unitOfWork.Account
+                .GetQueryable()
+                .FirstOrDefaultAsync(a => a.Role == RoleType.Admin && !a.IsDeleted);
+
+            return admin?.Id;
+        }
+
         public async Task<ChatMessageResponseDto> SendMessageAsync(Guid senderId, CreateChatMessageDto createDto)
         {
-            // Verify user has access to this tenancy chat
-            var hasAccess = await CanUserAccessChatAsync(senderId, createDto.TenancyId);
-            if (!hasAccess)
-            {
-                throw new UnauthorizedAccessException("You don't have access to this chat");
-            }
-
             // Get sender information
             var sender = await _unitOfWork.Account.GetByIdAsync(senderId);
-
             if (sender == null || sender.IsDeleted)
             {
                 throw new Exception("Sender not found");
+            }
+
+            // Determine receiver
+            Guid receiverId;
+
+            if (sender.Role == RoleType.Admin)
+            {
+                // Admin must specify receiver
+                if (createDto.ReceiverId == null || createDto.ReceiverId == Guid.Empty)
+                {
+                    throw new Exception("Admin must specify receiver");
+                }
+                receiverId = createDto.ReceiverId.Value;
+            }
+            else
+            {
+                // User/Owner always send to Admin
+                var adminId = await GetAdminIdAsync();
+                if (adminId == null)
+                {
+                    throw new Exception("Admin account not found");
+                }
+                receiverId = adminId.Value;
+            }
+
+            // Get receiver information
+            var receiver = await _unitOfWork.Account.GetByIdAsync(receiverId);
+            if (receiver == null || receiver.IsDeleted)
+            {
+                throw new Exception("Receiver not found");
             }
 
             // Create chat message
             var chatMessage = new ChatMessage
             {
                 Id = Guid.NewGuid(),
-                TenancyId = createDto.TenancyId,
                 SenderId = senderId,
+                ReceiverId = receiverId,
                 Message = createDto.Message,
                 SentAt = DateTime.UtcNow,
+                IsRead = false,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = senderId,
                 IsDeleted = false
@@ -53,121 +85,158 @@ namespace HomerLy.Business.Service
             return new ChatMessageResponseDto
             {
                 Id = chatMessage.Id,
-                TenancyId = chatMessage.TenancyId,
                 SenderId = chatMessage.SenderId,
                 SenderName = sender.FullName,
                 SenderRole = sender.Role.ToString(),
+                ReceiverId = chatMessage.ReceiverId,
+                ReceiverName = receiver.FullName,
+                ReceiverRole = receiver.Role.ToString(),
                 Message = chatMessage.Message,
                 SentAt = chatMessage.SentAt,
+                IsRead = chatMessage.IsRead,
                 CreatedAt = chatMessage.CreatedAt
             };
         }
 
-        public async Task<List<ChatMessageResponseDto>> GetChatHistoryAsync(Guid tenancyId, int pageNumber = 1, int pageSize = 50)
+        public async Task<List<ChatMessageResponseDto>> GetChatHistoryAsync(Guid userId1, Guid userId2, int pageNumber = 1, int pageSize = 50)
         {
             var messages = await _unitOfWork.ChatMessage
                 .GetQueryable()
-                .Where(m => m.TenancyId == tenancyId && !m.IsDeleted)
+                .Where(m => !m.IsDeleted &&
+                           ((m.SenderId == userId1 && m.ReceiverId == userId2) ||
+                            (m.SenderId == userId2 && m.ReceiverId == userId1)))
                 .OrderByDescending(m => m.SentAt)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Get all sender IDs
-            var senderIds = messages.Select(m => m.SenderId).Distinct().ToList();
-            var senders = await _unitOfWork.Account
+            // Get both users
+            var userIds = new List<Guid> { userId1, userId2 };
+            var users = await _unitOfWork.Account
                 .GetQueryable()
-                .Where(a => senderIds.Contains(a.Id))
+                .Where(a => userIds.Contains(a.Id))
                 .ToDictionaryAsync(a => a.Id, a => a);
 
             return messages.Select(m => new ChatMessageResponseDto
             {
                 Id = m.Id,
-                TenancyId = m.TenancyId,
                 SenderId = m.SenderId,
-                SenderName = senders.ContainsKey(m.SenderId) ? senders[m.SenderId].FullName : "Unknown",
-                SenderRole = senders.ContainsKey(m.SenderId) ? senders[m.SenderId].Role.ToString() : "Unknown",
+                SenderName = users.ContainsKey(m.SenderId) ? users[m.SenderId].FullName : "Unknown",
+                SenderRole = users.ContainsKey(m.SenderId) ? users[m.SenderId].Role.ToString() : "Unknown",
+                ReceiverId = m.ReceiverId,
+                ReceiverName = users.ContainsKey(m.ReceiverId) ? users[m.ReceiverId].FullName : "Unknown",
+                ReceiverRole = users.ContainsKey(m.ReceiverId) ? users[m.ReceiverId].Role.ToString() : "Unknown",
                 Message = m.Message,
                 SentAt = m.SentAt,
+                IsRead = m.IsRead,
                 CreatedAt = m.CreatedAt
             }).OrderBy(m => m.SentAt).ToList();
         }
 
-        public async Task<List<ChatMessageResponseDto>> GetRecentMessagesAsync(Guid tenancyId, int count = 20)
+        public async Task<List<ChatMessageResponseDto>> GetRecentMessagesAsync(Guid userId1, Guid userId2, int count = 20)
         {
             var messages = await _unitOfWork.ChatMessage
                 .GetQueryable()
-                .Where(m => m.TenancyId == tenancyId && !m.IsDeleted)
+                .Where(m => !m.IsDeleted &&
+                           ((m.SenderId == userId1 && m.ReceiverId == userId2) ||
+                            (m.SenderId == userId2 && m.ReceiverId == userId1)))
                 .OrderByDescending(m => m.SentAt)
                 .Take(count)
                 .ToListAsync();
 
-            // Get all sender IDs
-            var senderIds = messages.Select(m => m.SenderId).Distinct().ToList();
-            var senders = await _unitOfWork.Account
+            // Get both users
+            var userIds = new List<Guid> { userId1, userId2 };
+            var users = await _unitOfWork.Account
                 .GetQueryable()
-                .Where(a => senderIds.Contains(a.Id))
+                .Where(a => userIds.Contains(a.Id))
                 .ToDictionaryAsync(a => a.Id, a => a);
 
             return messages.Select(m => new ChatMessageResponseDto
             {
                 Id = m.Id,
-                TenancyId = m.TenancyId,
                 SenderId = m.SenderId,
-                SenderName = senders.ContainsKey(m.SenderId) ? senders[m.SenderId].FullName : "Unknown",
-                SenderRole = senders.ContainsKey(m.SenderId) ? senders[m.SenderId].Role.ToString() : "Unknown",
+                SenderName = users.ContainsKey(m.SenderId) ? users[m.SenderId].FullName : "Unknown",
+                SenderRole = users.ContainsKey(m.SenderId) ? users[m.SenderId].Role.ToString() : "Unknown",
+                ReceiverId = m.ReceiverId,
+                ReceiverName = users.ContainsKey(m.ReceiverId) ? users[m.ReceiverId].FullName : "Unknown",
+                ReceiverRole = users.ContainsKey(m.ReceiverId) ? users[m.ReceiverId].Role.ToString() : "Unknown",
                 Message = m.Message,
                 SentAt = m.SentAt,
+                IsRead = m.IsRead,
                 CreatedAt = m.CreatedAt
             }).OrderBy(m => m.SentAt).ToList();
         }
 
-        public async Task<bool> CanUserAccessChatAsync(Guid userId, Guid tenancyId)
+        public async Task<List<ChatConversationDto>> GetAdminConversationsAsync(Guid adminId)
         {
-            var user = await _unitOfWork.Account.GetByIdAsync(userId);
-
-            if (user == null || user.IsDeleted)
-            {
-                return false;
-            }
-
-            // Admin can access all chats
-            if (user.Role == RoleType.Admin)
-            {
-                return true;
-            }
-
-            // Get tenancy details
-            var tenancy = await _unitOfWork.Tenancy
+            // Get all unique users who have chatted with admin
+            var userIds = await _unitOfWork.ChatMessage
                 .GetQueryable()
-                .Include(t => t.Property)
-                .FirstOrDefaultAsync(t => t.Id == tenancyId && !t.IsDeleted);
+                .Where(m => !m.IsDeleted && (m.SenderId == adminId || m.ReceiverId == adminId))
+                .SelectMany(m => new[] { m.SenderId, m.ReceiverId })
+                .Where(id => id != adminId)
+                .Distinct()
+                .ToListAsync();
 
-            if (tenancy == null)
+            var conversations = new List<ChatConversationDto>();
+
+            foreach (var userId in userIds)
             {
-                return false;
+                var user = await _unitOfWork.Account.GetByIdAsync(userId);
+                if (user == null || user.IsDeleted) continue;
+
+                // Get last message
+                var lastMessage = await _unitOfWork.ChatMessage
+                    .GetQueryable()
+                    .Where(m => !m.IsDeleted &&
+                               ((m.SenderId == adminId && m.ReceiverId == userId) ||
+                                (m.SenderId == userId && m.ReceiverId == adminId)))
+                    .OrderByDescending(m => m.SentAt)
+                    .FirstOrDefaultAsync();
+
+                // Count unread messages
+                var unreadCount = await _unitOfWork.ChatMessage
+                    .GetQueryable()
+                    .CountAsync(m => !m.IsDeleted &&
+                                    m.SenderId == userId &&
+                                    m.ReceiverId == adminId &&
+                                    !m.IsRead);
+
+                conversations.Add(new ChatConversationDto
+                {
+                    UserId = userId,
+                    UserName = user.FullName,
+                    UserRole = user.Role.ToString(),
+                    LastMessage = lastMessage?.Message,
+                    LastMessageTime = lastMessage?.SentAt,
+                    UnreadCount = unreadCount
+                });
             }
 
-            // Owner can access if they own the property
-            if (user.Role == RoleType.Owner && tenancy.Property.OwnerId == userId)
-            {
-                return true;
-            }
-
-            // Tenant can access if they are part of the tenancy
-            if (user.Role == RoleType.User && tenancy.TenantId == userId)
-            {
-                return true;
-            }
-
-            return false;
+            return conversations.OrderByDescending(c => c.LastMessageTime).ToList();
         }
 
-        public async Task MarkMessagesAsReadAsync(Guid userId, Guid tenancyId)
+        public async Task MarkMessagesAsReadAsync(Guid userId, Guid otherUserId)
         {
-            // This can be extended to track read status if needed
-            // For now, it's a placeholder for future implementation
-            await Task.CompletedTask;
+            var unreadMessages = await _unitOfWork.ChatMessage
+                .GetQueryable()
+                .Where(m => !m.IsDeleted &&
+                           m.SenderId == otherUserId &&
+                           m.ReceiverId == userId &&
+                           !m.IsRead)
+                .ToListAsync();
+
+            foreach (var message in unreadMessages)
+            {
+                message.IsRead = true;
+                message.UpdatedAt = DateTime.UtcNow;
+                message.UpdatedBy = userId;
+            }
+
+            if (unreadMessages.Any())
+            {
+                await _unitOfWork.SaveChangesAsync();
+            }
         }
     }
 }

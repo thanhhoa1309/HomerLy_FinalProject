@@ -25,11 +25,11 @@
         border-bottom: 1px solid #e9ecef;
     }
 
-        .detail-card-header h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin: 0;
-        }
+    .detail-card-header h3 {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin: 0;
+    }
 
     .detail-row {
         display: grid;
@@ -189,15 +189,15 @@
         padding-left: 32px;
     }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #e9ecef;
-        }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 8px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e9ecef;
+    }
 
     .timeline-item {
         position: relative;
@@ -232,6 +232,7 @@
         font-size: 0.875rem;
         color: #6c757d;
     }
+
     @@media (max-width: 768px) {
         .detail-row {
             grid-template-columns: 1fr;
@@ -242,9 +243,9 @@
             width: 100%;
         }
 
-            .action-buttons .btn {
-                width: 100%;
-            }
+        .action-buttons .btn {
+            width: 100%;
+        }
 
         .stat-card-wrapper {
             flex-direction: column;
@@ -261,6 +262,13 @@
             <p class="text-secondary mb-0" style="font-size: 0.875rem;">Review your rental agreement</p>
         </div>
         <div class="action-buttons">
+            @if (Model.Tenancy?.Status == TenancyStatus.active)
+            {
+                <a href="/Chat/Tenancy/@Model.Tenancy.Id" class="btn btn-primary"
+                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                    <i class="bi bi-chat-dots-fill me-2"></i>Open Chat
+                </a>
+            }
             <a asp-page="/User/Tenancies/Index" class="btn btn-outline-dark">
                 <i class="bi bi-arrow-left me-2"></i>Back to List
             </a>
@@ -303,7 +311,8 @@
                 <div class="d-flex align-items-center justify-content-between">
                     <div>
                         <h5 class="mb-2"><i class="bi bi-exclamation-triangle me-2"></i>Action Required</h5>
-                        <p class="mb-0" style="color: #92400e;">Please review the tenancy details and confirm or reject this agreement.</p>
+                        <p class="mb-0" style="color: #92400e;">Please review the tenancy details and confirm or reject this
+                            agreement.</p>
                     </div>
                     <div class="action-buttons">
                         <form method="post" asp-page-handler="Confirm" class="d-inline">
@@ -314,7 +323,8 @@
                         </form>
                         <form method="post" asp-page-handler="Reject" class="d-inline">
                             <input type="hidden" name="id" value="@Model.Tenancy.Id" />
-                            <button type="submit" class="btn btn-outline-secondary" onclick="return confirm('Reject this tenancy?')">
+                            <button type="submit" class="btn btn-outline-secondary"
+                                onclick="return confirm('Reject this tenancy?')">
                                 <i class="bi bi-x-lg me-2"></i>Reject
                             </button>
                         </form>
@@ -483,7 +493,8 @@
                             <div class="timeline-dot"></div>
                             <div class="timeline-content">
                                 <div class="timeline-title">Tenancy Created</div>
-                                <div class="timeline-date">@Model.Tenancy.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")</div>
+                                <div class="timeline-date">@Model.Tenancy.CreatedAt.ToString("MMMM dd, yyyy - hh:mm tt")
+                                </div>
                             </div>
                         </div>
                         @if (Model.Tenancy.IsTenantConfirmed)

@@ -1,0 +1,186 @@
+@page
+@model HomerLy.Presentation.Pages.Admin.Chats.IndexModel
+@{
+    ViewData["Title"] = "User Chats";
+    Layout = "~/Pages/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-3">
+                <i class="bi bi-chat-dots-fill me-2"></i>
+                User Conversations
+            </h1>
+            <p class="text-muted">Manage all user support conversations</p>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            @Model.ErrorMessage
+        </div>
+    }
+
+    @if (Model.Conversations.Count == 0)
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-chat-dots display-1 text-muted mb-3"></i>
+                <h4>No Conversations Yet</h4>
+                <p class="text-muted">User conversations will appear here when they message you.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var conversation in Model.Conversations)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 conversation-card">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start mb-3">
+                                <div class="flex-shrink-0">
+                                    <div class="avatar-circle">
+                                        @conversation.UserName.Substring(0, 1).ToUpper()
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h5 class="card-title mb-1">@conversation.UserName</h5>
+                                    <span class="badge bg-@(conversation.UserRole == "Owner" ? "primary" : "info")">
+                                        @conversation.UserRole
+                                    </span>
+                                </div>
+                                @if (conversation.UnreadCount > 0)
+                                {
+                                    <span class="badge bg-danger rounded-pill">@conversation.UnreadCount</span>
+                                }
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(conversation.LastMessage))
+                            {
+                                <div class="last-message mb-3">
+                                    <i class="bi bi-chat-quote text-muted me-1"></i>
+                                    <small class="text-muted">@conversation.LastMessage.Substring(0, Math.Min(50,
+                                                                    conversation.LastMessage.Length))@(conversation.LastMessage.Length > 50 ? "..." :
+                                                        "")</small>
+                                </div>
+                            }
+
+                            @if (conversation.LastMessageTime.HasValue)
+                            {
+                                <div class="text-muted small mb-3">
+                                    <i class="bi bi-clock me-1"></i>
+                                    @conversation.LastMessageTime.Value.ToLocalTime().ToString("MMM dd, HH:mm")
+                                </div>
+                            }
+
+                            <a href="/Chat/AdminChatWithUser?userId=@conversation.UserId" class="btn btn-primary w-100">
+                                <i class="bi bi-chat-fill me-2"></i>
+                                Open Chat
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    .conversation-card {
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+    }
+
+    .conversation-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: #667eea;
+    }
+
+    .avatar-circle {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .last-message {
+        line-height: 1.4;
+        min-height: 40px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .notification-badge {
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script>
+        let connection;
+
+        // Initialize SignalR connection
+        async function initializeHub() {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl("/chatHub")
+                .withAutomaticReconnect()
+                .build();
+
+            // Listen for new messages
+            connection.on("ReceiveMessage", (message) => {
+                console.log("New message received:", message);
+                // Reload page to update conversation list
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            });
+
+            try {
+                await connection.start();
+                console.log("Connected to chat hub for notifications");
+            } catch (err) {
+                console.error("Connection error:", err);
+                // Retry after 5 seconds
+                setTimeout(initializeHub, 5000);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeHub();
+        });
+    </script>
+}

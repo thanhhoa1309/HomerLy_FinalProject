@@ -1,0 +1,228 @@
+/* 
+ * HomerLy Chat Box - Custom Styles
+ * Standalone CSS file for chat functionality
+ * Can be included separately if needed
+ */
+
+/* ===== CHAT CONTAINER ===== */
+.homerly-chat-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.homerly-chat-card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* ===== CHAT HEADER ===== */
+.homerly-chat-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.homerly-chat-header h4 {
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===== MESSAGES AREA ===== */
+.homerly-chat-messages {
+    background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px;
+    height: 550px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.homerly-chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.homerly-chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.homerly-chat-messages::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+/* ===== MESSAGE BUBBLES ===== */
+.homerly-message-container {
+    animation: slideIn 0.3s ease-out;
+    margin-bottom: 15px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.homerly-message {
+    display: inline-block;
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.homerly-message:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.homerly-message-sent {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.homerly-message-received {
+    background: white;
+    border: 1px solid #e0e0e0;
+    color: #333;
+}
+
+/* ===== TYPING INDICATOR ===== */
+.homerly-typing-indicator {
+    background: rgba(108, 117, 125, 0.1);
+    padding: 10px 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.homerly-typing-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.homerly-typing-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6c757d;
+    animation: typingDots 1.4s infinite;
+}
+
+.homerly-typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.homerly-typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingDots {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* ===== INPUT AREA ===== */
+.homerly-chat-input {
+    flex: 1;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.homerly-chat-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    outline: none;
+}
+
+.homerly-send-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.homerly-send-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* ===== CONNECTION STATUS ===== */
+.homerly-connection-status {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 10;
+}
+
+.homerly-connection-status.connected {
+    background: rgba(40, 167, 69, 0.9);
+    color: white;
+}
+
+.homerly-connection-status.disconnected {
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+}
+
+.homerly-connection-status.connecting {
+    background: rgba(255, 193, 7, 0.9);
+    color: #333;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .homerly-chat-messages {
+        height: calc(100vh - 300px);
+    }
+    
+    .homerly-message {
+        max-width: 85%;
+    }
+    
+    .homerly-chat-input {
+        font-size: 16px;
+    }
+    
+    .homerly-send-button {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 576px) {
+    .homerly-message-header strong {
+        font-size: 0.85rem;
+    }
+    
+    .homerly-message-text {
+        font-size: 0.9rem;
+    }
+}
